@@ -1,0 +1,143 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    @apply !box-border
+}
+
+body {
+    font-size: 1rem;
+    @apply font-Montserrat antialiased tracking-tight
+    !box-border
+}
+
+h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tighter
+}
+// h1 {
+//     @apply text-6xl leading-16
+// }
+
+// h2 {
+//     @apply text-5xl leading-12
+// }
+// h3 {
+//     @apply text-4xl leading-10
+// }
+
+// h4 {
+//     @apply text-3xl leading-8
+// }
+
+// h5 {
+//     letter-spacing: -0.035rem;
+//     @apply text-[1.75rem] leading-7
+// }
+
+h6 {
+    @apply text-xl leading-6
+}
+
+.btn {
+    @apply px-5 py-2.5 border-2 border-transparent rounded-lg font-bold flex gap-2 items-center justify-center transition ease-in whitespace-nowrap outline-none
+}
+.btn:disabled {
+    @apply cursor-not-allowed
+}
+.filled {
+    @apply w-full
+}
+.btn-primary {
+    @apply bg-accent-300 text-primary-300 leading-5
+}
+.btn-primary:hover {
+    @apply bg-accent-400 text-accent-100
+}
+.btn-primary:focus {
+    @apply border-accent-200
+}
+.btn-primary:disabled {
+    @apply !bg-neutral-300 !text-neutral-100
+}
+.btn-primary:active {
+    @apply bg-accent-300 text-primary-400 border-transparent
+}
+.btn-secondary {
+    @apply bg-primary-100 text-primary-300
+}
+.btn-secondary:hover {
+    @apply bg-primary-300 text-neutral-100
+}
+.btn-outline-secondary {
+    @apply border-2 border-primary-300 text-primary-300
+}
+.btn-outline-secondary:hover {
+    @apply bg-neutral-200
+}
+.btn-outline-secondary:disabled {
+    @apply border-neutral-300 text-neutral-300 bg-transparent
+}
+
+.form-group label.required {
+    /* @apply after:content-['*'] after:ml-0.5 after:text-danger-400 */
+}
+.form-group .form-control {
+    /* @apply p-2 leading-17 bg-white border border-secondary-300 hover:border-secondary-500 focus:border-primary-400 placeholder:text-secondary-300 text-secondary-500 font-normal outline-none ring-0 text-xs rounded-md block w-full transition-all duration-300 */
+    /* font-size: 0.875rem; */
+}
+
+.form-group .form-control:hover {
+  @apply border-primary-300
+}
+
+.form-group .form-control:focus {
+  @apply border-primary-300 outline-none ring-0
+}
+
+.form-group .form-control input{
+
+}
+input:disabled{
+}
+
+
+
+
+
+
+
+/* Tailwind Forms Plugin Customize */
+@layer base {
+  [type='text'],
+  input:where(:not([type])),
+  [type='email'],
+  [type='url'],
+  [type='password'],
+  [type='number'],
+  [type='date'],
+  [type='datetime-local'],
+  [type='month'],
+  [type='search'],
+  [type='tel'],
+  [type='time'],
+  [type='week'],
+  [multiple],
+  textarea,
+  select {
+    @apply max-h-11 px-4 py-3 text-sm rounded-lg border border-neutral-300 text-neutral-500 focus:text-neutral-800 placeholder:text-neutral-500 font-medium leading-5 outline-none transition ease-in
+  }
+
+}
+@layer base {
+  [type='checkbox'], [type='radio'] {
+    @apply w-5 h-5 text-primary-300 border-neutral-300 transition ease-in cursor-pointer focus:ring-0 focus:outline-none rounded !shadow-none
+  }
+}
+
+/* End:Tailwind Forms Plugin Customize */
+
+

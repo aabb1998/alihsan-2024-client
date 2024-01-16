@@ -1,0 +1,468 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    @apply !box-border
+}
+
+html {
+    @apply !box-border
+}
+
+body {
+
+    @apply text-md font-Montserrat antialiased tracking-tight font-medium !box-border text-neutral-1000
+}
+
+h1, h2, h3, h4, h5, h6 {
+    @apply !font-bold tracking-tighter
+}
+
+
+/* h1 {
+    letter-spacing: -0.07rem;
+    @apply text-6xl leading-16
+}
+h2 {
+    @apply text-5xl leading-12
+}
+h3 {
+    @apply text-4xl leading-10
+}
+h4 {
+    @apply text-3xl leading-8
+}
+h5 {
+    letter-spacing: -0.035rem;
+    @apply text-[1.75rem] leading-7
+}
+h6 {
+    @apply text-xl leading-6
+} */
+
+.heading-1 {
+    @apply md:text-[3.5rem] leading-16
+}
+
+.heading-2 {
+    @apply md:text-[2.5rem] leading-12
+}
+
+.heading-3 {
+    @apply leading-6 text-[2rem] md:leading-10
+}
+
+.heading-4 {
+    @apply text-[1.75rem] leading-8
+}
+
+.heading-5 {
+    @apply md:text-[1.5rem] leading-7
+}
+
+.heading-6 {
+    @apply text-[1.25rem] md:text-[1.25rem] leading-6
+}
+
+.heading-7 {
+    @apply text-[1.125rem] leading-6
+}
+
+.btn {
+    @apply px-5 py-3 border-2 border-transparent rounded-lg font-bold flex gap-2 items-center justify-center transition ease-in whitespace-nowrap outline-none tracking-tighter
+}
+
+.btn-responsive {
+    @apply px-5 py-1.5 md:px-5 md:py-2.5 border-2 border-transparent rounded-lg font-bold flex gap-2 items-center justify-center transition ease-in whitespace-nowrap outline-none tracking-tighter
+}
+
+
+.btn-pagination {
+    @apply px-2.5 md:px-5 py-2.5 border-2 border-transparent rounded-lg font-bold flex gap-2 items-center justify-center transition ease-in whitespace-nowrap outline-none tracking-tighter
+}
+
+.btn-tab {
+    @apply py-2 md:py-3 rounded-lg transition ease-in
+}
+button   {
+    @apply outline-none
+}
+button:disabled {
+    @apply cursor-not-allowed
+}
+.filled {
+    @apply w-full
+}
+.btn-primary {
+    @apply bg-accent-300 text-primary-300 leading-5
+}
+.btn-primary:hover {
+    @apply bg-accent-400 text-accent-100
+}
+.btn-primary:focus {
+    @apply border-accent-200
+}
+.btn-primary:disabled {
+    @apply !bg-neutral-300 !text-neutral-100
+}
+.btn-primary:active {
+    @apply bg-accent-300 text-primary-400 border-transparent
+}
+
+.btn-neutral {
+    @apply bg-neutral-1000 text-neutral-100 leading-5
+}
+.btn-neutral:hover {
+    @apply bg-neutral-900 text-neutral-100
+}
+.btn-neutral:focus {
+    @apply border-neutral-300
+}
+.btn-neutral:disabled {
+    @apply !bg-neutral-300 !text-neutral-100
+}
+.btn-neutral:active {
+    @apply bg-neutral-900 text-neutral-100 border-transparent
+}
+
+.btn-secondary {
+    @apply bg-primary-100 text-primary-300
+}
+.btn-secondary:hover {
+    @apply bg-primary-300 text-neutral-100
+}
+.btn-outline-secondary {
+    @apply border-2 border-primary-300 text-primary-300
+}
+.btn-outline-secondary:hover {
+    @apply bg-white !text-primary-300
+}
+.btn-outline-secondary:disabled {
+    @apply border-neutral-300 text-neutral-300 bg-transparent
+}
+
+.btn-secondary-text{
+    @apply text-primary-300
+}
+
+.btn-secondary-text:hover {
+    @apply bg-neutral-200
+}
+
+.btn-secondary-disabled-text{
+    @apply text-neutral-300
+}
+
+.btn-neutral-text{
+    @apply text-neutral-1000
+}
+
+.btn-neutral-text:hover{
+    @apply bg-neutral-200
+}
+
+.btn-neutral-text:focus{
+    @apply bg-neutral-300
+}
+
+.btn-neutral-text:disabled{
+    @apply text-neutral-300 bg-transparent
+}
+
+.btn-dark {
+    @apply bg-neutral-1000 text-white leading-5
+}
+.btn-dark:hover {
+    @apply bg-neutral-700 text-white leading-5
+}
+.btn-dark:focus {
+    @apply border-neutral-900 text-white leading-5
+}
+.btn-dark:active {
+    @apply bg-neutral-1000 text-white leading-5 border-transparent
+}
+.btn-lite-primary {
+    @apply bg-primary-100 text-primary-300 leading-5
+}
+.btn-danger {
+    @apply bg-red-300 text-white leading-5
+}
+.btn-danger:hover {
+    @apply bg-red-400 text-white
+}
+.btn-danger:focus {
+    @apply border-red-200
+}
+.btn-danger:disabled {
+    @apply !bg-neutral-300 !text-neutral-100
+}
+.btn-danger:active {
+    @apply bg-red-300 text-white border-transparent
+}
+
+/* Red Text */
+.btn-red-text{
+    @apply text-red-300
+}
+
+.btn-red-text:hover{
+    @apply bg-red-100
+}
+
+.btn-red-text:focus{
+    @apply bg-red-100
+}
+
+.btn-red-text:disabled{
+    @apply text-neutral-300 bg-transparent
+}
+
+
+.container {
+    /* @apply w-full mx-4 sm:mx-6 md:mx-auto transition-transform */
+    @apply w-full max-w-[1320px] mx-auto px-4 sm:px-6 lg:p-0
+}
+
+
+.banner-container {
+    @apply w-full sm:max-w-[1320px] mx-auto px-0 sm:px-6 lg:p-0
+}
+
+
+.form-group .form-control {
+    font-size: 0.875rem;
+    @apply max-h-11 px-4 py-3 rounded-lg border border-neutral-300 text-neutral-800 focus:text-neutral-800 placeholder:text-neutral-500 font-medium leading-5 outline-none transition ease-in
+}
+
+.form-group label {
+    @apply mb-2 text-sm text-neutral-1000 block
+}
+
+.form-group .form-control:hover {
+    @apply border-primary-300
+}
+
+.form-group .form-control:focus {
+    @apply border-primary-300 outline-none ring-0
+}
+.text-area .form-control{
+    font-size: 0.875rem;
+    @apply h-auto px-4 py-3 rounded-lg border border-neutral-300 text-neutral-500 focus:text-neutral-800 placeholder:text-neutral-500 font-medium leading-5 outline-none transition ease-in
+}
+.text-area label {
+    @apply mb-2 text-sm text-neutral-1000 block
+}
+.text-area .form-control:hover {
+    @apply border-primary-300
+}
+
+.text-area .form-control:focus {
+    @apply border-primary-300 outline-none ring-0
+}
+/* Tailwind Forms Plugin Customize */
+@layer base {
+    [type='text'],
+    input:where(:not([type])),
+    [type='email'],
+    [type='url'],
+    [type='password'],
+    [type='number'],
+    [type='date'],
+    [type='datetime-local'],
+    [type='month'],
+    [type='search'],
+    [type='tel'],
+    [type='time'],
+    [type='week'],
+    [multiple],
+    textarea,
+    select {
+      @apply max-h-11 px-4 py-3 text-sm rounded-lg border border-neutral-300 text-neutral-500 focus:text-neutral-800 placeholder:text-neutral-500 font-medium leading-5 outline-none transition ease-in
+    }
+  }
+  @layer base {
+    [type='checkbox'] {
+      @apply w-5 h-5 text-primary-300 border-neutral-300 bg-transparent transition-all ease-in cursor-pointer rounded focus:!ring-0 focus:!outline-none !shadow-none !ring-offset-0
+    }
+    [type='radio'] {
+        @apply w-5 h-5 rounded-full text-accent-300 border-neutral-300 bg-transparent transition-all ease-in cursor-pointer focus:!ring-0 focus:!outline-none !shadow-none !ring-offset-0
+
+
+      }
+  }
+  /* End:Tailwind Forms Plugin Customize */
+
+
+
+  /* width */
+::-webkit-scrollbar {
+    width: 0.25rem;
+    height: 0.375rem;
+}
+
+
+/* Track */
+::-webkit-scrollbar-track {
+    /* @apply bg-primary-100 */
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    @apply bg-neutral-400 rounded-md
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    @apply bg-neutral-500
+}
+
+input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.custom-number-input input:focus {
+outline: none !important;
+}
+
+.custom-number-input button:focus {
+outline: none !important;
+}
+
+
+/* Modal */
+
+  .modal-body {
+    @apply max-h-[calc(100vh-20rem)] overflow-auto scroll-px-10 p-0 font-Montserrat text-md font-medium text-neutral-600 mb-10 border-0;
+  }
+/* ======== */
+.triangle { @apply w-0 h-0 border-transparent border-solid border-20 border-l-20 border-l-transparent border-r-20 border-r-transparent border-t-20 border-t-white; }
+
+/* TOASTER */
+.Toastify__toast{
+    @apply px-3 !bg-primary-400 leading-4 !m-0 h-auto !min-h-[2.5rem] sm:!h-auto rounded-tl-lg rounded-bl-lg rounded-tr-none rounded-br-none text-xs sm:text-sm font-Montserrat font-bold !text-white;
+}
+.Toastify__close-button{
+    @apply !text-white opacity-100;
+}
+.Toastify__toast-body{
+    @apply !p-0;
+}
+.Toastify__close-button > svg{
+    @apply !w-4 !h-4;
+}
+.Toastify__progress-bar--success{
+    @apply !bg-yellow-300;
+}
+.Toastify__progress-bar{
+    @apply !bg-yellow-300;
+}
+.Toastify__toast-icon{
+    @apply mr-4;
+}
+.Toastify__toast-container--top-right{
+    @apply !right-0;
+}
+/* ============= */
+/* CAROUSEL */
+.slick-track{
+    @apply !flex  !bg-transparent;
+}
+.slick-prev{
+    @apply !-left-3 sm:!-left-6 !p-3 !w-fit !h-fit !rounded-lg !bg-accent-300 !z-1;
+}
+.slick-next{
+    @apply !p-3 !-right-3 sm:!-right-6 !w-fit !h-fit !rounded-lg !bg-accent-300 !z-1;
+}
+.slick-slide {
+    @apply mx-2 sm:mx-2.5;
+ }
+ .slick-slide:first-child{
+    @apply mx-2 sm:ml-0;
+ }
+.slick-disabled{
+    @apply !cursor-auto;
+}
+ .slick-list [data-slick-index="0"] {
+    @apply ml-0;
+   }
+/* ========== */
+/* MAP SECTION */
+.transform-component-module_wrapper__SPB86{
+    @apply !w-full;
+}
+.transform-component-module_content__FBWxo{
+    @apply !w-full;
+}
+/* =========== */
+/* AUTOCOMPLETE */
+.css-1u9des2-indicatorSeparator{
+    @apply hidden;
+}
+[type='text']:focus{
+    box-shadow: none !important;
+}
+.css-1nej5on-control{
+    @apply !min-h-[2.75rem] !h-[2.75rem] !rounded-lg;
+}
+.css-1al9tbs-control{
+    @apply !min-h-[2.75rem] !h-[2.75rem] !rounded-lg;
+}
+/* TOOLTIP */
+.tooltip{
+@apply !bg-white !opacity-100 !shadow-sm max-w-xs !p-4 !rounded-2xl;
+}
+.tooltip .arrow{
+    @apply !hidden;
+}
+.core-styles-module_closing__sGnxF{
+    @apply !opacity-0;
+}
+/* ========== */
+.policy-card{
+    @apply text-primary-300 hover:text-accent-300 fill-primary-300 hover:fill-accent-300;
+}
+.policy-card svg{
+    @apply  fill-primary-300 hover:fill-accent-300;
+}
+/* REACT FLAG SELECTOR */
+.ReactFlagsSelect-module_selectBtn__19wW7{
+    @apply form-control text-neutral-800 font-medium !text-sm;
+}
+.ReactFlagsSelect-module_flagsSelect__2pfa2{
+    @apply pb-0;
+}
+.ReactFlagsSelect-module_selectValue__152eS, .ReactFlagsSelect-module_selectOption__3pcgW{
+    @apply !p-0;
+}
+.ReactFlagsSelect-module_selectOptionValue__vS99-{
+    @apply !px-4;
+}
+.ReactFlagsSelect-module_selectFlag__2q5gC{
+    @apply !text-sm;
+}
+.ReactFlagsSelect-module_label__27pw9, .ReactFlagsSelect-module_secondaryLabel__37t1D{
+    @apply !text-sm !text-neutral-800;
+}
+/* ==================== */
+/* HIDE INPUT TYPE FILE */
+.hide-input-file input[type="file"]{
+    @apply opacity-0;
+}
+/* REACT DATE PICKER */
+.react-datepicker-wrapper{
+    @apply !w-full;
+}
+/* ================ */
+.dashboard-canvas > div{
+    @apply !w-full;
+}
+.dashboard-canvas canvas{
+    @apply !w-full;
+}
