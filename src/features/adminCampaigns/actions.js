@@ -14,8 +14,8 @@ export const loadCampaignsList = createAsyncThunk(
 export const loadCampaignDetails = createAsyncThunk(
 	"get/admin/campaign",
 	async(id) => {
-		const response = await api.get('/project/details-admin/'+id);
-		return response.data.payload;
+    const response = await api.get('/project/details-admin/'+id);
+    return response.data.payload;
 	}
 )
 

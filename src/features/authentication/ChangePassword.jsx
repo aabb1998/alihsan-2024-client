@@ -52,7 +52,7 @@ const ChangePassword = () => {
           resetForm();
           showSuccessMessage(response?.payload?.message);
         } else {
-          showErrorMessage(response?.payload?.message);
+          showErrorMessage(response?.error?.message);
         }
         setIsLoading(false);
       } catch (error) {}

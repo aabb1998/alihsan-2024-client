@@ -39,14 +39,14 @@ export const UpdateBlog = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
-  const { news } = useSelector((state) => state.news);
+  const { news, loading } = useSelector((state) => state.news);
   const { tags } = useSelector((state) => state.adminBlog);
   const [selectionTags, setSelectionTags] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-
+  console.log(news?.status);
   const [coverPreviews, setCoverPreviews] = useState("");
   const [imagePreviews, setImagePreviews] = useState(Array(4).fill(null));
-  console.log(news, "ssssssss");
+
   const formik = useFormik({
     initialValues: {
       id: news?.id ?? "",
@@ -85,7 +85,7 @@ export const UpdateBlog = () => {
             navigate("/admin/blog");
             showSuccessMessage(response?.payload?.message);
           } else {
-            showErrorMessage(response?.payload?.message);
+            showErrorMessage(response?.error?.message);
           }
         } else {
           response = await dispatch(addBlog(formData));
@@ -97,7 +97,7 @@ export const UpdateBlog = () => {
             resetForm();
             navigate("/admin/blog");
           } else {
-            showErrorMessage(response?.payload?.message);
+            showErrorMessage(response?.error?.message);
           }
         }
       } catch (error) {}
@@ -209,15 +209,11 @@ export const UpdateBlog = () => {
     dispatch(getTags());
   }, [isOpen]);
 
+  const isDraft = news?.status === "DRAFT";
+
   return (
     <div className="py-10 px-2 sm:px-7.5 w-full h-[calc(100vh-4.5rem)] overflow-auto">
-      {isOpen && (
-        <AddTags
-          onClose={() => setIsOpen(false)}
-          // confirmDelete={confirmDelete}
-          title={"Blog"}
-        />
-      )}
+      {isOpen && <AddTags onClose={() => setIsOpen(false)} title={"Blog"} />}
       <form onSubmit={formik.handleSubmit}>
         <div className="flex flex-wrap gap-4 items-center justify-between w-full border-b border-neutral-300 pb-3.5">
           <Button
@@ -232,31 +228,54 @@ export const UpdateBlog = () => {
             }
           />
 
-          <div className="flex flex-wrap items-center gap-2 lg:gap-3">
-            <Button
-              className="flex-grow btn btn-outline-secondary text-button-md md:text-button-lg"
-              variant=""
-              type="button"
-              label={"Cancel"}
-              onClick={() => navigate("/admin/blog")}
-            />
+          {!loading && (
+            <div className="flex flex-wrap items-center gap-2 lg:gap-3">
+              <Button
+                className="flex-grow btn btn-outline-secondary text-button-md md:text-button-lg"
+                variant=""
+                type="button"
+                label={"Cancel"}
+                onClick={() => navigate("/admin/blog")}
+              />
+              {news !== null ? (
+                <Button
+                  className="flex-grow btn btn-secondary text-button-md md:text-button-lg"
+                  variant=""
+                  type="submit"
+                  onClick={() =>
+                    formik.setFieldValue(
+                      "submitType",
+                      isDraft ? "DRAFT" : "PUBLISHED"
+                    )
+                  }
+                  label={"Update"}
+                />
+              ) : (
+                ""
+              )}
+              {(news === null || !isDraft) && (
+                <Button
+                  className="flex-grow btn btn-dark text-button-md md:text-button-lg"
+                  variant=""
+                  type="submit"
+                  onClick={() => formik.setFieldValue("submitType", "DRAFT")}
+                  label={"Save as Draft"}
+                />
+              )}
 
-            <Button
-              className="flex-grow btn btn-dark text-button-md md:text-button-lg"
-              variant=""
-              type="submit"
-              onClick={() => formik.setFieldValue("submitType", "DRAFT")}
-              label={"Save as Draft"}
-            />
-
-            <Button
-              className="flex-grow btn btn-primary text-button-md md:text-button-lg"
-              variant=""
-              type="submit"
-              onClick={() => formik.setFieldValue("submitType", "PUBLISHED")}
-              label={"Publish"}
-            />
-          </div>
+              {(news === null || isDraft) && (
+                <Button
+                  className="flex-grow btn btn-primary text-button-md md:text-button-lg"
+                  variant=""
+                  type="submit"
+                  onClick={() =>
+                    formik.setFieldValue("submitType", "PUBLISHED")
+                  }
+                  label={"Publish"}
+                />
+              )}
+            </div>
+          )}
         </div>
         <div className="w-full mt-7.5">
           <div className="flex flex-col mb-6 form-group">
@@ -341,32 +360,34 @@ export const UpdateBlog = () => {
                 />
               )}
             </div>
-            <div className="flex flex-wrap items-end gap-2 mb-6 md:flex-nowrap">
-              <div className="flex flex-col form-group grow">
-                <label htmlFor="slug" className="">
-                  Tag
-                </label>
+            <div className="flex flex-col mb-6">
+              <div className="flex flex-wrap items-end gap-2 md:flex-nowrap">
+                <div className="flex flex-col form-group grow">
+                  <label htmlFor="slug" className="">
+                    Tag
+                  </label>
 
-                <TagSelection
-                  tags={tags}
-                  onTagSelection={onTagSelection}
-                  selectionTags={selectionTags}
-                />
-
-                {formik.touched.tags && Boolean(formik.errors.tags) && (
-                  <FormikValidationError
-                    formikTouched={formik.touched.tags}
-                    formikError={formik.errors.tags}
+                  <TagSelection
+                    tags={tags}
+                    onTagSelection={onTagSelection}
+                    selectionTags={selectionTags}
                   />
-                )}
+                </div>
+
+                <Button
+                  label={"Add Tag"}
+                  type="button"
+                  onClick={() => setIsOpen(true)}
+                  className={"h-fit w-full md:w-fit !p-3"}
+                  variant={"primary"}
+                />
               </div>
-              <Button
-                label={"Add Tag"}
-                type="button"
-                onClick={() => setIsOpen(true)}
-                className={"h-fit w-full md:w-fit !p-3"}
-                variant={"primary"}
-              />
+              {formik.touched.tags && Boolean(formik.errors.tags) && (
+                <FormikValidationError
+                  formikTouched={formik.touched.tags}
+                  formikError={formik.errors.tags}
+                />
+              )}
             </div>
           </div>
 

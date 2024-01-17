@@ -69,7 +69,7 @@ export const UpdateStory = () => {
             showSuccessMessage(response?.payload?.message);
             navigate(adminListingUrl);
           } else {
-            showErrorMessage(response?.payload?.message);
+            showErrorMessage(response?.error?.message);
           }
         } else {
           response = await dispatch(addStory(formData));
@@ -80,7 +80,7 @@ export const UpdateStory = () => {
             resetForm();
             navigate(adminListingUrl);
           } else {
-            showErrorMessage(response?.payload?.message);
+            showErrorMessage(response?.error?.message);
           }
         }
       } catch (error) {}

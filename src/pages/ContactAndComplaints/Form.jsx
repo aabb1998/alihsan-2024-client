@@ -71,7 +71,7 @@ export const Form = () => {
             setChecked({ information: false, accurate: false });
             setDisableButton(false)
           } else {
-            showErrorMessage(response?.payload?.message);
+            showErrorMessage(response?.error?.message);
             setDisableButton(false)
           }
         } catch (error) {}

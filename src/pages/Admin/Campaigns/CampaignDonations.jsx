@@ -147,7 +147,7 @@ export default function CampaignDonations() {
                     Email
                   </th>
                   <th className="p-4 text-sm font-medium text-start font-Montserrat text-neutral-600">
-                    Phone Numbesr
+                    Phone Number
                   </th>
                 </tr>
               </thead>
@@ -414,6 +414,9 @@ function Filter({ filters, setFilters }) {
 											)}
 										</Disclosure>
 									</div>
+								</div>
+                <div className="flex items-center justify-between mt-2 cursor-pointer" onClick={() => setFilters()}>
+									<h3 className="text-button-lg text-neutral-800">Clear</h3>
 								</div>
 							</div>
 						</aside>

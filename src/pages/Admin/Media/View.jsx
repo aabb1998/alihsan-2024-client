@@ -85,8 +85,10 @@ export const View = () => {
                           />
                         </div>
                       ) : media && detailsValue?.video ? (
-                      
+                        <div className="w-full overflow-hidden rounded-lg h-80">
                         <YoutubeVideo url={media[detailsValue?.key]} />
+                      </div>
+
                       ) : (
                         media && media[detailsValue?.key]
                       )}

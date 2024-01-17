@@ -5,7 +5,7 @@ const VisitorChart = ({ data }) => {
   useEffect(() => {
     const chartDom = document.getElementById("visitor");
     const myChart = echarts.init(chartDom);
-    const monthArray = data?.map((item) => item.month);
+    const monthArray = data?.map((item) => item.label);
     const countArray = data?.map((item) => item.count);
     const itemArray = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5"];
     const colorArray = ["#80FFA5"];
@@ -16,7 +16,7 @@ const VisitorChart = ({ data }) => {
       tooltip: {
         trigger: "axis",
         axisPointer: {
-          type: "cross",
+          type: "none",
           label: {
             backgroundColor: "#6a7985",
           },
@@ -50,7 +50,7 @@ const VisitorChart = ({ data }) => {
       ],
       series: [
         {
-          name: "Line 3",
+          name: "",
           type: "line",
           stack: "Total",
           smooth: true,
@@ -90,8 +90,8 @@ const VisitorChart = ({ data }) => {
   return (
     <div
       id="visitor"
-      className="w-full dashboard-canvas"
-      style={{ width: "100%", height: "400px" }}
+      className="w-full "
+      style={{ height: "400px" }}
     ></div>
   );
 };

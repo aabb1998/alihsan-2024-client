@@ -61,7 +61,7 @@ const ProfileSection = () => {
         if (response?.payload?.success) {
           showSuccessMessage(response?.payload?.message);
         } else {
-          showErrorMessage(response?.payload?.message);
+          showErrorMessage(response?.error?.message);
         }
         setIsLoading(false);
       } catch (error) {

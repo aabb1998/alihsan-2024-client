@@ -92,8 +92,7 @@ const slice = createSlice({
 			state.details.error = null;
 		}).addCase(loadCampaignDetails.rejected, (state, action) => {
 			state.details.loading = false;
-			state.details.error = action.error.response?.data?.message
-				|| action.error.message;
+      state.details.error = action.error.code==='ERR_BAD_REQUEST' ? 'NotFound' : action.error.message;
     })
 
 

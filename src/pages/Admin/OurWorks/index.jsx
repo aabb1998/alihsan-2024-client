@@ -47,7 +47,7 @@ export const OurWorks = () => {
     if (response?.payload?.success) {
       showSuccessMessage(response?.payload?.message);
     } else {
-      showErrorMessage(response?.payload?.message);
+      showErrorMessage(response?.error?.message);
     }
     setDeleteId("");
     setIsOpen(false);

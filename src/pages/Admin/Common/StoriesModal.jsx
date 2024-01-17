@@ -45,7 +45,7 @@ export const StoriesModal = ({ onClose, item }) => {
           resetForm();
           showSuccessMessage(response?.payload?.message);
         } else {
-          showErrorMessage(response?.payload?.message);
+          showErrorMessage(response?.error?.message);
         }
       } catch (error) {}
     },

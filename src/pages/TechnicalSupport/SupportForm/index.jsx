@@ -94,7 +94,7 @@ export const SupportForm = () => {
             resetForm();
             setDisable(false);
           } else {
-            showErrorMessage(response?.payload?.message);
+            showErrorMessage(response?.error?.message);
             setDisable(false);
           }
         } catch (error) {}

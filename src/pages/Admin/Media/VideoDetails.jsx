@@ -62,7 +62,7 @@ export const VideoDetails = () => {
             showSuccessMessage(response?.payload?.message);
             navigate('/admin/videos');
           } else {
-            showErrorMessage(response?.payload?.message);
+            showErrorMessage(response?.error?.message);
           }
         } else {
           response = await dispatch(addVideoDetails(values));
@@ -74,7 +74,7 @@ export const VideoDetails = () => {
             resetForm();
             navigate('/admin/videos');
           } else {
-            showErrorMessage(response?.payload?.message);
+            showErrorMessage(response?.error?.message);
           }
         }
       } catch (error) {}

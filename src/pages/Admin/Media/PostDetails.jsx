@@ -58,7 +58,7 @@ export const PostDetails = () => {
             showSuccessMessage(response?.payload?.message);
             navigate("/admin/posts");
           } else {
-            showErrorMessage(response?.payload?.message);
+            showErrorMessage(response?.error?.message);
           }
         } else {
           response = await dispatch(addPostDetails(formData));
@@ -69,7 +69,7 @@ export const PostDetails = () => {
             resetForm();
             navigate("/admin/posts");
           } else {
-            showErrorMessage(response?.payload?.message);
+            showErrorMessage(response?.error?.message);
           }
         }
       } catch (error) {}

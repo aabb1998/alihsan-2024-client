@@ -205,7 +205,7 @@ function Filter({ filters, setFilters }) {
 														/>
 													</Disclosure.Button>
 													<Disclosure.Panel className="flex flex-col justify-start gap-3 px-1 my-4">
-														{ProjectStatuses?.map((status) => (
+                            {[{value: '', label: 'All'}, ...ProjectStatuses].map((status) => (
 															<Button
 																className={
 																	"w-full flex text-sm grow-1 "
@@ -223,6 +223,9 @@ function Filter({ filters, setFilters }) {
 											)}
 										</Disclosure>
 									</div>
+								</div>
+                <div className="flex items-center justify-between mt-2 cursor-pointer" onClick={() => setFilters()}>
+									<h3 className="text-button-lg text-neutral-800">Clear</h3>
 								</div>
 							</div>
 						</aside>

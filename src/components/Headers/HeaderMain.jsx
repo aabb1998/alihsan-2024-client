@@ -14,6 +14,7 @@ import { MenuData } from "../../utils/constants";
 import { useQuickDonation } from "../../features/quickDonation";
 import { HeaderModal } from "../HeaderModal";
 import ModalItems from "./ModalItems";
+import { Tooltip } from "react-tooltip";
 
 const HeaderMain = ({ isSidebar, setSidebar }) => {
   const navigate = useNavigate();
@@ -39,11 +40,14 @@ const HeaderMain = ({ isSidebar, setSidebar }) => {
 
   const handleToggle = (index) => {
     const selectedItem = MenuData[index] || {};
+    console.log(index);
+
     setSelectedIndex(!headerModal?.isOpen ? index : -1);
     if (selectedItem?.subMenu?.length || selectedItem?.menu === "campaigns") {
       setHeaderModal({
         ...headerModal,
-        isOpen: !headerModal?.isOpen,
+        // isOpen: !headerModal?.isOpen,
+        isOpen: true,
         children: (
           <ModalItems selectedItem={selectedItem} handleClick={handleClick} />
         ),
@@ -67,7 +71,7 @@ const HeaderMain = ({ isSidebar, setSidebar }) => {
       <div
         className={`hidden${
           headerModal?.isOpen ? " md:block" : ""
-        } absolute top-0 bottom-0 left-0 right-0 z-0`}
+        } absolute top-0 bottom-0 left-0 right-0 z-0 `}
         onClick={() =>
           setHeaderModal({
             ...headerModal,
@@ -75,10 +79,19 @@ const HeaderMain = ({ isSidebar, setSidebar }) => {
           })
         }
       ></div>
-      <HeaderModal
-        children={headerModal?.children}
-        show={headerModal?.isOpen}
-      />
+      <div
+        onMouseLeave={() => {
+          setHeaderModal({
+            ...headerModal,
+            isOpen: false,
+          });
+        }}
+      >
+        <HeaderModal
+          children={headerModal?.children}
+          show={headerModal?.isOpen}
+        />
+      </div>
       <div className="container flex items-center justify-between !py-6 md:!py-3 relative z-1">
         <div className="flex items-center gap-4">
           <div className="flex items-center md:hidden">
@@ -111,13 +124,20 @@ const HeaderMain = ({ isSidebar, setSidebar }) => {
                   key={index}
                   onMouseOver={(e) => {
                     e.preventDefault();
-                    if(item.menu){
+                    if (item.menu) {
                       handleToggle(index);
+                    } else {
+                      setHeaderModal({
+                        ...headerModal,
+                        isOpen: false,
+                        children: null,
+                      });
                     }
                   }}
                 >
                   <Link
                     to={item.to || `/`}
+                    data-tooltip-id={"megamenu-tooltip"}
                     className={
                       item.menu ? "flex items-center gap-1 lg:gap-1.5 " : ""
                     }

@@ -138,7 +138,7 @@ export default function CampaignDetails() {
   }
 
   if(campaignStateLoading && !campaignDetails) {
-    return <div>Loading...</div>
+    return <div className="mt-2">Loading...</div>
   } else if (campaignStateId != campaignId) {
     return null;
   }

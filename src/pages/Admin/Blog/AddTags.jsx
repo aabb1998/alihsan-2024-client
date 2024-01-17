@@ -33,7 +33,7 @@ const AddTags = ({ onClose }) => {
           onClose();
           resetForm();
         } else {
-          showErrorMessage(response?.payload?.message);
+          showErrorMessage(response?.error?.message);
         }
       } catch (error) {}
     },

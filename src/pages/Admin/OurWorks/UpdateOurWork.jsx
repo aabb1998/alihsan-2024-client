@@ -61,7 +61,7 @@ export const UpdateOurWork = () => {
             showSuccessMessage(response?.payload?.message);
             navigate("/admin/our-works");
           } else {
-            showErrorMessage(response?.payload?.message);
+            showErrorMessage(response?.error?.message);
           }
         } else {
           response = await dispatch(addOurWork(formData));
@@ -71,7 +71,7 @@ export const UpdateOurWork = () => {
             resetForm();
             navigate("/admin/our-works");
           } else {
-            showErrorMessage(response?.payload?.message);
+            showErrorMessage(response?.error?.message);
           }
         }
       } catch (error) {}

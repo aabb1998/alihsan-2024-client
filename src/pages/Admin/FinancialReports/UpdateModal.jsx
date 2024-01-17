@@ -63,7 +63,7 @@ const UpdateModal = ({ onClose, confirmDelete, item }) => {
           showSuccessMessage(response?.payload?.message);
           onClose();
         } else {
-          showErrorMessage(response?.payload?.message);
+          showErrorMessage(response?.error?.message);
         }
       } catch (error) {
         showErrorMessage(error.message);
