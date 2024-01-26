@@ -77,7 +77,7 @@ export const ApplyNow = () => {
             showSuccessMessage(response?.payload?.message);
             resetForm();
           } else {
-            showErrorMessage(response?.error?.message);
+            showErrorMessage(response?.payload?.message);
           }
         } catch (error) {}
       }

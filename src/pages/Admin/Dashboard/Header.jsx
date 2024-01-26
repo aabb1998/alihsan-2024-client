@@ -56,7 +56,7 @@ export const MobSidebarmenu = ({ setMenu }) => {
                 <Link to="/">
                   <img
                     src="/images/assets/logo.svg"
-                    className="w-auto h-8"
+                    className="w-auto h-10"
                     alt="Alihsan Foundation"
                   />
                 </Link>
@@ -83,7 +83,7 @@ export const MobSidebarmenu = ({ setMenu }) => {
                         {submenuStates[index] && (
                           <ul className="submenu">
                             {item.submenu.map((submenuItem, submenuIndex) => (
-                              <li key={submenuIndex}>
+                              <li key={submenuIndex} className="my-1">
                                 <Link
                                   to={submenuItem.to}
                                   onClick={() => setMenu(false)}

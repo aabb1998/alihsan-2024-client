@@ -21,8 +21,11 @@ import {
   InstagramIcon,
   LinkedinIcon,
   MailIcon,
+  MappinIcon,
   NavigationmenuIcon,
+  SettingsIcon,
   StatisticsIcon,
+  TagIcon,
   TwitterIcon,
   UserIcon,
   UsersIcon,
@@ -361,14 +364,30 @@ export const adminNavigationItems = [
   },
   {
     icon: <CompaignsIcon />,
+    label: "Campaign Categories",
+    to: "/admin/campaign-categories",
+    urls: ["/admin/campaign-categories"],
+  },
+  {
+    icon: <CompaignsIcon />,
     label: "Campaigns",
     to: "/admin/campaigns",
     urls: ["/admin/campaigns", "/admin/campaign/"],
   },
   // { icon: <StatisticsIcon />, label: "Statistics", to: "/", urls: [] },
-  { icon: <UsersIcon />, label: "Admins", to: "/", urls: [] },
-  { icon: <DollarsignIcon />, label: "Donations", to: "/", urls: [] },
-  { icon: <CreditcardIcon />, label: "Subscriptions", to: "/", urls: [] },
+  { icon: <UsersIcon />, label: "Admins", to: "/admin/admins", urls: ['/admin/admins'] },
+  {
+    icon: <DollarsignIcon />,
+    label: "Donations",
+    to: "/admin/donations",
+    urls: ["/admin/donations","/admin/donation/"],
+  },
+  {
+    icon: <CreditcardIcon />,
+    label: "Subscriptions",
+    to: "/admin/subscriptions",
+    urls: ["/admin/subscriptions","/admin/subscription/"],
+  },
   {
     icon: <NavigationmenuIcon />,
     label: "Forms",
@@ -402,14 +421,19 @@ export const adminNavigationItems = [
       },
     ],
   },
-  { icon: <UserIcon />, label: "Users", to: "/", urls: [] },
+  { icon: <UserIcon />, label: "Customers", to: "/admin/customers", urls: ["/admin/customers"] },
   {
     icon: <AirplayIcon />,
     label: "Blogs",
     to: "/admin/blog",
     urls: ["/admin/blog", "/admin/edit-blog/", "/admin/add-blog"],
   },
-  { icon: <HomeIcon />, label: "Homepage CMS", to: "/", urls: [] },
+  {
+    icon: <HomeIcon />,
+    label: "Homepage CMS",
+    to: "/admin/homepage-cms",
+    urls: ["/admin/homepage-cms"],
+  },
 
   {
     icon: <FeatherIcon />,
@@ -465,37 +489,61 @@ export const adminNavigationItems = [
     to: "/admin/our-works",
     urls: ["/admin/our-works", "/admin/our-work"],
   },
+  {
+    icon: <TagIcon />,
+    label: "Tags",
+    to: "/admin/tags",
+    urls: ["/admin/tags"],
+  },
+  {
+    icon: <MappinIcon />,
+    label: "Map Countries",
+    to: "/admin/countries",
+    urls: ["/admin/countries"],
+  },
+  {
+    icon: <SettingsIcon />,
+    label: "Settings",
+    to: "/admin/settings",
+    urls: ["/admin/settings"],
+  },
 ];
 
 export const adminFormLists = {
   "/admin/fundraisers": [
     { label: "Name", key: "name" },
     { label: "Amount", key: "amount" },
-    { label: "Phone Number", key: "phone" }
+    { label: "Phone Number", key: "phone" },
+    { label: "Status", key: "status" },
+
   ],
   "/admin/sponsors": [
     { label: "First Name", key: "firstName", isSortable: true },
     { label: "Last Name", key: "lastName", isSortable: true },
     { label: "Company Name", key: "companyName", isSortable: true },
     { label: "Phone Number", key: "phone", isSortable: true },
+    { label: "Status", key: "status" },
+
   ],
   "/admin/volunteers": [
     { label: "First Name", key: "firstName", isSortable: true },
     { label: "Last Name", key: "lastName", isSortable: true },
     { label: "Company Name", key: "companyName", isSortable: true },
     { label: "Phone Number", key: "phone", isSortable: true },
+    { label: "Status", key: "status" },
   ],
   "/admin/contacts": [
     { label: "First Name", key: "firstName", isSortable: true },
     { label: "Last Name", key: "lastName", isSortable: true },
     { label: "Email", key: "email", isSortable: true },
     { label: "Phone Number", key: "phone", isSortable: true },
+    { label: "Status", key: "status" },
   ],
   "/admin/technical-support": [
     { label: "Name", key: "name", isSortable: true },
     { label: "Email", key: "email", isSortable: true },
     { label: "Phone Number", key: "phone", isSortable: true },
-    { label: "Status", key: "status", isSortable: true },
+    { label: "Mark as Solved", key: "status", isSortable: true },
   ],
   "/admin/complaints": [
     { label: "Ref Number", key: "referenceNumber" },
@@ -510,7 +558,7 @@ export const adminFormsTitle = {
   "/admin/fundraisers": "Fundraise With Us",
   "/admin/sponsors": "Become a Sponsor",
   "/admin/volunteers": "Volunteer With Us",
-  "/admin/contacts": "Contacts Us",
+  "/admin/contacts": "Contact Us",
   "/admin/technical-support": "Technical Support",
   "/admin/complaints": "Complaints",
 };
@@ -524,6 +572,31 @@ export const adminFormsDispatch = {
   "/admin/complaints": getComplaints,
 };
 
+export const statusUpade = {
+  "/admin/fundraisers": "/form/fund-raiser/",
+  "/admin/sponsors": "/form/sponsor/",
+  "/admin/volunteers": "/form/volunteer/",
+  "/admin/contacts": "/form/contact-us/",
+};
+
+export const exportUrl = {
+  "/admin/contacts": "/form/contact-us-export",
+  "/admin/technical-support": "/form/technical-support-export",
+  "/admin/fundraisers": "/form/fund-raiser-export",
+  "/admin/sponsors": "/form/sponsor-export",
+  "/admin/volunteers": "/form/volunteer-export",
+  "/admin/complaints": "/complaints/export",
+};
+
+export const pathDispatchMap = {
+  "/admin/contacts": "form/contact-us/",
+  "/admin/technical-support": "form/technical-support/",
+  "/admin/fundraisers": "form/fund-raiser/",
+  "/admin/sponsors": "form/sponsor/",
+  "/admin/volunteers": "form/volunteer/",
+  "/admin/complaints": "complaints/",
+};
+
 export const formDetailsValues = {
   "/admin/fundraisers/": [
     { label: "Name", key: "name" },
@@ -534,7 +607,6 @@ export const formDetailsValues = {
     { label: "Project", key: "projectList" },
     { label: "Status", key: "status" },
     { label: "Is Deceased Person", key: "forDeceasedPerson", isBoolean: true },
-
   ],
   "/admin/sponsors/": [
     { label: "First Name", key: "firstName" },
@@ -572,6 +644,8 @@ export const formDetailsValues = {
       key: "FormTechnicalSupportImages",
       isImage: true,
     },
+    { label: "Solution", key: "adminReason" },
+
   ],
   "/admin/complaints/": [
     { label: "Reference Number", key: "referenceNumber" },
@@ -583,6 +657,8 @@ export const formDetailsValues = {
     { label: "Category", key: "category" },
     { label: "Description", key: "description" },
     { label: "Created At", key: "CreatedAt" },
+    { label: "Admin Reason", key: "adminReason" },
+
   ],
   "/admin/post/": [
     { label: "Title", key: "title" },
@@ -597,6 +673,7 @@ export const formDetailsValues = {
     { label: "Created Date", key: "createdDate" },
   ],
 };
+
 
 export const ProjectStatuses = [
   {

@@ -11,6 +11,7 @@ import { useFormik } from 'formik';
 import ReactFlagsSelect from "react-flags-select";
 import TextArea from '../../components/TextArea';
 import { FormikValidationError } from '../Common/FormikValidationError';
+import { checkAdminPermission } from '../../utils/helper';
 
 const listItems = [
     {
@@ -86,6 +87,7 @@ export const WaterDonation = ({ campaign, handleClose, isModal }) => {
     }
 
     const handleWaterDonation = async (values, { resetForm }) => {
+        checkAdminPermission()
         const checkout = JSON.parse(localStorage.getItem("checkout") || "[]");
         const isInCheckoutList = checkout.find(
             (obj) => obj.campaignId === values.campaignId

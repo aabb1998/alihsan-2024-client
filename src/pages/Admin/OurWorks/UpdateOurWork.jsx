@@ -61,7 +61,7 @@ export const UpdateOurWork = () => {
             showSuccessMessage(response?.payload?.message);
             navigate("/admin/our-works");
           } else {
-            showErrorMessage(response?.error?.message);
+            showErrorMessage(response?.payload?.message);
           }
         } else {
           response = await dispatch(addOurWork(formData));
@@ -71,7 +71,7 @@ export const UpdateOurWork = () => {
             resetForm();
             navigate("/admin/our-works");
           } else {
-            showErrorMessage(response?.error?.message);
+            showErrorMessage(response?.payload?.message);
           }
         }
       } catch (error) {}
@@ -105,6 +105,20 @@ export const UpdateOurWork = () => {
       }
     } else {
       showErrorMessage("Invalid file format");
+    }
+  };
+
+  const getCroppedImage = async (url) => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const file = blob;
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreviews(reader.result);
+        formik.setFieldValue(`image`, file);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -221,6 +235,8 @@ export const UpdateOurWork = () => {
               name={"images"}
               handleImageDelete={(event) => handleImageDelete(event)}
               handleImageChange={(event) => handleImageChange(event)}
+              getCroppedImage={(e) => getCroppedImage(e)}
+
             />
             {formik.touched.image && Boolean(formik.errors.image) && (
               <FormikValidationError

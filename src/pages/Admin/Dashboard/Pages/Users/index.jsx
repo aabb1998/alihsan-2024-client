@@ -136,6 +136,7 @@ export const Users = () => {
               </label>
             </div>
           </div> */}
+          <div className="grid">
           <div className="relative overflow-x-auto">
             <table class="table-auto w-full text-start">
               <thead className="rounded bg-neutral-200">
@@ -450,6 +451,8 @@ export const Users = () => {
               <Pagination />
             </div>
           </div>
+          </div>
+
         </div>
       </div>
     </>

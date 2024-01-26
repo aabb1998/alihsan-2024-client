@@ -26,7 +26,8 @@ export const getCountries = createAsyncThunk(
   "get/countries",
   async (thunkAPI) => {
     try {
-      const response = await api.get("country");
+      const response = await api.get("map-country");
+      // const response = await api.get("map-country");
       if (response.status === 200) {
         return response?.data?.payload;
       } else {

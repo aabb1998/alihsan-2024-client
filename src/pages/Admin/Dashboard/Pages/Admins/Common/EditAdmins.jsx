@@ -19,7 +19,7 @@ export const Editadmins = () => {
                                             <CloseIcon iconSize={24} />
                                         </button>
                                     </div>
-                                    <div className="flex flex-col gap-4 sm:gap-5 max-h-[calc(100vh-20rem)] overflow-auto">
+                                    <div className="flex flex-col gap-4 sm:gap-5 max-h-[calc(100vh-20rem)] overflow-auto pr-2">
                                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
                                             <div className="form-group">
                                                 <label htmlFor="first name" className="block">First Name</label>
@@ -67,7 +67,7 @@ export const Editadmins = () => {
                                     </div>
                                     <div className='flex justify-between gap-4 sm:gap-5'>
                                         <Button variant={"secondaryOutline"} className="flex-grow" label={"Cancel"} />
-                                        <Button variant={"primary"} className="flex-grow" label={"Edit Admin"} />
+                                        <Button variant={"primary"} className="flex-grow" label={"Submit"} />
                                     </div>
                                 </div>
                             </div>

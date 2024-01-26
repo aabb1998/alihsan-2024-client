@@ -67,6 +67,19 @@ export const updateCheckoutProfile = createAsyncThunk(
   }
 );
 
+
+export const updatePaypalToken = createAsyncThunk(
+  "post/paypalToken",
+  async (payload, thunkAPI) => {
+    try {
+      const response = await api.post("basket/paypal-capture", payload);
+      return response.data;
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e.response.data);
+    }
+  }
+);
+
 export const paymentDetailsSlice = createSlice({
   name: "payment-details",
   initialState,

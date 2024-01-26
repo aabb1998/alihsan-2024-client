@@ -44,7 +44,7 @@ export const Sidemenus = () => {
                   {submenuStates[index] && (
                     <ul className="submenu">
                       {item.submenu.map((submenuItem, submenuIndex) => (
-                        <li key={submenuIndex}>
+                        <li key={submenuIndex} className="my-1">
                           <Link
                             to={submenuItem.to}
                             className={`flex px-2 !pl-8 sm:!pl-12 py-2 rounded-lg cursor-pointer text-neutral-600 hover:text-primary-300 md:py-3 md:px-5 text-button-md gap-x-2 hover:bg-accent-300 ${

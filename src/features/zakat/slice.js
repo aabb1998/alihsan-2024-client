@@ -15,13 +15,13 @@ const initialState = {
     unit: "AUD",
     bank: 0,
     silver: {
-      karat: "24",
+      karat: "1",
       unit: "gram",
       weight: 0,
       value: 0,
     },
     gold: {
-      karat: "24",
+      karat: "1",
       unit: "gram",
       weight: 0,
       value: 0,
@@ -32,6 +32,8 @@ const initialState = {
     loan: 0,
     other: 0,
   },
+  goldAudList: [],
+  goldUsdList: [],
 };
 
 export const getMetalPrices = createAsyncThunk(
@@ -39,7 +41,7 @@ export const getMetalPrices = createAsyncThunk(
   async () => {
     try {
       const response = await api.get("/metal-price");
-      return response.data.payload.price;
+      return response.data.payload;
     } catch (error) {
       throw new Error(error.response?.data?.message || error.message);
     }
@@ -72,16 +74,31 @@ const slice = createSlice({
   },
   extraReducers(builder) {
     builder.addCase(getMetalPrices.fulfilled, (state, action) => {
-      state.prices.goldUsd = action.payload.goldPriceInUsd;
-      state.prices.silverUsd = action.payload.silverPriceInUsd;
+      state.prices.goldUsd = action.payload?.price.goldPriceInUsd;
+      state.prices.silverUsd = action.payload?.price.silverPriceInUsd;
       state.prices.audToUsd =
-        action.payload.goldPriceInUsd / action.payload.goldPriceInAud;
+        action.payload?.price.goldPriceInUsd / action.payload?.price.goldPriceInAud;
       state.prices.loading = false;
-      state.prices.updatedAt = action.payload.updatedAt;
+      state.prices.updatedAt = action.payload?.price?.updatedAt;
+      //////
+      state.goldPriceList = {
+        goldPriceInUsd: action.payload.goldPriceInUsd,
+        goldPriceInAud: action.payload.goldPriceInAud,
+        silverFinePriceInUsd: action.payload.silverFinePriceInUsd,
+        silverFinePriceInAud: action.payload.silverFinePriceInAud,
+        silverSterlingPriceInUsd: action.payload.silverSterlingPriceInUsd,
+        silverSterlingPriceInAud: action.payload.silverSterlingPriceInAud,
+      };
     });
   },
 });
 
 export default slice.reducer;
 
-export const { zakatStep, zakatInput, zakatMetalInput,zakatResetInput ,resetZakatInput} = slice.actions;
+export const {
+  zakatStep,
+  zakatInput,
+  zakatMetalInput,
+  zakatResetInput,
+  resetZakatInput,
+} = slice.actions;

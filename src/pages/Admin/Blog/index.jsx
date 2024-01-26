@@ -21,7 +21,7 @@ const initialState = {
   tags: [],
   order: "desc",
 };
-export const Blogs = () => {
+const Blogs = () => {
   const { blogs, loading } = useSelector((state) => state.adminBlog);
   const { showSuccessMessage, showErrorMessage } = SnackMessages();
 
@@ -36,7 +36,7 @@ export const Blogs = () => {
     if (response?.payload?.success) {
       showSuccessMessage(response?.payload?.message);
     } else {
-      showErrorMessage(response?.error?.message);
+      showErrorMessage(response?.payload?.message);
     }
     setDeleteId("");
     setIsOpen(false);
@@ -200,3 +200,6 @@ export const Blogs = () => {
     </>
   );
 };
+
+
+export default Blogs;

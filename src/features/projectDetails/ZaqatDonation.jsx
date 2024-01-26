@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Button from "../../components/Button";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { SnackMessages } from "../../components/Toast";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -16,8 +16,9 @@ import {
 
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import { checkAdminPermission } from "../../utils/helper";
 
-const { showSuccessMessage } = SnackMessages();
+const { showSuccessMessage, showErrorMessage } = SnackMessages();
 const paymentTypes = [
   { value: "false", label: "One-time" },
   { value: "true", label: "Recurring" },
@@ -36,10 +37,12 @@ const recurringPeriods = [
 ];
 
 export const ZaqatDonation = ({ campaign, handleClose, isModal }) => {
+	const user = localStorage.getItem('loggedIn');
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleDonation = async (values, { resetForm }) => {
+    checkAdminPermission()
     const checkout = JSON.parse(localStorage.getItem("checkout") || "[]");
     const isInCheckoutList = checkout.find(
       (obj) => obj.campaignId === values.campaignId
@@ -81,6 +84,10 @@ export const ZaqatDonation = ({ campaign, handleClose, isModal }) => {
   };
 
   const handleChange = (e) => {
+		if(e.target.name==='isRecurring' && !user && e.target.value==='true') {
+			showErrorMessage('Please login to access this feature')
+			return;
+		}
     formik.setFieldValue([e.target.name], e.target.value);
   };
   const handleAmount = (e) => {

@@ -1,10 +1,7 @@
-import React, { useEffect, useState, Fragment } from "react";
-//import { PaginationFull } from "../Include/paginationFull";
-import { Pagination } from "../../features/projects/Pagination";
-import { CloseIcon, FilterIcon, SearchIcon } from "../../theme/svg-icons";
+import React, { useState, Fragment } from "react";
+import { CloseIcon } from "../../theme/svg-icons";
 import { Tab } from "@headlessui/react";
-import { RecurringItem } from "../../features/myDonation/RecurringItem";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   cancelMyDonation,
   getMyDonations,

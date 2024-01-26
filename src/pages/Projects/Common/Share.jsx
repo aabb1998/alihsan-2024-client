@@ -18,7 +18,7 @@ export const ShareProject = ({ id }) => {
     {
       link: "https://twitter.com/intent/tweet?url=" + shareUrl,
       icon: <TwitterIcon iconSize={24} />,
-      color: "#47ACDF",
+      color: "#000000",
     },
     {
       link: `https://api.whatsapp.com/send?text=${encodeURIComponent(

@@ -2,8 +2,8 @@ import React from 'react';
 
 
 const Dropdown = ({ list, addItem }) => {
-    return (<div id="dropdown" className="w-full bg-white rounded shadow-card absolute z-10 top-12">
-        <div className="flex flex-col w-full p-3">
+    return (<div id="dropdown" className="absolute z-10 w-full bg-white rounded shadow-card top-12">
+        <div className="flex flex-col w-full p-3 overflow-auto max-h-60">
             {list.map((item, key) => {
                 return <div key={key}
                     className="w-full rounded cursor-pointer hover:bg-primary-200"

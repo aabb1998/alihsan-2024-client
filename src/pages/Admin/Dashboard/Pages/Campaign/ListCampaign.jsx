@@ -15,8 +15,8 @@ export const ListCampaignComponent = () => {
         <h5 className='text-heading-7 md:text-heading-4'>Campaigns</h5>
         <Button className=" btn btn-primary text-button-md md:text-button-lg" variant="" type="submit" label={'Add New'} />
       </div>
-      <div className='flex flex-wrap sm:flex-nowrap items-center justify-between mt-7.5 mb-5'>
-        <form className='flex items-center gap-4 mb-3 sm:mb-0'>
+      <div className='flex flex-wrap sm:flex-nowrap items-center justify-between my-5 md:my-7.5'>
+        <form className='flex items-center gap-4'>
           <label className='flex items-center gap-1 cursor-pointer text-button-md text-neutral-1000'>
             <span className=' md:hidden'><FilterIcon /> </span>Filter:</label>
           <div className='hidden md:block'>

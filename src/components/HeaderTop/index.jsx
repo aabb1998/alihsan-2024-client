@@ -184,7 +184,7 @@ export const HeaderTop = ({ modalOptions, setModalOptions, onSearch, searchState
                   <div className="p-2 text-button-md text-neutral-600">Loading...</div>
                   : ''}
                 {searchState.results?.map(result => (
-                  <div className="flex gap-3 p-3 cursor-pointer" key={result.id} onClick={() => { navigate('/project/' + result.id); setModalOptions(null); console.log(result) }}>
+                  <div className="flex gap-3 p-3 cursor-pointer" key={result.id} onClick={() => { navigate('/project/' + result.slug); setModalOptions(null); console.log(result) }}>
                     <div className="w-8 h-16 overflow-hidden rounded-lg min-w-fit">
                       <Img src={result.coverImage} className="object-cover w-full h-full" alt="campaign" />
                     </div>
@@ -352,7 +352,7 @@ const BasketItem = ({
           {!isCommonORZaqat ? (
             <div className="flex items-center justify-between">
               {!isAdeeqah && (
-                <div className="relative flex flex-row w-auto h-8 bg-transparent rounded-lg">
+                <div className="relative flex flex-row w-auto h-10 bg-transparent rounded-lg">
                   <button
                     onClick={() => handleQuantityChange(index, "sub")}
                     data-action="decrement"

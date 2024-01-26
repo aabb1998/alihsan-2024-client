@@ -22,17 +22,18 @@ import { FedyahDonation } from "./FedyahDonation";
 import { QurbanDonation } from "./QurbanDonation";
 import { WaterDonation } from "./WaterDonation";
 import PageHead from "../../components/PageHead";
+import { NoDataFound } from "../../components/NoDataFound";
 
 const ProjectDetail = () => {
-  const { id } = useParams();
-  const { project, loading } = useSelector((state) => state.project);
+  const { slug } = useParams();
+  const { project, loading,error } = useSelector((state) => state.project);
   const props = project;
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("tab1");
 
   useEffect(() => {
-    dispatch(getProject(id));
-  }, [id]);
+    dispatch(getProject(slug));
+  }, [slug]);
 
   const handleClick = (e) => {
     setActiveTab(e);
@@ -41,13 +42,18 @@ const ProjectDetail = () => {
   useEffect(() => {
     dispatch(getQurbanGroups());
   }, [dispatch]);
+  if (error) return <NoDataFound title={"No Data Found"} />;
 
   return (
     <div>
       {/* Project Details */}
       <PageHead title={"Project Details"} />
 
-      <main className="pb-7.5 sm:py-7.5 md:py-15">
+      <main
+        className={`pb-7.5 sm:py-7.5 md:py-15 ${
+          project?.campaign?.isRamadanCampaign ? "ramadan-details-page" : ""
+        }`}
+      >
         {loading ? (
           <Loader />
         ) : (
@@ -101,7 +107,7 @@ const ProjectDetail = () => {
                     <UpdateTab posts={project?.campaign?.Posts} />
                   )}
 
-                  <ShareProject id={id} />
+                  <ShareProject id={slug} />
                   {/* Updates Tab */}
                   {project?.campaign?.Organizer && (
                     <OrganiserComponent
@@ -150,4 +156,4 @@ const ProjectDetail = () => {
   );
 };
 
-export default React.memo(ProjectDetail)
+export default React.memo(ProjectDetail);

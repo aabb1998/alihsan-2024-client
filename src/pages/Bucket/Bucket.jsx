@@ -108,7 +108,7 @@ const Basket = () => {
         "COMMON",
         "WATER_CAMPAIGN",
         "KURBAN",
-        item?.quantity === null ? "FEDYAH" : ""
+        item?.quantity === null ? "FEDYAH" : "",
       ].includes(checkoutType);
       let total = item?.total;
       const quanity = isAdeeqah
@@ -142,7 +142,13 @@ const Basket = () => {
                           ? "Weekly"
                           : parseInt(item.periodDays) === 30
                           ? "Monthly"
-                          : `Yearly`}
+                          : parseInt(item.periodDays) === 1
+                          ? "Daily"
+                          : parseInt(item.periodDays) === 10
+                          ? "10 Days"
+                          : parseInt(item.periodDays) === 365
+                          ? "Yearly"
+                          : ``}
                       </div>
                     ) : null}
                   </div>
@@ -288,9 +294,7 @@ const Basket = () => {
                         <th className="p-4 font-medium text-center rounded-l-md">
                           Donation Type
                         </th>
-                        <th className="p-4 font-medium text-center ">
-                          Amount
-                        </th>
+                        <th className="p-4 font-medium text-center ">Amount</th>
                         <th className="hidden p-4 font-medium text-center md:table-cell rounded-r-md md:rounded-none">
                           Quantity
                         </th>

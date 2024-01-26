@@ -8,6 +8,9 @@ import {
   adminFormsDispatch,
   adminFormsTitle,
   adminItemPerPage,
+  exportUrl,
+  pathDispatchMap,
+  statusUpade,
 } from "../../../utils/constants";
 import { useLocation } from "react-router-dom";
 import { Button } from "../../../components";
@@ -17,6 +20,7 @@ import UpdateForm from "./UpdateForm";
 import {
   deleteForm,
   exportForm,
+  updateStatus,
 } from "../../../features/adminForms/adminFormSlice";
 import { SnackMessages } from "../../../components/Toast";
 import Filter from "../../../components/Filter";
@@ -30,22 +34,9 @@ const initialState = {
   sort: "",
   order: "",
 };
-const pathDispatchMap = {
-  "/admin/contacts": "form/contact-us/",
-  "/admin/technical-support": "form/technical-support/",
-  "/admin/fundraisers": "form/fund-raiser/",
-  "/admin/sponsors": "form/sponsor/",
-  "/admin/volunteers": "form/volunteer/",
-  "/admin/complaints": "complaints/",
-};
-const exportUrl = {
-  "/admin/contacts": "/form/contact-us-export",
-  "/admin/technical-support": "/form/technical-support-export",
-  "/admin/fundraisers": "/form/fund-raiser-export",
-  "/admin/sponsors": "/form/sponsor-export",
-  "/admin/volunteers": "/form/volunteer-export",
-  "/admin/complaints": "/complaints/export",
-};
+
+
+
 
 const Forms = () => {
   const { pathname } = useLocation();
@@ -106,7 +97,7 @@ const Forms = () => {
     if (response?.payload?.success) {
       showSuccessMessage(response?.payload?.message);
     } else {
-      showErrorMessage(response?.error?.message);
+      showErrorMessage(response?.payload?.message);
     }
     setDeleteId("");
     setIsOpen(false);
@@ -115,6 +106,21 @@ const Forms = () => {
   const handleView = (id) => {
     navigate(`${pathname}/${id}`);
   };
+
+  const handleSwitchStatus = async (item) => {
+    await dispatch(
+      updateStatus({
+        data: {
+          status: item?.status === "Active" ? "Completed" : "Active",
+          id: item?.id,
+        },
+        url: statusUpade[pathname],
+      })
+    );
+    const dispatchAction = adminFormsDispatch[pathname];
+    dispatch(dispatchAction(filters));
+  };
+
   const handleFilterChange = (name, value) => {
     setFilters({ ...filters, [name]: value });
   };
@@ -131,6 +137,35 @@ const Forms = () => {
     exportData(response?.payload, title);
   };
 
+  const renderActionButtons = (item, pathname) => {
+    if (
+      pathname === "/admin/technical-support" ||
+      pathname === "/admin/complaints"
+    ) {
+      return item.status !== "Solved" ? (
+        <ActionButtonBgWithIcon
+          handleRemove={() => handleRemove(item.id)}
+          handleView={() => handleView(item.id)}
+          handleStatus={() => handleStatus(item.id)}
+        />
+      ) : (
+        <ActionButtonBgWithIcon
+          handleRemove={() => handleRemove(item.id)}
+          handleView={() => handleView(item.id)}
+        />
+      );
+    } else {
+      return (
+        <ActionButtonBgWithIcon
+          item={item}
+          handleRemove={() => handleRemove(item.id)}
+          handleView={() => handleView(item.id)}
+          handleSwitchStatus={() => handleSwitchStatus(item)}
+        />
+      );
+    }
+  };
+
   useEffect(() => {
     const dispatchAction = adminFormsDispatch[pathname];
     if (dispatchAction) {
@@ -145,7 +180,7 @@ const Forms = () => {
     if (dispatchAction) {
       dispatch(dispatchAction(initialState));
     }
-    setFilters(initialState)
+    setFilters(initialState);
   }, [pathname]);
 
   return (
@@ -207,15 +242,15 @@ const Forms = () => {
                                       ...filters,
                                       sort: e.key,
                                       order:
-                                        filters.order === "asc" ? "desc" : "asc",
+                                        filters.order === "asc"
+                                          ? "desc"
+                                          : "asc",
                                     });
                                   }}
                                 />
                               )}
                             </span>
                           </div>
-
-
                         </th>
                       ))}
                       <th className="p-4 text-sm font-medium text-start font-Montserrat text-neutral-600">
@@ -239,20 +274,30 @@ const Forms = () => {
                             </td>
                           ))}
                           <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
-                            {(pathname === "/admin/technical-support" ||
-                              pathname === "/admin/complaints") &&
+                          {renderActionButtons(e, pathname)}
+
+                            {/* {pathname === "/admin/technical-support" ||
+                            pathname === "/admin/complaints" ? (
                               e?.status !== "Solved" ? (
-                              <ActionButtonBgWithIcon
+                                <ActionButtonBgWithIcon
+                                  handleRemove={() => handleRemove(e.id)}
+                                  handleView={() => handleView(e.id)}
+                                  handleStatus={() => handleStatus(e.id)}
+                                />
+                              ) : (
+                                <ActionButtonBgWithIcon
                                 handleRemove={() => handleRemove(e.id)}
                                 handleView={() => handleView(e.id)}
-                                handleStatus={() => handleStatus(e.id)}
                               />
+                              )
                             ) : (
                               <ActionButtonBgWithIcon
+                                item={e}
                                 handleRemove={() => handleRemove(e.id)}
                                 handleView={() => handleView(e.id)}
+                                handleSwitchStatus={() => handleSwitchStatus(e)}
                               />
-                            )}
+                            )} */}
                           </td>
                         </tr>
                       ))

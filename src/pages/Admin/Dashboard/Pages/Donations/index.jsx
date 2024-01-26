@@ -151,6 +151,7 @@ export const Donations = () => {
 
                             </div>
             </div> */}
+            <div className="grid">
             <div className="relative overflow-x-auto">
               <table class="table-auto w-full text-start">
                 <thead className="rounded bg-neutral-200">
@@ -416,6 +417,8 @@ export const Donations = () => {
                 <Pagination />
               </div>
             </div>
+            </div>
+
           </div>
         </div>
       </div>

@@ -23,8 +23,9 @@ const Summary = () => {
     amounts.loan +
     amounts.other;
 
-  const usdToUnit = (amount) =>
-    unit === "AUD" ? amount / prices.audToUsd : amount;
+  const usdToUnit = (amount) =>{
+   return  unit === "AUD" ? amount / prices.audToUsd : amount;
+  }
 
   const nisabSilver = 612.36 * prices.silverUsd;
   const nisabGold = 87.48 * prices.goldUsd;
@@ -34,7 +35,6 @@ const Summary = () => {
       ? (wealth / 40)
       : 0;
   };
-
   return (
     <div className="inline-flex flex-col gap-4 p-5 bg-primary-100 rounded-1.5xl w-full">
       <div className="px-5 py-2 flex gap-2.5 bg-primary-200 rounded-lg">

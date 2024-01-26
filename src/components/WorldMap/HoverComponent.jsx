@@ -2,7 +2,6 @@ import React from 'react'
 import propTypes from 'prop-types'
 
 export const HoverComponent = ({ content ,mapCountries }) => {
-   
     const getActiveElement =() =>{
          const countryList = [...mapCountries]?.find(country=>country?.name ===content);
          return countryList || {};

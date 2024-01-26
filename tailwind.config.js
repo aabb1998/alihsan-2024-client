@@ -239,6 +239,8 @@ module.exports = {
         'choose-cover': "url('./images/background/choose-cover.png')",
         'btn-close': "url('./images/icons/btn-close.svg')",
         'chevron-left': "url('./images/icons/chevron-left.svg')",
+        'ramadan-bg': "url('./images/background/ramadan-bg.svg')",
+
       },
       // backgroundImage: {
       //  'our-story-pattern': "url('/images/background/pattern.svg')",

@@ -3,6 +3,7 @@ import {
   ChevronDownIcon,
   ShoppingCartIcon,
   MenuIcon,
+  HeartFilledIcon,
 } from "../../theme/svg-icons";
 import { toggleBasket } from "../../features/basket/basketSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -67,7 +68,7 @@ const HeaderMain = ({ isSidebar, setSidebar }) => {
   }, []);
 
   return (
-    <div className="bg-neutral-200 z-30">
+    <div className="z-30 bg-neutral-200">
       <div
         className={`hidden${
           headerModal?.isOpen ? " md:block" : ""
@@ -110,7 +111,7 @@ const HeaderMain = ({ isSidebar, setSidebar }) => {
             <Link to="/">
               <img
                 src="/images/assets/logo.svg"
-                className="w-auto h-6 md:h-11"
+                className="w-auto h-10 lg:h-11"
                 alt="Al-Ihsan Foundation"
               />
             </Link>
@@ -175,6 +176,7 @@ const HeaderMain = ({ isSidebar, setSidebar }) => {
                 label="Donate now"
                 className={"text-sm"}
                 onClick={() => quickDonation()}
+                leftIcon={<span className="relative flex"> <span className="absolute inline-flex w-full h-full transition-all ease-in-out delay-75 bg-red-300 rounded-full animate-ping bg-sky-400 opacity-90"></span> <div className="text-red-300 rounded-full "> <HeartFilledIcon /> </div> </span>}
               />
             </div>
           </div>

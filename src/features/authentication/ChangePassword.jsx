@@ -52,7 +52,7 @@ const ChangePassword = () => {
           resetForm();
           showSuccessMessage(response?.payload?.message);
         } else {
-          showErrorMessage(response?.error?.message);
+          showErrorMessage(response?.payload?.message);
         }
         setIsLoading(false);
       } catch (error) {}
@@ -101,7 +101,11 @@ const ChangePassword = () => {
   return (
     <div>
       {profile?.authType === "email" && (
-        <form onSubmit={formik.handleSubmit} id="ChangePasswordsForm" autoComplete="off">
+        <form
+          onSubmit={formik.handleSubmit}
+          id="ChangePasswordsForm"
+          autoComplete="off"
+        >
           <div className="mb-4">
             <h2 className="text-heading-7 md:text-heading-6">
               Change Password
@@ -144,7 +148,7 @@ const ChangePassword = () => {
                 id="NewPassword"
                 placeholder="New Password"
                 name="newPassword"
-                onPaste={(e)=>e.preventDefault()}
+                onPaste={(e) => e.preventDefault()}
                 value={formik.values.newPassword}
                 onChange={handleChangePassword}
               />
@@ -176,7 +180,7 @@ const ChangePassword = () => {
                 onChange={formik.handleChange}
                 name="confirmPassword"
                 value={formik.values.confirmPassword}
-                onPaste={(e)=>e.preventDefault()}
+                onPaste={(e) => e.preventDefault()}
               />
             </div>
             {formik.touched.confirmPassword &&
@@ -200,7 +204,11 @@ const ChangePassword = () => {
             {isLoading ? (
               <PrimaryLoadingButton additionalButtonClasses="" />
             ) : (
-              <Button variant="primary" type="submit" label="Save" />
+              <Button
+                variant="primary"
+                type="submit"
+                label={"Update Password"}
+              />
             )}
           </div>
         </form>

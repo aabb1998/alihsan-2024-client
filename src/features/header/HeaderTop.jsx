@@ -214,7 +214,7 @@ const HeaderTop = ({
                           className="flex items-center gap-3 p-3 cursor-pointer"
                           key={result.id}
                           onClick={() => {
-                            navigate("/project/" + result.id);
+                            navigate("/project/" + result.slug);
                             setModalOptions(null);
                           }}
                         >
@@ -427,7 +427,7 @@ const BasketItem = ({
           {!isCommonORZaqat ? (
             <div className="flex items-center justify-between">
               {!isAdeeqah && (
-                <div className="relative flex flex-row w-auto h-8 bg-transparent rounded-lg">
+                <div className="relative flex flex-row w-auto h-10 bg-transparent rounded-lg">
                   <button
                     onClick={() => handleQuantityChange(index, "sub")}
                     data-action="decrement"

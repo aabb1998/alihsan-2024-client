@@ -35,6 +35,7 @@ const PaymentHistoryDetails = ({isOpen}) => {
                             <p className='font-medium text-md text-neutral-800'>Filter</p>
                         </div>
                     </div>
+                    <div className='grid'>
                     <div className='relative overflow-x-auto h-100 max-h-[calc(100vh-16rem)] sm:max-h-[calc(100vh-20rem)]'>
                         <table class="table-auto w-full text-start">
                             <thead className='rounded bg-neutral-200'>
@@ -85,6 +86,8 @@ const PaymentHistoryDetails = ({isOpen}) => {
                             </tbody>
                         </table>
                     </div>
+                    </div>
+
                     <div className="flex flex-wrap gap-4">
                         <button className="flex-grow btn btn-dark" label="">Get Certificate</button>
                         <button className="flex-grow btn btn-primary " label="Get Invoice">Get Invoice</button>

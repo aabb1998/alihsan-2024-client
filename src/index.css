@@ -140,7 +140,7 @@ button:disabled {
     @apply border-2 border-primary-300 text-primary-300
 }
 .btn-outline-secondary:hover {
-    @apply bg-white !text-primary-300
+    @apply bg-white text-primary-300
 }
 .btn-outline-secondary:disabled {
     @apply border-neutral-300 text-neutral-300 bg-transparent
@@ -244,11 +244,11 @@ button:disabled {
 }
 
 .form-group .form-control:hover {
-    @apply border-primary-300
+    @apply !border-primary-300
 }
 
 .form-group .form-control:focus {
-    @apply border-primary-300 outline-none ring-0
+    @apply !border-primary-300 !outline-none !ring-0 !ring-offset-0
 }
 .text-area .form-control{
     font-size: 0.875rem;
@@ -260,9 +260,14 @@ button:disabled {
 .text-area .form-control:hover {
     @apply border-primary-300
 }
-
+textarea:focus{
+    @apply !border-primary-300 !outline-none !ring-0  !ring-offset-0
+}
+textarea:hover{
+    @apply border-primary-300
+}
 .text-area .form-control:focus {
-    @apply border-primary-300 outline-none ring-0
+    @apply !border-primary-300 !outline-none !ring-0  !ring-offset-0
 }
 /* Tailwind Forms Plugin Customize */
 @layer base {
@@ -346,7 +351,7 @@ outline: none !important;
 
 /* TOASTER */
 .Toastify__toast{
-    @apply px-3 !bg-primary-400 leading-4 !m-0 h-auto !min-h-[2.5rem] sm:!h-auto rounded-tl-lg rounded-bl-lg rounded-tr-none rounded-br-none text-xs sm:text-sm font-Montserrat font-bold !text-white;
+    @apply px-3 !bg-primary-400 leading-4 !m-0 h-auto !min-h-[2.5rem] sm:!h-auto sm:rounded-tl-lg sm:rounded-bl-lg rounded-tr-none rounded-br-none text-xs sm:text-sm font-Montserrat font-bold !text-white;
 }
 .Toastify__close-button{
     @apply !text-white opacity-100;
@@ -381,7 +386,7 @@ outline: none !important;
     @apply !p-3 !-right-3 sm:!-right-6 !w-fit !h-fit !rounded-lg !bg-accent-300 !z-1;
 }
 .slick-slide {
-    @apply mx-2 sm:mx-2.5;
+    @apply mx-2 sm:mx-2.5 !w-full;
  }
  .slick-slide:first-child{
     @apply mx-2 sm:ml-0;
@@ -392,6 +397,17 @@ outline: none !important;
  .slick-list [data-slick-index="0"] {
     @apply ml-0;
    }
+/* OUR STORY */
+ .our-story .slick-prev{
+    @apply !top-[16.66rem] sm:!top-[50%];
+}
+.our-story .slick-next{
+    @apply !top-[16.66rem] sm:!top-[50%];
+}
+
+/* .our-story .slick-arrow{
+    @apply bg-black
+}  */
 /* ========== */
 /* MAP SECTION */
 .transform-component-module_wrapper__SPB86{
@@ -465,4 +481,8 @@ outline: none !important;
 }
 .dashboard-canvas canvas{
     @apply !w-full;
+}
+/* ======= */
+.ramadan-details-page{
+    @apply bg-ramadan-bg bg-no-repeat bg-center bg-[#F1F1F1] bg-auto w-full h-full;
 }

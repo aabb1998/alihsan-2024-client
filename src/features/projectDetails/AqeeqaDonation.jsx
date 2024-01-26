@@ -15,6 +15,7 @@ import { useFormik } from "formik";
 import { FormikValidationError } from "../Common/FormikValidationError";
 import PhoneInput from "react-phone-input-2";
 import * as yup from "yup";
+import { checkAdminPermission } from "../../utils/helper";
 
 const { showSuccessMessage } = SnackMessages();
 
@@ -22,6 +23,7 @@ export const AqeeqaDonation = ({ campaign, handleClose, isModal }) => {
   const dispatch = useDispatch();
 
   const handleDonation = async (values, { resetForm }) => {
+    checkAdminPermission()
     const checkout = JSON.parse(localStorage.getItem("checkout") || "[]");
     const isInCheckoutList = checkout.find(
       (obj) => obj.campaignId === values.campaignId

@@ -3,7 +3,6 @@ import { NewsListItem } from "./NewsListItem";
 import { useSelector, useDispatch } from "react-redux";
 import { Pagination } from "../../components/Pagination";
 import { getNewsList } from "./news";
-import { itemPerPage } from "../../utils/constants";
 import { Filter } from "./Filter";
 import Loader from "../../components/Loader";
 
@@ -38,13 +37,8 @@ export const NewsList = () => {
             ...filters,
             tags: filters.tags.filter((i) => i !== value),
           });
-          // setFiltersList((l) => [
-          //   ...l,
-          //   tagsList.find((i) => i.value + "" === value),
-          // ]);
         } else {
           setFilters({ ...filters, tags: [...filters.tags, value] });
-          // setFiltersList((l) => l.filter((i) => i.value + "" !== value));
         }
       }
     } else {
@@ -67,7 +61,6 @@ export const NewsList = () => {
         <Filter
           handleFilterChange={handleFilterChange}
           handleFilterReset={handleFilterReset}
-          //setIsSidebarOpen={handleFilerReset}
           isSidebarOpen={isSidebarOpen}
           setIsSidebarOpen={setIsSidebarOpen}
           filters={filters}

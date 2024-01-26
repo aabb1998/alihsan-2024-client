@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  ArrowLeftIcon,
-  CloseIcon,
-  PlusIcon,
-  TrashIcon,
-} from "../../../theme/svg-icons";
+import { ArrowLeftIcon } from "../../../theme/svg-icons";
 import { Button } from "../../../components";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,7 +9,6 @@ import * as yup from "yup";
 import { SnackMessages } from "../../../components/Toast";
 import { getNews } from "../../../features/news/news";
 import { FormikValidationError } from "../../../features/Common/FormikValidationError";
-import TextArea from "../../../components/TextArea";
 import {
   addBlog,
   getTags,
@@ -24,13 +18,23 @@ import { resetNews } from "../../../features/news/news";
 import TagSelection from "../../../components/TagSelection";
 import AddTags from "./AddTags";
 import ImageUpload from "../../../components/ImageUpload";
+import { makeSlug, validateSlug } from "../../../utils/helper";
+import QuillEditor from "../../../components/QuillEditor";
+import Modal from "../../../components/ImageUpload/Modal";
 
 const { showSuccessMessage, showErrorMessage } = SnackMessages();
 
 const validationSchema = yup.object({
   title: yup.string().required("Title is required"),
   content: yup.string().required("Content is required"),
-  slug: yup.string().required("Slug is required"),
+  slug: yup
+    .string()
+    .required("Slug is required")
+    .test(
+      "test-slug",
+      "Only lower case alphabets, numbers, hyphens (-) and underscores (_) are allowed",
+      (v) => !validateSlug(v)
+    ),
   tags: yup.string().required("Tag is required"),
   // coverImage: yup.string().required("Cover Image is required"),
 });
@@ -43,9 +47,9 @@ export const UpdateBlog = () => {
   const { tags } = useSelector((state) => state.adminBlog);
   const [selectionTags, setSelectionTags] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-  console.log(news?.status);
   const [coverPreviews, setCoverPreviews] = useState("");
   const [imagePreviews, setImagePreviews] = useState(Array(4).fill(null));
+  const [isCropOpen, setCropOpen] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -72,11 +76,6 @@ export const UpdateBlog = () => {
           formData.append(`images`, file, `image_${index + 1}.png`);
         }
       });
-      values.images?.forEach((file, index) => {
-        if (file) {
-          formData.append(`images`, file, `image_${index + 1}.png`);
-        }
-      });
       try {
         let response;
         if (id) {
@@ -85,7 +84,7 @@ export const UpdateBlog = () => {
             navigate("/admin/blog");
             showSuccessMessage(response?.payload?.message);
           } else {
-            showErrorMessage(response?.error?.message);
+            showErrorMessage(response?.payload?.message);
           }
         } else {
           response = await dispatch(addBlog(formData));
@@ -97,7 +96,7 @@ export const UpdateBlog = () => {
             resetForm();
             navigate("/admin/blog");
           } else {
-            showErrorMessage(response?.error?.message);
+            showErrorMessage(response?.payload?.message);
           }
         }
       } catch (error) {}
@@ -106,6 +105,9 @@ export const UpdateBlog = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     formik.setFieldValue(name, value);
+    if (name === "title" && !formik.values.id && !formik.touched.slug) {
+      formik.setFieldValue("slug", makeSlug(value));
+    }
   };
 
   const handleCoverImage = (event) => {
@@ -142,7 +144,7 @@ export const UpdateBlog = () => {
     }
   };
   const getNewsDetails = async () => {
-    const news = await dispatch(getNews(id));
+    const news = await dispatch(getNews({ id }));
     let getAllValues = news?.payload;
     if (getAllValues?.success) {
       if (!Object.isExtensible(getAllValues)) {
@@ -175,6 +177,37 @@ export const UpdateBlog = () => {
 
     if (fileInput) {
       fileInput.value = null;
+    }
+  };
+  const getCroppedCoverImage = async (url) => {
+    const response = await fetch(url);
+    const file = await response.blob();
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setCoverPreviews(reader.result);
+        formik.setFieldValue(`coverImage`, file);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  const getCroppedImage = async (url, index) => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const file = blob;
+    const newImagePreviews = [...imagePreviews];
+    newImagePreviews[index] = file;
+    setImagePreviews(imagePreviews);
+    formik.setFieldValue(`images.0`, file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const newImagePreviews = [...imagePreviews];
+        newImagePreviews[index] = reader.result;
+        setImagePreviews(newImagePreviews);
+        formik.setFieldValue(`images.${index}`, file);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -214,6 +247,16 @@ export const UpdateBlog = () => {
   return (
     <div className="py-10 px-2 sm:px-7.5 w-full h-[calc(100vh-4.5rem)] overflow-auto">
       {isOpen && <AddTags onClose={() => setIsOpen(false)} title={"Blog"} />}
+      {isCropOpen && (
+        <Modal
+          getCroppedImage={(e) => {
+            setCropOpen(false);
+            getCroppedCoverImage(e);
+          }}
+          aspect={16 / 9}
+          onClose={() => setCropOpen(false)}
+        />
+      )}
       <form onSubmit={formik.handleSubmit}>
         <div className="flex flex-wrap gap-4 items-center justify-between w-full border-b border-neutral-300 pb-3.5">
           <Button
@@ -303,11 +346,13 @@ export const UpdateBlog = () => {
                   </div>
                   <input
                     id="dropzone-file"
-                    type="file"
+                    // type="file"
                     className="hidden"
                     name={`coverImage`}
                     accept="image/*"
-                    onChange={(event) => handleCoverImage(event)}
+                    onClick={() => setCropOpen(true)}
+
+                    // onChange={(event) => handleCoverImage(event)}
                   />
                 </label>
               </div>
@@ -330,7 +375,7 @@ export const UpdateBlog = () => {
               id="blog-title"
               placeholder="Blog title goes here"
               value={formik.values.title}
-              onChange={formik.handleChange}
+              onChange={handleInputChange}
             />
             {formik.touched.title && Boolean(formik.errors.title) && (
               <FormikValidationError
@@ -395,11 +440,10 @@ export const UpdateBlog = () => {
             <label htmlFor="content" className="">
               Content
             </label>
-
-            <TextArea
-              handleChange={handleInputChange}
-              name="content"
+            <QuillEditor
               value={formik.values.content}
+              onChange={handleInputChange}
+              name="content"
             />
             {formik.touched.content && Boolean(formik.errors.content) && (
               <FormikValidationError
@@ -430,6 +474,8 @@ export const UpdateBlog = () => {
               name={"images-" + index}
               handleImageDelete={(event) => handleImageDelete(event, index)}
               handleImageChange={(event) => handleImageChange(event, index)}
+              getCroppedImage={(e) => getCroppedImage(e, index)}
+              aspect={16 / 9}
             />
           ))}
         </div>

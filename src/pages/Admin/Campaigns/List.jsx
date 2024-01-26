@@ -51,14 +51,14 @@ export default function Campaigns() {
 					{list.rows.length ? (
 						<div className='gap-5 md:gap-7.5 grid sm:grid-cols-2 md:grid-cols-3'>
 							{list.rows.map(i => (
-								<Link to={"/admin/campaign/" + i.id} key={i.id}>
+								<Link to={"/admin/campaign/" + i.id} key={i.id} className='flex h-full'>
 									<div key={i.id} className='flex flex-col w-full gap-5 p-3 pb-5 border border-neutral-300 rounded-2xl hover:border-transparent hover:shadow-card hover:bg-white'>
 										<div className='w-full overflow-hidden h-52 rounded-2xl'>
 											<Img src={i.coverImage} alt={i.name} className='object-cover w-full h-full transition duration-300 ease-in-out opacity-100 rounded-2xl hover:opacity-90' />
 										</div>
 										<div>
 											<h6 className='mb-3 line-clamp-1 text-heading-6 text-neutral-800'>{i.name}</h6>
-											<p className='overflow-hidden text-sm font-medium max-h-16 font-Montserrat text-neutral-600 line-clamp-3'>{i.description}</p>
+											<p className='overflow-hidden text-sm font-medium max-h-16 font-Montserrat text-neutral-600 line-clamp-3 sm:min-h-[3.75rem]'>{i.description}</p>
 										</div>
 										<ProjectStatus status={i.status} />
 									</div>
@@ -101,8 +101,8 @@ function Filter({ filters, setFilters }) {
 	}, [filters])
 	return (
 		<>
-			<div className='flex flex-wrap sm:flex-nowrap items-center justify-between mt-7.5 mb-5'>
-				<form className='flex items-center gap-4 mb-3 sm:mb-0'>
+			<div className='flex flex-wrap sm:flex-nowrap items-center justify-between my-5 md:my-7.5'>
+				<form className='flex items-center gap-4'>
 					<label onClick={() => toggleSidebar(true)} className='flex items-center gap-1 cursor-pointer text-button-md text-neutral-1000'>
 						<span className=' md:hidden'><FilterIcon /> </span>Filter:
 					</label>

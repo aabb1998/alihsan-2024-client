@@ -17,7 +17,6 @@ import {
   updateBasketItem,
   editBasket,
 } from "../../features/basket/basketSlice";
-import { Transition } from "@headlessui/react";
 import Img from "../Image/index";
 import { getProjectsApi } from "../../features/projects/projectsApi";
 import { BasketItem } from "./BasketItem";
@@ -65,29 +64,11 @@ const HeaderTop = () => {
     localStorage.setItem("checkout", JSON.stringify(remainingItems));
   };
 
-  // const handleInputChange = (index, event) => {
-  //   const newValues = [...basketItems];
-
-  //   const input =
-  //     event.target.value === "" || event.target.value === "0"
-  //       ? 1
-  //       : event.target.value.replace(/[^0-9]/g, "");
-  //   const number = parseInt(input) ? input : 1;
-
-  //   newValues[index] = {
-  //     ...newValues[index],
-  //     amount: number,
-  //     total: number,
-  //   };
-  //   dispatch(addBasket(newValues));
-  //   localStorage.setItem("checkout", JSON.stringify(newValues));
-  // };
   const handleInputChange = (index, event) => {
     const updatedBasket = [...basketItems];
     const inputValue = event.target.value.trim();
     const number =
       inputValue === "" || inputValue === "0" ? "" : inputValue || "";
-    // const number =inputValue;
 
     updatedBasket[index] = {
       ...updatedBasket[index],
@@ -100,7 +81,7 @@ const HeaderTop = () => {
   };
 
   const handleEdit = (index) => {
-    const newValues = [...basketItems]; // Create a new array
+    const newValues = [...basketItems];
     newValues[index] = {
       ...newValues[index],
       isEdit: true,
@@ -288,7 +269,7 @@ const HeaderTop = () => {
                           className="flex gap-3 p-3 cursor-pointer"
                           key={result.id}
                           onClick={() => {
-                            navigate("/project/" + result.id);
+                            navigate("/project/" + result.slug);
                             setModalOptions(null);
                           }}
                         >

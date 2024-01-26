@@ -5,7 +5,7 @@ import Img from "../../components/Image";
 export const OrganiserComponent = ({ organizer }) => {
   return (
     <div className="flex flex-col gap-10 mb-10">
-      <div className="flex flex-col gap-5 px-4 py-5 border md:p-5 rounded-4xl border-neutral-300">
+      <div className="flex flex-col gap-5 px-4 py-5 bg-white border md:p-5 rounded-4xl border-neutral-300">
         <div className="flex flex-col gap-3 md:flex-row">
           <div className="shrink-0">
             <div className="relative overflow-hidden rounded-full bg-neutral-200 w-18 h-18">

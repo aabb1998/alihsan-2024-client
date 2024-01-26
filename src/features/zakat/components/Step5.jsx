@@ -12,7 +12,7 @@ import {
 } from "../../basket/basketSlice";
 import { useDispatch } from "react-redux";
 import { SnackMessages } from "../../../components/Toast";
-import { formatPrice } from "../../../utils/helper";
+import { checkAdminPermission, formatPrice } from "../../../utils/helper";
 import { PrimaryLoadingButton } from "../../../components/LoadingButtons";
 import { zakatResetInput } from "../slice";
 
@@ -72,6 +72,7 @@ export default function Step5() {
   };
 
   const handleDonation = async () => {
+    checkAdminPermission()
     const checkout = JSON.parse(
       localStorage.getItem(LOCAL_STORAGE_KEY) || "[]"
     );

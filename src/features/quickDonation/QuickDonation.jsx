@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { CheckIcon, ChevronDownIcon, CloseIcon } from "../../theme/svg-icons";
+import { CloseIcon } from "../../theme/svg-icons";
 import { CommonDonation } from "../projectDetails/CommonDonation";
 import { AqeeqaDonation } from "../projectDetails/AqeeqaDonation";
 import { AdeeqahDonation } from "../projectDetails/AdeeqahDonation";
@@ -9,7 +9,6 @@ import {
   getQucikDonation,
   getQucikDonationProject,
 } from "../quickDonation/quickDonationSlice";
-import { getProject, resetProject } from "../projectDetails/projectDetailSlice";
 import { ModalLoader } from "../../theme/svg-icons";
 import { Transitions } from "../../utils/constants";
 import { Transition, Dialog } from "@headlessui/react";
@@ -24,18 +23,16 @@ const QuickDonation = ({ isOpen, onClose, project }) => {
   const { quickdonations, qucikDonationProject, loading } = useSelector(
     (state) => state.quickDonations
   );
-
-  // const projectDetails = useSelector((state) => state.project);
   const checkout = qucikDonationProject?.campaign?.checkoutType;
 
   useEffect(() => {
     if (!isOpen) return;
     if (project) {
       // dispatch(getProject(project?.id));
-      dispatch(getQucikDonationProject(project?.id));
+      dispatch(getQucikDonationProject(project?.slug));
     } else {
       // dispatch(getProject(220));
-      dispatch(getQucikDonationProject(220));
+      // dispatch(getQucikDonationProject(220))
     }
     dispatch(getQucikDonation());
     return () => {
@@ -44,19 +41,10 @@ const QuickDonation = ({ isOpen, onClose, project }) => {
   }, [isOpen]);
 
   const handleChange = (e) => {
-    dispatch(getQucikDonationProject(e.value));
+    console.log(e);
+    dispatch(getQucikDonationProject(e.slug));
   };
 
-  const style = {
-    control: (base) => ({
-      ...base,
-      // This line disable the blue border
-      boxShadow: "none",
-      ringOffset: "0",
-      ring: "0",
-      outLine: "0",
-    }),
-  };
   const [isActualOpen, setIsActualOpen] = useState(false);
   const [isOpaque, setIsOpaque] = useState(false);
   useEffect(() => {
@@ -75,6 +63,11 @@ const QuickDonation = ({ isOpen, onClose, project }) => {
         Transitions.QUICK_DONATION_DURATION
       );
   }, [isOpaque]);
+
+  useEffect(() => {
+    if (quickdonations?.length) {
+      dispatch(getQucikDonationProject(quickdonations[0]?.slug));    }
+  }, [quickdonations]);
 
   return (
     <Transition.Root show={isOpen} as={Fragment}>
@@ -147,7 +140,7 @@ const QuickDonation = ({ isOpen, onClose, project }) => {
                             <CloseIcon iconSize={24} />
                           </button>
                         </div>
-                        <div className="flex flex-col h-full overflow-y-auto max-h-[23rem]">
+                        <div className="flex flex-col h-full overflow-y-auto max-h-[23rem] pr-2">
                           <div className="mb-4 sm:mb-5">
                             <label
                               htmlFor="SelectProject"
@@ -160,7 +153,11 @@ const QuickDonation = ({ isOpen, onClose, project }) => {
                               id="SelectProject"
                               value={
                                 quickdonations
-                                  ?.map((e) => ({ label: e.name, value: e.id }))
+                                  ?.map((e) => ({
+                                    label: e.name,
+                                    value: e.id,
+                                    slug: e.slug,
+                                  }))
                                   .filter(
                                     (option) =>
                                       parseInt(option.value) ===
@@ -184,6 +181,7 @@ const QuickDonation = ({ isOpen, onClose, project }) => {
                               options={quickdonations?.map((e) => ({
                                 label: e.name,
                                 value: e.id,
+                                slug: e.slug,
                               }))}
                             />
                           </div>

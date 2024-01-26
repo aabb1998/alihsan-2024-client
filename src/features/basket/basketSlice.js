@@ -181,7 +181,7 @@ export const handlePaypalCheckout = createAsyncThunk(
       }
     } catch (e) {
       if (e.response.status === 401) {
-        return payload;
+        return e?.response?.data;
       }
       // console.log(e.response?.payload?.payload?.error)
       return thunkAPI.rejectWithValue(e.response?.payload?.payload?.error);

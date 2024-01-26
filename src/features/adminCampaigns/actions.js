@@ -81,27 +81,36 @@ export const loadCampaignDonations = createAsyncThunk(
 export const saveCampaign = createAsyncThunk(
 	"save/admin/campaign",
 	async({id, body}, thunkApi) => {
-    await api.patch(
-      '/project/'+id, body, {
-        headers: {'Content-Type': 'multipart/form-data'},
-      },
-    );
-    thunkApi.dispatch(loadCampaignDetails(id));
+    try {
+      await api.patch(
+        '/project/'+id, body, {
+          headers: {'Content-Type': 'multipart/form-data'},
+        },
+      );
+      thunkApi.dispatch(loadCampaignDetails(id));
+    } catch(error) {
+      throw new Error(error.response?.data?.message || "Something went wrong")
+    }
 	}
 )
 
 export const addCampaign = createAsyncThunk(
 	"add/admin/campaign",
 	async(body) => {
-    await api.post('/project/', body, {headers: {'Content-Type': 'multipart/form-data'}});
+    try {
+      await api.post('/project/', body, {headers: {'Content-Type': 'multipart/form-data'}});
+    } catch(error) {
+      throw new Error(error.response?.data?.payload?.message || "Something went wrong")
+    }
 	}
 )
 
-export const loadCategories = createAsyncThunk(
-  'get/admin/campaign-categories',
+export const loadCampaignFormData = createAsyncThunk(
+  'get/admin/campaign-formdata',
   async() => {
     const response = await api.get('/project/category')
-    return response.data.payload;
+    // return response.data.payload;
+		return {categories: [{id: 1, name: 'jhdf'}], organisers: [{id: 1, firstName: 'Something', lastName: 'Hey'}]}
   }
 )
 

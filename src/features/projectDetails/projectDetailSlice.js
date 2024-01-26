@@ -105,6 +105,7 @@ export const projectDetailSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(getProject.pending, (state) => {
       state.loading = true;
+      state.error = "";
     });
     builder.addCase(getProject.fulfilled, (state, action) => {
       state.loading = false;
@@ -114,7 +115,7 @@ export const projectDetailSlice = createSlice({
     builder.addCase(getProject.rejected, (state, action) => {
       state.loading = false;
       state.projects = [];
-      state.error = "";
+      state.error = action?.error?.message;
     });
     builder.addCase(getQurbanGroups.pending, (state) => {
       state.loading = true;

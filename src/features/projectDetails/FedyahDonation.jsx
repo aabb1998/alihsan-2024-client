@@ -9,6 +9,7 @@ import { useDispatch } from 'react-redux';
 import { SnackMessages } from '../../components/Toast';
 import PropTypes from "prop-types";
 import { addBasket, addBasketItem, toggleBasket, updateBasketItem } from '../basket/basketSlice';
+import { checkAdminPermission } from '../../utils/helper';
 
 const RadioButtonItems = [
     {
@@ -333,6 +334,7 @@ export const FedyahDonation = ({ campaign, handleClose, isModal }) => {
     };
 
     const handleFedyahDonation = async (values, { resetForm }) => {
+        checkAdminPermission()
         if (!category) {
             return showErrorMessage("Please select a category")
         } else if (Object.keys(subItem).length === 0) {

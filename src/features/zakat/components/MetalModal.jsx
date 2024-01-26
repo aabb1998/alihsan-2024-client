@@ -7,6 +7,7 @@ import {
 } from "../../../theme/svg-icons";
 import { useSelector, useDispatch } from "react-redux";
 import { zakatMetalInput } from "../slice";
+import { Tooltip } from "react-tooltip";
 
 const validateAmount = (value) => {
   if (!value) return "Input is required";
@@ -19,9 +20,11 @@ export default function MetalModal({ visible, onRequestClose, metal }) {
   const { goldUsd, silverUsd, audToUsd } = useSelector(
     (state) => state.zakatCalculator.prices
   );
-  const { unit, gold, silver } = useSelector(
+  const { unit, gold, silver, cash } = useSelector(
     (state) => state.zakatCalculator.amounts
   );
+  const { goldPriceList } = useSelector((state) => state.zakatCalculator);
+
   const metalUsd = metal === "silver" ? silverUsd : goldUsd;
   const metalPrice = unit === "USD" ? metalUsd : metalUsd / audToUsd;
   const [data, setData] = useState({
@@ -33,6 +36,7 @@ export default function MetalModal({ visible, onRequestClose, metal }) {
     toChange: "value",
   });
   const handleChange = (name, value, rerun) => {
+    console.log(value);
     let error = "",
       val = Number(value);
     if (name !== "unit") {
@@ -51,6 +55,7 @@ export default function MetalModal({ visible, onRequestClose, metal }) {
         values: { ...prevState.values, value: "" },
       }));
     }
+
     /*
     if(rerun) console.log(value, val, name, 'rerunniung')
     if(rerun || error) return;
@@ -61,8 +66,7 @@ export default function MetalModal({ visible, onRequestClose, metal }) {
       handleChange('value', val*metalUnitPrice, true)*/
   };
   const handleSubmit = () => {
-    const karatErr =
-      data.values.karat !== "24" ? "Invalid value " + data.values.karat : "";
+    const karatErr = data.values.karat === "1" ? "Invalid value " : "";
     const valueErr = validateAmount(data.values.value);
     const weightErr = validateAmount(data.values.weight);
     if (karatErr || valueErr || weightErr)
@@ -89,13 +93,14 @@ export default function MetalModal({ visible, onRequestClose, metal }) {
     const errors = metalData.value
       ? {}
       : {
-          karat: "Input is required",
-          unit: "",
-          weight: "Input is required",
-          value: "Input is required",
-        };
+        karat: "Input is required",
+        unit: "",
+        weight: "Input is required",
+        value: "Input is required",
+      };
     setData({ touched: {}, errors: {}, values: { ...metalData } });
   }, [gold, silver, metal]);
+
   useEffect(() => {
     if (
       data.toChange === "value" &&
@@ -105,11 +110,25 @@ export default function MetalModal({ visible, onRequestClose, metal }) {
     ) {
       const metalUnitPrice =
         data.values.unit === "gram" ? metalPrice : metalPrice * 28.35;
-      if (data.values.weight * metalUnitPrice === data.values.value) return;
+      // values: { ...values, value: data.values.weight * metalUnitPrice },
+
+      console.log("-------------------------------------");
+      console.log(data.values.weight, "data.values.weight");
+      console.log(data.values.karat, "data.values.karat");
+      console.log(metalUnitPrice, "data.values.unit");
+      console.log("-------------------------------------");
+
+      const calculatedValue =
+        data.values.weight *
+        data.values.karat *
+        (data.values.unit === "ounce" ? 28.35 : 1);
+
+      if (calculatedValue === data.values.value) return;
+
       setData(({ errors, toChange, values, touched }) => ({
         errors: { ...errors, value: "" },
         toChange,
-        values: { ...values, value: data.values.weight * metalUnitPrice },
+        values: { ...values, value: calculatedValue },
         touched: { ...touched, value: true },
       }));
     } else if (
@@ -132,6 +151,37 @@ export default function MetalModal({ visible, onRequestClose, metal }) {
 
     // }
   }, [data]);
+
+  const setKaratList = () => {
+    if (unit === "USD") {
+      if (metal === "gold") {
+        return goldPriceList["goldPriceInUsd"];
+      } else if (metal === "silver") {
+        return [
+          {
+            label: "Sterling",
+            value: goldPriceList?.silverSterlingPriceInUsd * 0.925,
+          },
+          { label: "Fine", value: goldPriceList?.silverFinePriceInUsd },
+        ];
+      }
+    } else if (unit === "AUD") {
+      if (metal === "gold") {
+        return goldPriceList["goldPriceInAud"];
+      } else if (metal === "silver") {
+        return [
+          {
+            label: "Sterling",
+            value: goldPriceList?.silverSterlingPriceInAud * 0.925,
+          },
+          { label: "Fine", value: goldPriceList?.silverFinePriceInAud },
+        ];
+      }
+    }
+
+    return [];
+  };
+
   return (
     <div
       className={"relative z-10 " + (visible ? "block" : "hidden")}
@@ -162,9 +212,16 @@ export default function MetalModal({ visible, onRequestClose, metal }) {
                       <div className="!mb-0 text-sm font-medium text-neutral-1000">
                         Karat<span className="text-red-300">*</span>
                       </div>
-                      <div className="text-neutral-500">
+                      <span className="cursor-pointer text-neutral-700 hover:text-primary-300" data-tooltip-id="my-tooltip" data-tooltip-place="bottom-end">
                         <HelpCircleIcon iconSize={16} strokeWidth={2} />
-                      </div>
+                        <Tooltip id="my-tooltip" className="opacity-100 tooltip" style={{ backgroundColor: "#fff", padding: "1rem", }}>
+
+                          <div>
+                            <h2 className="mb-2 text-neutral-1000 text-button-md">Text Title Goes Here</h2>
+                            <p className="text-xs font-medium text-neutral-600">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+                          </div>
+                        </Tooltip>
+                      </span>
                     </div>
                     <div className="mb-5 form-group">
                       <select
@@ -173,11 +230,13 @@ export default function MetalModal({ visible, onRequestClose, metal }) {
                         onChange={(e) => handleChange("karat", e.target.value)}
                         value={data.values.karat}
                       >
-                        <option value="">Select Karat</option>
-                        <option value="24">24</option>
+                        <option value="1">Select</option>
+                        {setKaratList().map((each) => (
+                          <option value={each.value}>{each.label}</option>
+                        ))}
                       </select>
                       {data.touched.karat && data.errors.karat ? (
-                        <div className="text-red-300 text-sm mt-2">
+                        <div className="mt-2 text-sm text-red-300">
                           {data.errors.karat}
                         </div>
                       ) : (
@@ -199,11 +258,10 @@ export default function MetalModal({ visible, onRequestClose, metal }) {
                           ].map((i) => (
                             <button
                               key={i.value}
-                              className={`btn btn-${
-                                i.value === data.values.unit
-                                  ? "primary"
-                                  : "neutral-text"
-                              } filled`}
+                              className={`btn btn-${i.value === data.values.unit
+                                ? "primary"
+                                : "neutral-text"
+                                } filled`}
                               onClick={() => handleChange("unit", i.value)}
                             >
                               {i.label}
@@ -211,7 +269,7 @@ export default function MetalModal({ visible, onRequestClose, metal }) {
                           ))}
                         </div>
                         {data.touched.unit && data.errors.unit ? (
-                          <div className="text-red-300 text-sm mt-2">
+                          <div className="mt-2 text-sm text-red-300">
                             {data.errors.unit}
                           </div>
                         ) : (
@@ -238,7 +296,7 @@ export default function MetalModal({ visible, onRequestClose, metal }) {
                           value={data.values.weight}
                         />
                         {data.touched.weight && data.errors.weight ? (
-                          <div className="text-red-300 text-sm mt-2">
+                          <div className="mt-2 text-sm text-red-300">
                             {data.errors.weight}
                           </div>
                         ) : (
@@ -258,13 +316,14 @@ export default function MetalModal({ visible, onRequestClose, metal }) {
                           id="Value"
                           placeholder="0"
                           name="value"
+                          readOnly={true}
                           onChange={(e) =>
                             handleChange(e.target.name, e.target.value)
                           }
                           value={data.values.value}
                         />
                         {data.touched.value && data.errors.value ? (
-                          <div className="text-red-300 text-sm mt-2">
+                          <div className="mt-2 text-sm text-red-300">
                             {data.errors.value}
                           </div>
                         ) : (

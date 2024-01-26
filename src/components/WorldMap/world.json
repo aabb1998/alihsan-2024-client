@@ -50,7 +50,7 @@
             "type": "MultiPolygon",
             "arcs": [[[37]], [[38]]],
             "id": "AUS",
-            "properties": { "name": "Australia" ,"isActive":true}
+            "properties": { "name": "Australia" }
           },
           {
             "type": "Polygon",
@@ -536,7 +536,7 @@
             "type": "Polygon",
             "arcs": [[-191, 382, -189, -117, -188, 383, -77, 384, 385]],
             "id": "IND",
-            "properties": { "name": "India","isActive":true }
+            "properties": { "name": "India" }
           },
           {
             "type": "Polygon",
@@ -1021,7 +1021,7 @@
             "type": "Polygon",
             "arcs": [[623, -415, -397, -454, 624, -570, 625, -23, -543, 626]],
             "id": "SAU",
-            "properties": { "name": "Saudi Arabia","isActive":true }
+            "properties": { "name": "Saudi Arabia"}
           },
           {
             "type": "Polygon",
@@ -1246,7 +1246,7 @@
               [[-144, 702, -142, 703]]
             ],
             "id": "USA",
-            "properties": { "name": "United States" ,"isActive":true}
+            "properties": { "name": "United States" }
           },
           {
             "type": "Polygon",

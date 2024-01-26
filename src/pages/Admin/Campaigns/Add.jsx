@@ -3,10 +3,12 @@ import { ArrowLeftIcon, PlusIcon, CloseIcon } from "../../../theme/svg-icons";
 import { Button } from "../../../components";
 import CampaignForm from "./CampaignForm";
 import { useNavigate } from 'react-router-dom'
-import { addCampaign, loadCategories } from '../../../features/adminCampaigns'
+import { addCampaign, loadCampaignFormData } from '../../../features/adminCampaigns'
 import { useDispatch, useSelector } from 'react-redux'
 import { countriesList } from '../../../utils/countries'
+import { makeSlug, validateSlug } from '../../../utils/helper'
 import { SnackMessages } from '../../../components/Toast';
+import QuillEditor from "../../../components/QuillEditor";
 
 function addUrl(file) {
   if(file)
@@ -17,20 +19,33 @@ const AddCampaign = () => {
   const { showSuccessMessage, showErrorMessage } = SnackMessages();
   const imagesInput = useRef();
   const dispatch = useDispatch()
-  const { loading, saving, categories } = useSelector(({adminCampaigns}) => adminCampaigns.add);
+  const { loading, saving, categories, organisers } = useSelector(({adminCampaigns}) => adminCampaigns.add);
   const [ state, setState ] = useReducer((state, action) => {
     if(action.type==="change") {
       action = action.target;
       let val;
-      if(!action.type || action.type==="text" || action.tagName==="SELECT" || action.tagName==="TEXTAREA") val = action.value;
+      if(!action.type || action.type==="text" || action.tagName==="SELECT" || action.tagName==="TEXTAREA" || action.type==='custom') val = action.value;
       else if(action.type==="file") {
         val = action.files[0];
         addUrl(val);
+      } else if(action.type==='checkbox') {
+        val = action.checked;
       }
       // doing validation here itself
       let error = '';
       if(action.name==='name') {
         if(!val.length) error = "Project Name is required.";
+        return {
+          values: {
+            ...state.values,
+            name: val,
+            slug: state.touched.slug
+              ? state.values.slug
+              : makeSlug(val)
+          },
+          errors: {...state.errors, [action.name]: error},
+          touched: {...state.touched, [action.name]: true},
+        }
       } else if(action.name==='description') {
         if(!val.length) error = "Project Description is required.";
         if(val.length>1000) error = "Should contain less than 1000 characters.";
@@ -40,12 +55,17 @@ const AddCampaign = () => {
         if(!val.length) error = "Project Category is required.";
       } else if(action.name==='country') {
         if(!val.length) error = "Project Country is required.";
+      } else if(action.name==='slug') {
+        if(!val) error = 'Project Slug is required.'
+        else error = validateSlug(val);
       } else if(action.name==='quickBookClassId') {
         if(!val) error = 'Quickbooks Class ID is required.'
       } else if(action.name==='quickBookClassRef') {
-        if(!val) error = 'Quickbooks Class Reference is required.'
-      } else if(action.name==='coverImage') {
-        if(!val) error = 'Cover Image is required.'
+        if(!val) error = 'Quickbooks Class Name is required.'
+      } else if(action.name==='organiser') {
+        if(!val) error = 'Organiser is required.'
+      // } else if(action.name==='coverImage') {
+      //   if(!val) error = 'Cover Image is required.'
       } else if(action.name==='images') {
         return { ...state, values: {...state.values, images: [...state.values.images, val]}, touched: {...state.touched, images: true} }
       }
@@ -62,14 +82,16 @@ const AddCampaign = () => {
     }
     return state;
   }, {
-    values: { name: '', description: '', coverImage: null, images: [], categoryId: '', country: '', checkoutType: '', quickBookClassId: '', quickBookClassRef: '' },
-    errors: { name: '', description: '', coverImage: '', images: '', categoryId: '', country: '', checkoutType: '', quickBookClassId: '', quickBookClassRef: '' },
-    touched: { name: false, description: false, coverImage: false, images: false, country: false, checkoutType: false, quickBookClassId: false, quickBookClassRef: '' },
+    values: { name: '', description: '', coverImage: null, images: [], categoryId: '', country: '', checkoutType: '', quickBookClassId: '', quickBookClassRef: '', isRamadanCampaign: false, organiser: '' },
+    errors: { name: '', description: '', coverImage: '', images: '', categoryId: '', country: '', checkoutType: '', quickBookClassId: '', quickBookClassRef: '', isRamadanCampaign: '', organiser: '' },
+    touched: { name: false, description: false, coverImage: false, images: false, country: false, checkoutType: false, quickBookClassId: false, quickBookClassRef: false, isRamadanCampaign: false, organiser: false },
   })
 
   const checkReady = () => {
-    for(let i of ['name', 'description', 'categoryId', 'country', 'checkoutType', 'quickBookClassRef']) {
-      if(!state.values[i]) return false;
+    for(let i of ['name', 'slug', 'description', 'categoryId', 'country', 'checkoutType', 'quickBookClassRef', 'organiser']) {
+      if(!state.values[i]) {
+        return false;
+      }
     }
     for(let i in state.errors) {
       if(state.errors[i]) return false;
@@ -83,9 +105,12 @@ const AddCampaign = () => {
     formData.append('name', state.values.name)
     formData.append('description', state.values.description)
     formData.append('categoryId', state.values.categoryId)
+    formData.append('organiser', state.values.organiser)
     formData.append('country', state.values.country)
     formData.append('checkoutType', state.values.checkoutType)
     formData.append('coverImage', state.values.coverImage)
+    formData.append('slug', state.values.slug)
+    formData.append('isRamadanCampaign', state.values.isRamadanCampaign)
     formData.append('quickBookClassId', state.values.quickBookClassId)
     formData.append('quickBookClassRef', state.values.quickBookClassRef)
     for(let i of state.values.images) {
@@ -104,7 +129,7 @@ const AddCampaign = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(loadCategories())
+    dispatch(loadCampaignFormData())
   }, [])
 
   return (
@@ -170,7 +195,7 @@ const AddCampaign = () => {
               </div>
             </div>
           */}
-                    <div for="dropzone-file" className="relative flex flex-col items-center justify-center w-full overflow-hidden bg-center bg-no-repeat bg-cover cursor-pointer rounded-3xl h-76 bg-choose-cover">
+                    <div for="dropzone-file" className="relative flex flex-col items-center justify-center w-full overflow-hidden bg-center bg-no-repeat bg-cover rounded-3xl h-76 bg-choose-cover">
                         {/* <Button className='absolute btn btn-lite-primary text-button-md md:text-button-lg right-5 bottom-5' label={'Change Cover'} /> */}
                         <div className="flex items-center justify-center w-full h-full">
                           {/*<img src="https://i.pinimg.com/originals/f7/91/1a/f7911a732532fa6c64748dc7281d915f.jpg" alt="preview" className='object-cover w-full' />*/}
@@ -200,6 +225,21 @@ const AddCampaign = () => {
             <div className="mt-2 text-red-300">{state.errors.name}</div>
           </div>
           <div className="flex flex-col mb-6 form-group">
+            <label htmlFor="ProjectSlug" className="">
+              Project Slug
+            </label>
+            <input
+              type="text"
+              name="slug"
+              className="w-full bg-white form-control"
+              id="ProjectSlug"
+              placeholder="Project Slug"
+              value={state.values.slug}
+              onChange={setState}
+            />
+            <div className="mt-2 text-red-300">{state.errors.slug}</div>
+          </div>
+          <div className="flex flex-col mb-6 form-group">
             <label htmlFor="ProjectQuickbookId" className="">
               Quickbooks Class ID
             </label>
@@ -216,14 +256,14 @@ const AddCampaign = () => {
           </div>
           <div className="flex flex-col mb-6 form-group">
             <label htmlFor="ProjectQuickbookRef" className="">
-              Quickbooks Class Reference
+              Quickbooks Class Name
             </label>
             <input
               type="text"
               name="quickBookClassRef"
               className="w-full bg-white form-control"
               id="ProjectQuickbookRef"
-              placeholder="Quickbooks Class Reference for the Project"
+              placeholder="Quickbooks Class Name for the Project"
               value={state.values.quickBookClassRef}
               onChange={setState}
             />
@@ -245,6 +285,22 @@ const AddCampaign = () => {
               {categories?.map(i => <option value={i.id} key={i.id}>{i.name}</option>)}
             </select>
             <div className="mt-2 text-red-300">{state.errors.categoryId}</div>
+          </div>
+          <div className="flex flex-col mb-6 form-group">
+            <label htmlFor="project-organiser" className="">
+              Project Organiser
+            </label>
+            <select
+              name="organiser"
+              className="w-full bg-white form-control"
+              id="project-organiser"
+              value={state.values.organiser}
+              onChange={setState}
+            >
+              <option value="">Select an Organiser</option>
+              {organisers?.map(i => <option value={i.id} key={i.id}>{i.firstName} {i.lastName}</option>)}
+            </select>
+            <div className="mt-2 text-red-300">{state.errors.organiser}</div>
           </div>
           <div className="flex flex-col mb-6 form-group">
             <label htmlFor="project-checkout" className="">
@@ -272,6 +328,23 @@ const AddCampaign = () => {
             <div className="mt-2 text-red-300">{state.errors.checkoutType}</div>
           </div>
           <div className="flex flex-col mb-6 form-group">
+            <div className="flex flex-row">
+              <input
+                type="checkbox"
+                name="isRamadanCampaign"
+                className="mr-4"
+                id="IsRamadan"
+                placeholder="Is Ramadan Campaign"
+                value={state.values.isRamadanCampaign}
+                onChange={setState}
+              />
+              <label htmlFor="IsRamadan" className="!mb-0">
+                Is this a Ramadan Project?
+              </label>
+            </div>
+            <div className="mt-2 text-red-300">{state.errors.isRamadanCampaign}</div>
+          </div>
+          <div className="flex flex-col mb-6 form-group">
             <label htmlFor="ProjectName" className="">
               Project Country
             </label>
@@ -293,15 +366,20 @@ const AddCampaign = () => {
               Project Description
             </label>
             <div className="relative">
-              <textarea
-                /*onChange={e => setCount(e.target.value.length)}*/ rows={5}
-                className="w-full bg-white !min-h-40 form-control"
+              {/* <textarea
+                rows={5}
+                className="w-full bg-white !min-h-40 form-control !text-neutral-1000"
                 id="description"
                 name="description"
                 placeholder="Project Description"
                 value={state.values.description}
                 onChange={setState}
-              ></textarea>
+              ></textarea> */}
+							<QuillEditor
+								name="description"
+								value={state.values.description}
+								onChange={setState}
+							/>
               <p className="absolute font-medium bg-white text-button-md text-neutral-800 bottom-2 right-2">
                 {state.values.description.length}/1000
               </p>

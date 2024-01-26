@@ -24,9 +24,9 @@ export const getNewsList = createAsyncThunk(
     }
   }
 );
-export const getNews = createAsyncThunk("get/news", async (id, thunkAPI) => {
+export const getNews = createAsyncThunk("get/news", async (params, thunkAPI) => {
   try {
-    const response = await api.get(`/blog/details/${id}`);
+    const response = await api.get(`/blog/${params?.id || 'details/'+params}`);
     let data = response?.data?.payload;
     if (response.status === 200) {
       return data;
@@ -60,13 +60,17 @@ export const newsSlice = createSlice({
     });
     builder.addCase(getNews.pending, (state, action) => {
       state.loading = true;
+      state.error = "";
     });
     builder.addCase(getNews.fulfilled, (state, action) => {
       state.news = action?.payload;
       state.loading = false;
+      if (action?.payload===null)  state.error = "No data found";
+      else state.error = ""
     });
     builder.addCase(getNews.rejected, (state, action) => {
       state.loading = false;
+      state.error = action?.payload?.message;
     });
   },
 });

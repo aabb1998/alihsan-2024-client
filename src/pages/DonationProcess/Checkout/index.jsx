@@ -17,6 +17,11 @@ import * as yup from "yup";
 import { updateCheckoutProfile } from "../../../features/paymentDetails/paymentDetailsSlice";
 const { showErrorMessage } = SnackMessages();
 
+const retrieveUserInfo = () => {
+  const isLoggedIn = localStorage.getItem("loggedIn");
+  return isLoggedIn ? JSON.parse(isLoggedIn) : { token: null, role: null };
+};
+
 const initialState = {
   firstName: "",
   lastName: "",
@@ -95,12 +100,12 @@ const validationSchema = yup.object({
 });
 
 const CheckoutComponent = () => {
-  const [status, setStatus] = useState(true);
   const profile = useSelector((state) => state.profile);
   const { basketItems } = useSelector((state) => state.basketItem);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { role } = retrieveUserInfo();
 
   const handlePhoneChange = (value) => {
     formik.setFieldValue("phone", value);
@@ -117,8 +122,15 @@ const CheckoutComponent = () => {
           basketItems: basketItems,
         };
         let response;
-        if (!profile.email) {
-          response = await dispatch(updateCheckoutProfile(updatedValues));
+        const isLoggedIn = localStorage.getItem("loggedIn");
+        const userDetails = JSON.parse(isLoggedIn);
+        if (!profile.email || userDetails?.role === "ADMIN") {
+          response = await dispatch(
+            updateCheckoutProfile({
+              ...updatedValues,
+              paymentGateway: "stripe",
+            })
+          );
           handleResponse(response, () => {
             const payload = response?.payload?.payload;
             const clientSecret = payload?.clientSecret;
@@ -130,7 +142,11 @@ const CheckoutComponent = () => {
                 donationIds: payload?.donationIds,
               })
             );
-            navigate("/confirm", { state: { clientSecret } });
+            const checkoutDetails = {
+              ...updatedValues,
+              clientSecret: clientSecret,
+            };
+            navigate("/confirm", { state: checkoutDetails });
           });
         } else {
           response = await dispatch(updateProfile(updatedValues));
@@ -154,24 +170,31 @@ const CheckoutComponent = () => {
       showErrorMessage(response?.payload?.message);
     }
   };
+
   const getProfileDetails = async () => {
     // if (!profile.isFetching && !profile.isError && !profile.email) {
     const personalInfo = JSON.parse(
       localStorage.getItem("personalInfo") || null
     );
-    try {
-      const action = await dispatch(getProfile());
-      if (action.payload) {
-        formik.setValues(action.payload);
-        formik.setFieldValue("status", true);
-      } else {
-        if (personalInfo) {
-          formik.setValues(personalInfo);
+    if (role === "USER") {
+      try {
+        // check user is login or not
+        // const
+        const action = await dispatch(getProfile());
+        if (action.payload) {
+          formik.setValues(action.payload);
+          formik.setFieldValue("status", true);
+        } else {
+          if (personalInfo) {
+            formik.setValues(personalInfo);
+          }
+          formik.setFieldValue("status", false);
         }
-        formik.setFieldValue("status", false);
+      } catch (error) {
+        showErrorMessage(error.message);
       }
-    } catch (error) {
-      showErrorMessage(error.message);
+    } else {
+      formik.setFieldValue("status", false);
     }
   };
 

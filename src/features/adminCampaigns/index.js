@@ -5,7 +5,7 @@ import {
   loadCampaignDonations,
   saveCampaign,
   addCampaign,
-  loadCategories,
+  loadCampaignFormData,
   editCampaignUpdate,
   deleteCampaignUpdate,
   addCampaignUpdate,
@@ -24,7 +24,7 @@ export {
   editCampaignUpdate,
   addCampaignUpdate,
   deleteCampaignUpdate,
-  loadCategories,
+  loadCampaignFormData,
   openModal,
   closeModal,
 }

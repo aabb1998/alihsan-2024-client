@@ -21,7 +21,7 @@ export const AddTag = () => {
                                             <CloseIcon iconSize={24} />
                                         </button>
                                     </div>
-                                    <div className="flex flex-col gap-4 sm:gap-5 max-h-[calc(100vh-20rem)] overflow-auto">
+                                    <div className="flex flex-col gap-4 sm:gap-5 max-h-[calc(100vh-20rem)] overflow-auto pr-2">
                                         <div className="grid grid-cols-1">
                                             <div className="form-group">
                                                 <label htmlFor="tag name" className="block">Tag Name</label>

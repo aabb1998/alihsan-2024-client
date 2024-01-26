@@ -32,7 +32,7 @@ export default function Step2() {
           </div>{" "}
           <span className="cursor-pointer text-neutral-700 hover:text-primary-300" data-tooltip-id="my-tooltip" data-tooltip-place="bottom-end">
             <HelpCircleIcon iconSize={16} strokeWidth={2} />
-            <Tooltip id="my-tooltip" className="tooltip opacity-100" style={{ backgroundColor: "#fff", padding: "1rem", }}>
+            <Tooltip id="my-tooltip" className="opacity-100 tooltip" style={{ backgroundColor: "#fff", padding: "1rem", }}>
 
               <div>
                 <h2 className="mb-2 text-neutral-1000 text-button-md">Text Title Goes Here</h2>
@@ -80,7 +80,7 @@ export default function Step2() {
           </div>{" "}
           <span className="cursor-pointer text-neutral-700 hover:text-primary-300" data-tooltip-id="my-tooltip" data-tooltip-place="bottom-end">
             <HelpCircleIcon iconSize={16} strokeWidth={2} />
-            <Tooltip id="my-tooltip" className="tooltip opacity-100" style={{ backgroundColor: "#fff", padding: "1rem", }}>
+            <Tooltip id="my-tooltip" className="opacity-100 tooltip" style={{ backgroundColor: "#fff", padding: "1rem", }}>
 
               <div>
                 <h2 className="mb-2 text-neutral-1000 text-button-md">Text Title Goes Here</h2>

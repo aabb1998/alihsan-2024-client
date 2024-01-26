@@ -176,7 +176,8 @@ export default function PaymentList() {
         </div>
 
         {payments.length > 0 ? (
-          <div className="relative overflow-x-auto">
+          <div className="grid">
+  <div className="relative overflow-x-auto">
             <table className="w-full mb-5 table-auto">
               <thead className="text-sm text-left bg-neutral-200">
                 <tr>
@@ -260,6 +261,8 @@ export default function PaymentList() {
               </tbody>
             </table>
           </div>
+          </div>
+
         ) : (
           <div className="text-neutral-600 text-md font-medium my-7.5 text-start">
             No payment history is currently available

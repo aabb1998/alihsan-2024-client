@@ -18,12 +18,21 @@ import {
 } from "../../../features/adminMedia/adminMediaSlice";
 import { PrimaryLoadingButton } from "../../../components/LoadingButtons";
 import ImageUpload from "../../../components/ImageUpload";
+import { makeSlug, validateSlug } from "../../../utils/helper";
+import QuillEditor from "../../../components/QuillEditor";
 const { showSuccessMessage, showErrorMessage } = SnackMessages();
 
 const validationSchema = yup.object({
   url: yup.string().required("Image is required"),
   title: yup.string().required("Title is required"),
   description: yup.string().required("Description is required"),
+  slug: yup.string()
+		.required("Slug is required")
+		.test(
+			'test-slug',
+			'Only lower case alphabets, numbers, hyphens (-) and underscores (_) are allowed',
+			v => !validateSlug(v)
+		),
 });
 
 export const PostDetails = () => {
@@ -46,6 +55,7 @@ export const PostDetails = () => {
       const formData = new FormData();
       formData.append("url", values.url);
       formData.append("title", values.title);
+      formData.append("slug", values.slug);
       formData.append("description", values.description);
 
       try {
@@ -58,7 +68,7 @@ export const PostDetails = () => {
             showSuccessMessage(response?.payload?.message);
             navigate("/admin/posts");
           } else {
-            showErrorMessage(response?.error?.message);
+            showErrorMessage(response?.payload?.message);
           }
         } else {
           response = await dispatch(addPostDetails(formData));
@@ -69,7 +79,7 @@ export const PostDetails = () => {
             resetForm();
             navigate("/admin/posts");
           } else {
-            showErrorMessage(response?.error?.message);
+            showErrorMessage(response?.payload?.message);
           }
         }
       } catch (error) {}
@@ -78,6 +88,9 @@ export const PostDetails = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     formik.setFieldValue(name, value);
+		if(name==='title' && !formik.values.id && !formik.touched.slug) {
+			formik.setFieldValue('slug', makeSlug(value));
+		}
   };
   const handleImageChange = (event) => {
     const file = event.currentTarget.files[0];
@@ -103,6 +116,20 @@ export const PostDetails = () => {
     formik.setFieldValue(`url`, null);
     if (fileInput) {
       fileInput.value = null;
+    }
+  };
+
+
+  const getCroppedImage = async (url) => {
+    const response = await fetch(url);
+    const file = await response.blob();
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreviews(reader.result);
+        formik.setFieldValue(`url`, file);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -171,7 +198,7 @@ export const PostDetails = () => {
               id="blog-title"
               placeholder="Title"
               value={formik.values.title}
-              onChange={formik.handleChange}
+              onChange={handleInputChange}
             />
             {formik.touched.title && Boolean(formik.errors.title) && (
               <FormikValidationError
@@ -180,16 +207,41 @@ export const PostDetails = () => {
               />
             )}
           </div>
+          <div className="flex flex-col mb-6 form-group">
+            <label htmlFor="blog-title" className="">
+              Slug
+            </label>
+            <input
+              type="text"
+              name="slug"
+              className="w-full bg-white form-control"
+              id="blog-slug"
+              placeholder="Slug"
+              value={formik.values.slug}
+              onChange={formik.handleChange}
+            />
+            {formik.touched.slug && Boolean(formik.errors.slug) && (
+              <FormikValidationError
+                formikTouched={formik.touched.slug}
+                formikError={formik.errors.slug}
+              />
+            )}
+          </div>
 
           <div className="relative flex flex-col mb-6 text-area">
             <label htmlFor="content" className="">
               Description
             </label>
-            <TextArea
+						<QuillEditor
+							value={formik.values.description}
+							onChange={handleInputChange}
+							name="description"
+						/>
+            {/* <TextArea
               handleChange={handleInputChange}
               name="description"
               value={formik.values.description}
-            />
+            /> */}
             {formik.touched.description &&
               Boolean(formik.errors.description) && (
                 <FormikValidationError
@@ -208,6 +260,8 @@ export const PostDetails = () => {
               name={"images"}
               handleImageDelete={(event) => handleImageDelete(event)}
               handleImageChange={(event) => handleImageChange(event)}
+              getCroppedImage={(e) => getCroppedImage(e)}
+
             />
             {formik.touched.url && Boolean(formik.errors.url) && (
               <FormikValidationError

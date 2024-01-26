@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useReducer, useState } from 'react'
 import { FormikValidationError } from '../Common/FormikValidationError'
 import { useFormik } from 'formik';
 import { Button } from '../../components';
@@ -10,6 +10,7 @@ import * as yup from "yup";
 import { countriesList } from '../../utils/countries';
 import Img from '../../components/Image';
 import { getQurbanGroups } from './projectDetailSlice';
+import { checkAdminPermission } from '../../utils/helper';
 
 const validationSchema = yup.object().shape({
   group: yup.string().required("Group is required"),
@@ -20,13 +21,28 @@ export const QurbanDonation = ({ campaign, handleClose, isModal }) => {
   const { qurbanGroup } = useSelector((state) => state.project);
   const { showSuccessMessage } = SnackMessages();
 
-  const [selectedGroup, setSelectedGroup] = useState()
+  const [selectedGroup, setSelectedGroup] = useState();
+	const [countryState, setCountryState] = useReducer((state, action) => {
+		if(action.type==="change")
+			return {value: action.value, touched: true, error: ''};
+		else if(action.type==='error')
+			return {...state, error: action.error, touched: true};
+		else if(action.type==='reset')
+			return {value: '', error: '', touched: false};
+		else
+			return state;
+	}, {value: '', error: '', touched: false});
 
   const getfullCountryName = (code) => {
     return countriesList?.find(country => country.code === code?.toUpperCase())
   }
 
   const handleQurbanDonation = async (values, { resetForm }) => {
+		if(selectedGroup.country?.length && !countryState.value) {
+			setCountryState({ type: 'error', error: 'Country is required.' })
+			return;
+		}
+    checkAdminPermission()
     const checkout = JSON.parse(localStorage.getItem("checkout") || "[]");
     const isInCheckoutList = checkout.find(
       (obj) => obj.campaignId === values.campaignId
@@ -35,6 +51,7 @@ export const QurbanDonation = ({ campaign, handleClose, isModal }) => {
       ...values,
       total: parseInt(values.amount, 10),
       isRecurring: false,
+			country: countryState.value
     };
     const action = isInCheckoutList ? updateBasketItem : addBasketItem;
     const updatedCheckout = isInCheckoutList
@@ -59,6 +76,7 @@ export const QurbanDonation = ({ campaign, handleClose, isModal }) => {
     );
     setSelectedGroup({ country: [] })
     resetForm();
+		setCountryState({type: 'reset'})
     handleClose();
     dispatch(toggleBasket());
   }
@@ -71,6 +89,7 @@ export const QurbanDonation = ({ campaign, handleClose, isModal }) => {
     if (name === "group") {
       formik.setFieldValue(name, value);
     }
+		setCountryState({ type: 'reset' })
     setSelectedGroup(group)
   }
 
@@ -82,7 +101,7 @@ export const QurbanDonation = ({ campaign, handleClose, isModal }) => {
       coverImage: campaign?.coverImage,
       checkoutType: "KURBAN",
       donationItem: "",
-      group: ""
+      group: "",
     },
     enableReinitialize: true,
     validationSchema: validationSchema,
@@ -127,18 +146,22 @@ export const QurbanDonation = ({ campaign, handleClose, isModal }) => {
           <div className='rounded-lg bg-neutral-200 flex flex-col px-4 py-3 gap-2 my-5 md:my-7.5'>
             <h4 className=' text-heading-6 text-neutral-800'>{selectedGroup?.group || ""}</h4>
             <div className='flex flex-col gap-2'>
-              {selectedGroup?.country?.length ? <div className='text-xs font-medium text-neutral-800'>Distributed In :</div> : <></>}
+              {selectedGroup?.country?.length ? <div className='text-xs font-medium text-neutral-800'>Select a Country :</div> : <></>}
               <div className='flex flex-wrap gap-2'>
                 {selectedGroup?.country?.map((country) => (
                   <div className='flex flex-row flex-wrap gap-2'>
+                    {/* <div onClick={() => setCountryState({type: 'change', value: country})} className={'flex flex-row items-center w-auto gap-2 p-1 font-medium bg-white rounded '+(countryState.value===country?'border-2':'')}> */}
                     <div className='flex flex-row items-center w-auto gap-2 p-1 font-medium bg-white rounded'>
+                        <input name="country" onChange={e => setCountryState({ type: 'change', value: e.target.value })} id="radio1" aria-describedby="radio-text" type="radio" value={country} className="w-4 h-4" checked={countryState.value===country} />
                       <Img src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${country?.toUpperCase()}.svg`} alt="flag" className={'w-6 h-4 object-cover'} />
                       <p className='text-sm font-medium text-neutral-800'>{getfullCountryName(country)?.name}</p>
                     </div>
                   </div>
                 ))}
               </div>
-
+							{selectedGroup?.country?.length ?(
+								<div className="text-red-300">{countryState.touched && countryState.error}</div>
+							): null}
             </div>
           </div>}
         <div className="h-px mb-5 bg-neutral-300"></div>

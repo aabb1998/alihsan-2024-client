@@ -59,49 +59,53 @@ const Login = () => {
         // formik.values.email,
         // formik.values.password
         // );
+        
         const response = await dispatch(
           loginUser({
             email: formik.values.email,
             password: formik.values.password,
+            isAdmin: false,
           })
         );
         if (response?.payload?.success) {
-          showSuccessMessage(response?.payload?.message);
           const payload = response?.payload?.payload;
-          if (formik.values.rememberMe == true) {
-            localStorage.setItem(
-              "loggedIn",
-              JSON.stringify({
-                token: payload?.token,
-                role: payload?.role,
-                isloggedIn: true,
-              })
-            );
-          } else {
-            localStorage.setItem(
-              "loggedIn",
-              JSON.stringify({
-                token: response?.payload?.payload?.token,
-                role: response?.payload?.payload?.role,
-                firstName: response?.payload?.payload?.firstName,
-                lastName: response?.payload?.payload?.firstName,
-                isloggedIn: true,
-              })
-            );
-            sessionStorage.setItem(
-              "loggedIn",
-              JSON.stringify({
-                token: response?.payload?.payload?.token,
-                role: response?.payload?.payload?.role,
-                isloggedIn: true,
-              })
-            );
-          }
-          await updateSelectedItems();
-          if (payload?.role === "ADMIN") {
-            navigate("/admin/dashboard");
-          } else {
+          if (payload?.role === "USER") {
+            showSuccessMessage(response?.payload?.message);
+            if (formik.values.rememberMe == true) {
+              localStorage.setItem(
+                "loggedIn",
+                JSON.stringify({
+                  token: payload?.token,
+                  role: payload?.role,
+                  isloggedIn: true,
+                })
+              );
+            } else {
+              localStorage.setItem(
+                "loggedIn",
+                JSON.stringify({
+                  token: response?.payload?.payload?.token,
+                  role: response?.payload?.payload?.role,
+                  firstName: response?.payload?.payload?.firstName,
+                  lastName: response?.payload?.payload?.lastName,
+                  id: response?.payload?.payload?.id,
+                  isloggedIn: true,
+                })
+              );
+              sessionStorage.setItem(
+                "loggedIn",
+                JSON.stringify({
+                  token: response?.payload?.payload?.token,
+                  role: response?.payload?.payload?.role,
+                  isloggedIn: true,
+                })
+              );
+            }
+            await updateSelectedItems();
             navigate("/");
+          }else{
+            showErrorMessage('Invalid Credentials');
+
           }
         } else {
           showErrorMessage(response?.error?.message);

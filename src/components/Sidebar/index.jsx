@@ -26,14 +26,14 @@ export const Sidebar = ({ isSidebar, setSidebar }) => {
   return (
     <aside
       id="default-sidebar"
-      className={`fixed top-0 left-0 z-40  h-screen ${isSidebar && "hidden"}`}
+      className={`fixed top-0 left-0 z-40  h-screen ${isSidebar && ""}`}
       aria-label="Sidebar"
     >
-      <div className="fixed inset-0 transition-opacity bg-opacity-30 bg-neutral-1000">
-        <div className="fixed top-0 left-0 z-40 w-full h-screen max-w-xs transition-transform ">
+      <div className={!isSidebar && "fixed inset-0 transition-opacity bg-opacity-30 bg-neutral-1000"}>
+        <div className={!isSidebar && "fixed top-0 left-0 z-40 w-full h-screen max-w-xs transition-transform"}>
           <Transition
             appear={true}
-            show={true}
+            show={!isSidebar}
             enter="transition ease-in-out duration-300 transform"
             enterFrom="-translate-x-full"
             enterTo="translate-x-0"
@@ -46,7 +46,7 @@ export const Sidebar = ({ isSidebar, setSidebar }) => {
                 <Link to="/" onClick={() => setSidebar(true)}>
                   <Img
                     src={"/images/assets/logo.svg"}
-                    className="w-auto h-6"
+                    className="w-auto h-10"
                     alt="Al-Ihsan Foundation"
                   />
                 </Link>
@@ -96,7 +96,7 @@ export const Sidebar = ({ isSidebar, setSidebar }) => {
                 <ul className="flex flex-col gap-7.5 font-medium">
                   {MenuData.map((menu, i) =>
                     menu.to ? (
-                      <li key={i} className="p-1 focus:bg-yellow-200">
+                      <li key={i} className="focus:bg-yellow-200">
                         <Link
                           onClick={() => setSidebar(true)}
                           to={menu.to}
@@ -168,7 +168,7 @@ export const Sidebar = ({ isSidebar, setSidebar }) => {
                               className="flex items-center justify-between w-full focus:bg-yellow-200"
                             >
                               <div className="flex items-center gap-2">
-                                <div className="h-7 overflow-hidden rounded-full w-7">
+                                <div className="w-6 h-6 overflow-hidden rounded-full">
                                   <img
                                     src={`${process.env.REACT_APP_COUNTRY_URL}AU.svg`}
                                     className="object-cover w-full h-full"

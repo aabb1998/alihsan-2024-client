@@ -67,7 +67,7 @@ export const GetInTouchComponent = () => {
             setDisable(false);
 
           } else {
-            showErrorMessage(response?.error?.message);
+            showErrorMessage(response?.payload?.message);
             setDisable(false);
 
           }

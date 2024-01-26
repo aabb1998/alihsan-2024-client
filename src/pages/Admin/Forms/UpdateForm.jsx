@@ -42,7 +42,7 @@ const UpdateForm = ({ onClose, confirmDelete, id }) => {
           showSuccessMessage(response?.payload?.message);
           onClose();
         } else {
-          showErrorMessage(response?.error?.message);
+          showErrorMessage(response?.payload?.message);
         }
       } catch (error) {
         showErrorMessage(error.message);
@@ -71,7 +71,7 @@ const UpdateForm = ({ onClose, confirmDelete, id }) => {
               <div className="relative w-full gap-4 text-left transition-all transform sm:max-w-modal-sm">
                 <div className="flex px-4 pt-4 pb-7.5 sm:pt-10 sm:pb-10 sm:px-10 bg-white rounded-t-3xl sm:rounded-3xl">
                   <div className="flex flex-col flex-grow w-100">
-                    <div className="flex justify-between mb-4">
+                    <div className="flex justify-between mb-5 sm:mb-8">
                       <div className="font-bold tracking-tighter text-neutral-1000 text-md sm:text-heading-7">
                         Update
                       </div>
@@ -106,7 +106,7 @@ const UpdateForm = ({ onClose, confirmDelete, id }) => {
                           type="button"
                         />
                         {isLoading ? (
-                          <PrimaryLoadingButton additionalButtonClasses=""  loadingText={"Confirm"}/>
+                          <PrimaryLoadingButton additionalButtonClasses="flex-grow"  loadingText={"Confirm"}/>
                         ) : (
                           <Button
                             variant={"primary"}

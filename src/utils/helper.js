@@ -1,5 +1,8 @@
 import { isValidPhoneNumber } from "libphonenumber-js";
 import * as XLSX from "xlsx";
+import { SnackMessages } from "../components/Toast";
+
+const {  showErrorMessage } = SnackMessages();
 
 export function getCountryLengths(phoneNumber, country) {
   return isValidPhoneNumber(phoneNumber, country.toUpperCase());
@@ -101,4 +104,59 @@ export const exportData = (data, fileName) => {
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
   XLSX.writeFile(wb, `${fileName}.xlsx`);
+};
+
+export const makeSlug = (title) => {
+  let slug = "";
+  for (const i of title.matchAll(/[a-z0-9\s]/gi)) {
+    slug += i[0] === " " ? "-" : i[0].toLowerCase();
+  }
+  return slug;
+};
+
+export const validateSlug = (slug) => {
+  if (/[^a-z0-9-_]/.test(slug))
+    return "Only lower case alphabets, numbers, hyphens (-) and underscores (_) are allowed";
+  return "";
+};
+
+export const retrieveUserInfo = () => {
+  const isLoggedIn = localStorage.getItem("loggedIn");
+  return isLoggedIn ? JSON.parse(isLoggedIn) : { token: null, role: null };
+};
+
+// export const checkAdminPermission = () => {
+//   const { role } = retrieveUserInfo();
+//   if (role === "ADMIN") {
+//     showErrorMessage("Admin does not have permission ");
+//     return;
+//   }
+// };
+
+export const checkAdminPermission = () => {
+  const { role } = retrieveUserInfo();
+  
+  if (role === "ADMIN") {
+    showErrorMessage("Admin does not have permission ");
+
+    throw new Error("User is an admin and does not have permission.");
+  }
+};
+
+
+export const getRecurringLabel = (periodDays) => {
+  switch (parseInt(periodDays)) {
+    case 7:
+      return "Weekly";
+    case 30:
+      return "Monthly";
+    case 365:
+      return "Yearly";
+    case 1:
+      return "Daily";
+    case 10:
+      return "10 Days";
+    default:
+      return "";
+  }
 };

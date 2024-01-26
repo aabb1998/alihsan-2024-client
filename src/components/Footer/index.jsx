@@ -43,7 +43,7 @@ export const Footer = () => {
         if (response?.payload?.success) {
           showSuccessMessage(response?.payload?.message);
         } else {
-          showErrorMessage(response?.error?.message);
+          showErrorMessage(response?.payload?.message);
         }
       } catch (error) {}
       resetForm();

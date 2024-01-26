@@ -12,25 +12,22 @@ import {
 } from "../basket/basketSlice";
 import { ReccuringOptions } from "./ReccuringOptions";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { checkAdminPermission } from "../../utils/helper";
 
-const { showSuccessMessage } = SnackMessages();
+const { showSuccessMessage, showErrorMessage } = SnackMessages();
 const paymentTypes = [
   { value: "false", label: "One-time" },
   { value: "true", label: "Recurring" },
 ];
 
 export const AdeeqahDonation = ({ campaign, handleClose, isModal }) => {
+	const user = localStorage.getItem('loggedIn');
   const dispatch = useDispatch();
   const { ricePrice, cowPrice, goatPrice } = campaign?.prices;
 
-  const recurringPeriods = [
-    { value: "7", label: "Weekly" },
-    { value: "30", label: "Monthly" },
-    { value: "365", label: "Yearly" },
-  ];
 
   const validationSchema = yup.object({
     behalfOf: yup.string("Add Behalf Of").required("On Behalf Of is required"),
@@ -43,6 +40,7 @@ export const AdeeqahDonation = ({ campaign, handleClose, isModal }) => {
   });
 
   const handleDonation = async (values, { resetForm }) => {
+    checkAdminPermission()
     const itemPrices = {
       cow: cowPrice,
       "goat/sheep": goatPrice,
@@ -93,6 +91,10 @@ export const AdeeqahDonation = ({ campaign, handleClose, isModal }) => {
   };
 
   const handleChange = (e) => {
+		if(e.target.name==='isRecurring' && !user && e.target.value==='true') {
+			showErrorMessage('Please login to access this feature')
+			return;
+		}
     formik.setFieldValue(
       [e.target.name],
       e.target.value === "Add More" ? 1 : e.target.value
@@ -193,9 +195,10 @@ export const AdeeqahDonation = ({ campaign, handleClose, isModal }) => {
           </div>
           {formik?.values.isRecurring === "true" && (
             <ReccuringOptions
-              recurringPeriods={recurringPeriods}
               handleChange={handleChange}
               periodDays={formik?.values.periodDays}
+              isRamadanCampaign={campaign?.isRamadanCampaign}
+
             />
           )}
           {/* on behalf */}

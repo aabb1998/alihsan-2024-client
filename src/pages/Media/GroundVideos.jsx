@@ -2,7 +2,6 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import { Link } from "react-router-dom";
 import Filter from "../../components/Filter";
-import { itemPerPage } from "../../utils/constants";
 import { Dialog, Transition } from "@headlessui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { ArrowRightIcon, CloseIcon } from "../../theme/svg-icons";
@@ -12,10 +11,10 @@ import {
   getMediaVideo,
 } from "../../features/media/mediaSlice";
 import YoutubeVideo from "../../components/YoutubeVideo";
-
+const itemPerPage = 16;
 const initialState = {
   page: "1",
-  limit: process.env.REACT_APP_PAGINATION_PER_PAGE,
+  limit: itemPerPage,
   search: "",
   status: "ACTIVE",
   order: "Newest",
@@ -71,7 +70,7 @@ export const GroundVideos = ({ isOpen }) => {
           </Transition.Child>
 
           <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-            <div className="relative flex items-end justify-center min-h-full p-4 text-center sm:items-center sm:p-0">
+            <div className="relative flex items-center justify-center min-h-full p-4 text-center sm:p-0">
               <button
                 onClick={() => setOpen(false)}
                 className="absolute top-0 right-0 flex items-center justify-center m-2 text-white bg-gray-700 z-1 focus:outline-none"
@@ -159,8 +158,9 @@ export const GroundVideos = ({ isOpen }) => {
 
 export const MediaGroundVideo = ({ item, handleCardClick }) => {
   return (
+
     <div
-      className="col-span-1 p-3 border border-neutral-300 rounded-2xl"
+      className="col-span-1 p-3 border cursor-pointer border-neutral-300 rounded-2xl"
       onClick={() => handleCardClick(item?.id)}
     >
       <div className="w-full h-48 mb-4 overflow-hidden rounded-lg sm:h-45">
@@ -175,5 +175,6 @@ export const MediaGroundVideo = ({ item, handleCardClick }) => {
         View <ArrowRightIcon />{" "}
       </Link>
     </div>
+
   );
 };

@@ -40,7 +40,7 @@ export const RecurringItem = ({
     setLoading(false);
     setIsModalOpen(false);
   };
-
+console.log(mydonation?.Campaign?.isRamadanCampaign,'mydonation')
   return (
     <div className="flex flex-col gap-5 p-4 border md:flex-row border-neutral-300 rounded-2xl">
       <div className="shrink-0">
@@ -103,7 +103,7 @@ export const RecurringItem = ({
             <div className="flex flex-col gap-1">
               <div className="text-xs text-neutral-600">
                 {mydonation.periodDays && mydonation.status === "ACTIVE"
-                  ? "Next Payment On"
+                  ? `Next Payment On ${mydonation?.Campaign?.isRamadanCampaign?'After 8 PM':''}`
                   : "Payment Date"}
               </div>
               <div className="font-bold">{outputDateString}</div>

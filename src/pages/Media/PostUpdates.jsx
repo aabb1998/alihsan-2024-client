@@ -4,10 +4,9 @@ import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Pagination } from "../../components/Pagination";
 import { getMediaPostUpdates } from "../../features/media/mediaSlice";
-import { Disclosure, Transition } from "@headlessui/react";
-import { itemPerPage } from "../../utils/constants";
+import { Transition } from "@headlessui/react";
 import Filter from "../../components/Filter";
-
+const itemPerPage = 16;
 const initialState = {
   page: "1",
   limit: itemPerPage,
@@ -15,11 +14,21 @@ const initialState = {
   status: "ACTIVE",
   order: "Newest",
 };
+const sortList = [
+  {
+    label: "Sort By",
+    name: "order",
+    value: "order",
+    defaultSelect: "Newest",
+    options: [
+      { label: "Newest", value: "desc" },
+      { label: "Oldest", value: "asc" },
+    ],
+  },
+];
 
 export const PostUpdates = ({ isOpen }) => {
-  const { rows, count, loading, error } = useSelector(
-    (state) => state.medias.postUpdates
-  );
+  const { rows, count } = useSelector((state) => state.medias.postUpdates);
   const [filters, setFilters] = useState(initialState);
   const dispatch = useDispatch();
 
@@ -34,6 +43,7 @@ export const PostUpdates = ({ isOpen }) => {
   useEffect(() => {
     dispatch(getMediaPostUpdates(filters));
   }, [filters]);
+
   return (
     <>
       <Filter
@@ -41,18 +51,7 @@ export const PostUpdates = ({ isOpen }) => {
         handleFilterReset={handleFilterReset}
         filters={filters}
         filtersList={[]}
-        sortList={[
-          {
-            label: "Sort By",
-            name: "order",
-            value: "order",
-            defaultSelect: "Newest",
-            options: [
-              { label: "Newest", value: "desc" },
-              { label: "Oldest", value: "asc" },
-            ],
-          },
-        ]}
+        sortList={sortList}
         isSearch
       />
       <Transition
@@ -90,28 +89,30 @@ export const PostUpdates = ({ isOpen }) => {
 
 export const MediaPostUpdate = ({ item }) => {
   return (
-    <div className="col-span-1 p-3 border border-neutral-300 rounded-2xl">
-      <div className="w-full h-48 mb-4 overflow-hidden rounded-lg sm:h-45">
-        <img
-          src={
-            item.url?.includes("localhost")
-              ? "../images/banner/placeholder.jpg"
-              : item.url
-          }
-          alt={item.title}
-          className="object-cover w-full h-full"
-        />
+    <Link to={`/media/details/${item?.slug}`}>
+      <div className="col-span-1 p-3 duration-700 ease-in-out border border-neutral-300 rounded-2xl hover:scale-95">
+        <div className="w-full h-48 mb-4 overflow-hidden rounded-lg sm:h-45">
+          <img
+            src={
+              item.url?.includes("localhost")
+                ? "../images/banner/placeholder.jpg"
+                : item.url
+            }
+            alt={item.title}
+            className="object-cover w-full h-full"
+          />
+        </div>
+        <p className="mb-2 text-heading-7 text-neutral-800 line-clamp-1 text-start">
+          {item.title}
+        </p>
+        <p className="mb-4 text-sm text-neutral-600">{Date}</p>
+        <Link
+          to={`/media/details/${item?.slug}`}
+          className="!px-5 !py-2 !text-button-lg btn btn-secondary w-fit"
+        >
+          Read More <ArrowRightIcon />{" "}
+        </Link>
       </div>
-      <p className="mb-2 text-heading-7 text-neutral-800 line-clamp-1 text-start">
-        {item.title}
-      </p>
-      <p className="mb-4 text-sm text-neutral-600">{Date}</p>
-      <Link
-        to={`/media/details/${item?.id}`}
-        className="!px-5 !py-2 !text-button-lg btn btn-secondary w-fit"
-      >
-        Read More <ArrowRightIcon />{" "}
-      </Link>
-    </div>
+    </Link>
   );
 };

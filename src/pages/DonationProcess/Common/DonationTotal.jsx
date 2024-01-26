@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setIsAnonymous } from "../../../features/basket/basketSlice";
 import { HelpCircleIcon } from "../../../theme/svg-icons";
@@ -7,6 +7,7 @@ import { Button } from "../../../components";
 import { formatPrice } from "../../../utils/helper";
 
 export const DonationTotal = ({ onNext, disableAnonymous }) => {
+	const user = localStorage.getItem('loggedIn');
   const { settings } = useSelector((state) => state.mapCountries);
   const processingFee = settings?.processingFee / 100 || 0;
 
@@ -40,7 +41,7 @@ export const DonationTotal = ({ onNext, disableAnonymous }) => {
       </div>
       <div className="h-px my-5 bg-neutral-300"></div>
       <div className="flex justify-between font-bold heading-6">
-        <div>Total</div>
+        <div>Total {user ? 'logegd in' : 'null'}</div>
         <div className="text-right">
           $
           {totalPoints
@@ -56,9 +57,9 @@ export const DonationTotal = ({ onNext, disableAnonymous }) => {
             type="checkbox"
             id="Anonymous"
             className="custom-checkbox"
-            onChange={(e) => dispatch(setIsAnonymous(e.target.checked))}
-            checked={isAnonymous}
-            disabled={disableAnonymous}
+            onChange={(e) => user ? dispatch(setIsAnonymous(e.target.checked)) : null}
+            checked={isAnonymous || !user}
+            disabled={disableAnonymous || !user}
           />
           <label
             htmlFor="Anonymous"

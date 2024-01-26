@@ -25,7 +25,8 @@ export const AdminsContentComponent = () => {
                         />
                     )}
                 </div>
-                <div className='relative mt-5 overflow-x-auto h-100'>
+                <div className="grid mt-5 md:mt-7.5">
+                <div className='relative overflow-x-auto h-100'>
                     <table class="table-auto w-full text-start">
                         <thead className='rounded bg-neutral-200'>
                             <tr className=''>
@@ -164,6 +165,8 @@ export const AdminsContentComponent = () => {
                         </tbody>
                     </table>
                 </div>
+                </div>
+
                 <div className="mt-7.5">
                     <Pagination />
                 </div>

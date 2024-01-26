@@ -30,7 +30,7 @@ const validationSchema = yup.object({
   description: yup.string().required("Description is required"),
 });
 
-export const VideoDetails = () => {
+const VideoDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -60,9 +60,9 @@ export const VideoDetails = () => {
           );
           if (response?.payload?.success) {
             showSuccessMessage(response?.payload?.message);
-            navigate('/admin/videos');
+            navigate("/admin/videos");
           } else {
-            showErrorMessage(response?.error?.message);
+            showErrorMessage(response?.payload?.message);
           }
         } else {
           response = await dispatch(addVideoDetails(values));
@@ -72,9 +72,9 @@ export const VideoDetails = () => {
             setImagePreviews(Array(4).fill(null));
             setCoverPreviews("");
             resetForm();
-            navigate('/admin/videos');
+            navigate("/admin/videos");
           } else {
-            showErrorMessage(response?.error?.message);
+            showErrorMessage(response?.payload?.message);
           }
         }
       } catch (error) {}
@@ -205,3 +205,5 @@ export const VideoDetails = () => {
     </div>
   );
 };
+
+export default VideoDetails;

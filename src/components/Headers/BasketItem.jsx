@@ -44,8 +44,14 @@ export const BasketItem = ({
         return "Weekly";
       case 30:
         return "Monthly";
-      default:
+      case 365:
         return "Yearly";
+      case 1:
+        return "Daily";
+      case 10:
+        return "10 Days";
+      default:
+        return "";
     }
   };
 
@@ -75,7 +81,11 @@ export const BasketItem = ({
               <p className="my-1 text-xs line-clamp-1 text-neutral-600 sm:text-sm sm:my-0">
                 {checkoutType === "COMMON"
                   ? "General Campaign"
-                  : `${checkoutType === "FEDYAH" ? "FEDYAH/KAFFARAH" : checkoutType}`}
+                  : `${
+                      checkoutType === "FEDYAH"
+                        ? "FEDYAH/KAFFARAH"
+                        : checkoutType
+                    }`}
               </p>
             </div>
             <div className="text-red-300 cursor-pointer">
@@ -90,7 +100,7 @@ export const BasketItem = ({
           {!isCommonORZaqat ? (
             <div className="flex items-center justify-between">
               {!isAdeeqah && (
-                <div className="relative flex flex-row w-auto h-8 bg-transparent rounded-lg">
+                <div className="relative flex flex-row w-auto h-10 bg-transparent rounded-lg">
                   <button
                     onClick={() => handleQuantityChange(index, "sub")}
                     data-action="decrement"

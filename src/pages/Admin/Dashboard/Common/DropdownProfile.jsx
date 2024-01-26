@@ -4,7 +4,7 @@ import { logout } from "../../../../features/authentication/authenticationSlice"
 import { logOut } from "../../../Include/logoutApi";
 import { SnackMessages } from "../../../../components/Toast";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function DropdownProfile() {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,14 +21,17 @@ function DropdownProfile() {
         sessionStorage.removeItem("loggedIn");
         localStorage.removeItem("checkout");
         showSuccessMessage(response.data);
-        dispatch(logout());
-        navigate("/");
+				setTimeout(() => {
+					dispatch(logout());
+        	navigate("/admin/login");
+				}, 200)
       } else {
         showErrorMessage(response.error);
       }
     } catch (error) {
       showErrorMessage(error.message);
     }
+    setIsOpen(false);
   };
   useEffect(() => {
     const isLoggedIn = JSON.parse(localStorage.getItem("loggedIn")) || {};
@@ -57,12 +60,14 @@ function DropdownProfile() {
       {isOpen && (
         <ul className="absolute right-0 px-6 py-4 bg-white border rounded-lg w-36 border-neutral-300 top-9">
           <li className="py-2 text-neutral-800 text-button-md hover:text-primary-300">
-            <a href="#">Profile</a>
+            <Link to="/admin/profile" onClick={() => setIsOpen(false)}>
+              Profile
+            </Link>
           </li>
-          <li className="py-2 text-neutral-800 text-button-md hover:text-primary-300">
-            <a href="#" onClick={logoutUser}>
+          <li className="py-2 text-neutral-800 text-button-md hover:text-primary-300  cursor-pointer">
+            <span onClick={logoutUser} >
               Logout
-            </a>
+            </span>
           </li>
         </ul>
       )}
