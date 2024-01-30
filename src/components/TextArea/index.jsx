@@ -8,7 +8,6 @@ export const TextArea = ({ value, name, handleChange, maxLength=500 }) => {
       handleChange(event);
     }
   };
-	console.log(maxLength, 'dijfh')
 
   return (
     <div className="relative">

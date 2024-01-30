@@ -11,6 +11,7 @@ import ActionButtonBgWithIcon from "../Common/ActionButtonBgWithIcon";
 import AddQurbanModal from './AddQurbanModal'
 import { useDispatch, useSelector } from 'react-redux'
 import { getSettings, updateCampaignOptions, getQurban, deleteQurban } from '../../../features/adminSettings'
+import { currencyConfig } from '../../../utils/constants'
 
 const validateNumber = v => !/^[0-9]+(.[0-9]+)?$/.test(v)
 
@@ -24,7 +25,7 @@ export default function Settings() {
         ramadanEndDate: settings.ramadanEndDate?.split('T')[0],
         ramadanStartDate: settings.ramadanStartDate?.split('T')[0],
         generalAmounts: settings.generalAmounts?.split(',') || ['', '', ''],
-        fedyahAmounts: settings.fedyahAmounts?.split(',') || ['', '', ''],
+        fedyahAmounts: settings.fedyahAmounts?.split(',') || ['', '', '', ''],
         waterWellCountries: settings.waterWellCountries?.split(',') || [],
       }
     })
@@ -45,7 +46,7 @@ export default function Settings() {
       },
       fedyahAmounts: {
         initialValue: ['', '', ''],
-        validator: (v) => !v[0] || !v[1] || !v[2] ? '3 price fields are required' : validateNumber(v[0]) || validateNumber(v[1]) || validateNumber(v[2]) ? 'Each fields should have valid price amounts' : '',
+        validator: (v) => !v[0] || !v[1] || !v[2] || !v[3] ? '4 price fields are required' : validateNumber(v[0]) || validateNumber(v[1]) || validateNumber(v[2]) || validateNumber(v[3]) ? 'Each fields should have valid price amounts' : '',
         setHelper: ({ values }, v) => {
           let arr = [...values.fedyahAmounts];
           arr[v.index] = v.value;
@@ -152,6 +153,11 @@ export default function Settings() {
                     <AmountInput
                       onChange={(e) => fixedArrayValueChange(e, 2)}
                       value={formState.values.fedyahAmounts[2]}
+                      name="fedyahAmounts"
+                    />
+                    <AmountInput
+                      onChange={(e) => fixedArrayValueChange(e, 3)}
+                      value={formState.values.fedyahAmounts[3]}
                       name="fedyahAmounts"
                     />
                   </>}
@@ -315,7 +321,7 @@ export default function Settings() {
                             {i.group}
                           </td>
                           <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
-                            ${i.amount}
+                            {currencyConfig.label}{i.amount}
                           </td>
                           <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
                             <div className="flex flex-wrap gap-3">

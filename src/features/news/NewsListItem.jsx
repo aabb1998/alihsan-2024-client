@@ -61,7 +61,7 @@ export const NewsListItem = ({ item }) => {
               {item.title}
             </h4>
             <p className="mb-5 text-sm line-clamp-3 text-neutral-600 break-words sm:min-h-[3.75rem]">
-              {item.content}
+              {item.contentText || item.content}
             </p>
             <Link
               to={`/news/details/${item.slug}`}

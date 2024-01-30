@@ -12,7 +12,7 @@ import { DeleteConfirmation } from "./DeleteConfirmation";
 import { CardItem } from "./CardItem";
 const { showSuccessMessage, showErrorMessage } = SnackMessages();
 
-const CardList = ({ handleAddCard, handleDonationProcess }) => {
+const CardList = ({ handleAddCard, handleDonationProcess, loading }) => {
   const [confirmModal, setConfirmModal] = useState(false);
   const [deleteId, setDeleteId] = useState("");
   const [cardSelected, setCardSelection] = useState("");
@@ -69,7 +69,7 @@ const CardList = ({ handleAddCard, handleDonationProcess }) => {
         <Button
           variant="primaryFull"
           label="Complete Donation"
-          disabled={!cardSelected}
+          disabled={!cardSelected || loading}
           onClick={() => handleDonationProcess(cardSelected)}
         />
       </div>

@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { checkAdminPermission } from "../../utils/helper";
+import { currencyConfig } from "../../utils/constants";
 
 const { showSuccessMessage, showErrorMessage } = SnackMessages();
 const paymentTypes = [
@@ -40,7 +41,6 @@ export const AdeeqahDonation = ({ campaign, handleClose, isModal }) => {
   });
 
   const handleDonation = async (values, { resetForm }) => {
-    checkAdminPermission()
     const itemPrices = {
       cow: cowPrice,
       "goat/sheep": goatPrice,
@@ -65,7 +65,10 @@ export const AdeeqahDonation = ({ campaign, handleClose, isModal }) => {
       checkoutType: "ADEEQAH_GENERAL_SACRIFICE",
       donationItemPrice: donationItemPrice,
       ricePrice: ricePrice,
+      Campaign: campaign,
     };
+    checkAdminPermission(updatedValues)
+
     const updatedCheckout = isInCheckoutList
       ? [
           ...checkout.slice(
@@ -280,7 +283,7 @@ export const AdeeqahDonation = ({ campaign, handleClose, isModal }) => {
                     variant={"secondaryOutlineFull"}
                     className={
                       formik?.values.riceQuantity === "25"
-                        ? "bg-primary-300 !text-white"
+                        ? "button-focus"
                         : ""
                     }
                   />
@@ -295,7 +298,7 @@ export const AdeeqahDonation = ({ campaign, handleClose, isModal }) => {
                     variant={"secondaryOutlineFull"}
                     className={
                       formik?.values.riceQuantity === "50"
-                        ? "bg-primary-300 !text-white"
+                        ? "button-focus"
                         : ""
                     }
                     onClick={handleRiceChange}
@@ -315,7 +318,7 @@ export const AdeeqahDonation = ({ campaign, handleClose, isModal }) => {
                         formik?.values.riceQuantity !== "50" &&
                         formik?.values.riceQuantity !== "25" &&
                         formik?.values.riceQuantity !== ""
-                          ? "bg-primary-300 !text-white"
+                          ? "button-focus"
                           : ""
                       }
                       onClick={handleCustomRice}
@@ -400,7 +403,7 @@ const TotalSection = ({
             <div className="col-span-3 capitalize ">{donationItem}</div>
             <div className="col-span-1">1 x</div>
             <div className="col-span-1 text-right">
-              ${donationItemPrice?.toLocaleString()}
+              {currencyConfig.label}{donationItemPrice?.toLocaleString()}
             </div>
           </div>
         ) : (
@@ -411,7 +414,7 @@ const TotalSection = ({
             <div className="col-span-3">Rice</div>
             <div className="col-span-1">{riceQnty}KG x</div>
             <div className="col-span-1 text-right">
-              ${ricePrice?.toLocaleString()}
+              {currencyConfig.label}{ricePrice?.toLocaleString()}
             </div>
           </div>
         ) : (
@@ -422,7 +425,7 @@ const TotalSection = ({
             <div className="h-px my-5 bg-neutral-300"></div>
             <div className="flex justify-between text-heading-7">
               <div>Subtotal</div>
-              <div>${subTotal?.toLocaleString()}</div>
+              <div>{currencyConfig.label}{subTotal?.toLocaleString()}</div>
             </div>
           </>
         ) : (

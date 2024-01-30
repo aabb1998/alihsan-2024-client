@@ -7,7 +7,7 @@ import { Constitution } from "../../features/financialReports/Constitutions";
 import { getFinantialReports } from "../../features/financialReports/financialReports";
 import PageHead from "../../components/PageHead";
 
-export const FinancialReports = () => {
+const FinancialReports = () => {
   const dispatch = useDispatch();
   const [tab, setTab] = useState("financial");
 
@@ -72,3 +72,6 @@ export const FinancialReports = () => {
     </div>
   );
 };
+
+
+export default FinancialReports

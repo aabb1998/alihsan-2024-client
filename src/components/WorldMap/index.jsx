@@ -12,7 +12,8 @@ import { HoverComponent } from "./HoverComponent";
 // import { getCountries } from "../../features/adminCountry/adminCountrySlice";
 import { getCountries } from "../../features/home/homeSlice";
 import { MinusIcon, PlusIcon } from "../../theme/svg-icons";
-const ZOOM_STEP = 0.2, ZOOM_MAX = 3, ZOOM_MIN = 1;
+const ZOOM_STEP = 0.5, ZOOM_MAX = 3, ZOOM_MIN = 1;
+const HEIGHT = 300, WIDTH = 640;
 
 const WorldMap = () => {
   const { mapCountries: countries } = useSelector((state) => state.mapCountries);
@@ -52,15 +53,19 @@ const WorldMap = () => {
         style={{ width: "100%" }}
         projection="geoEquirectangular" // set the projection to geoEquirectangular
         projectionConfig={{
-          scale: 120,
-          center: [0,0],
+          scale: 100,
         }}
-        height={'350'}
+        height={HEIGHT}
+				width={WIDTH}
       >
         <ZoomableGroup
 					filterZoomEvent={e => e.type!=='wheel'}
 					onMoveEnd={(e) => setMapCenter(e.coordinates)}
 					zoom={mapZoom}
+					translateExtent={[
+						[0, 0],
+						[WIDTH, HEIGHT]
+					]}
 					center={mapCenter}
 				>
           <Geographies geography={worldMapData}>
@@ -101,7 +106,7 @@ const WorldMap = () => {
         render={({ content, activeAnchor }) =>
           activeAnchor?.getAttribute("data-some-relevant-attr") ? (
             <HoverComponent
-              mapCountries={countries?.rows?.map((obj) => ({
+              mapCountries={countries?.map((obj) => ({
                 ...obj,
                 name: obj.countryName,
                 country: obj.countryCode,

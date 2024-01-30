@@ -108,13 +108,13 @@ const AddTags = ({ onClose }) => {
                         <Button
                           variant={"dark"}
                           className="flex-grow"
-                          label={"No, keep it"}
+                          label={"Cancel"}
                           onClick={onClose}
                         />
                         <Button
                           variant={"primary"}
                           className="flex-grow"
-                          label={"Yes, delete"}
+                          label={"Save"}
                         />
                       </div>
                     </div>

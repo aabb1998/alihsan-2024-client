@@ -14,18 +14,22 @@ const initialState = {
     cash: 0,
     unit: "AUD",
     bank: 0,
-    silver: {
-      karat: "1",
-      unit: "gram",
-      weight: 0,
-      value: 0,
-    },
-    gold: {
-      karat: "1",
-      unit: "gram",
-      weight: 0,
-      value: 0,
-    },
+    silver: [
+      {
+        karat: "1",
+        unit: "gram",
+        weight: 0,
+        value: 0,
+      },
+    ],
+    gold: [
+      {
+        karat: "1",
+        unit: "gram",
+        weight: 0,
+        value: 0,
+      },
+    ],
     investmentProfit: 0,
     shareResale: 0,
     merchandise: 0,
@@ -59,10 +63,24 @@ const slice = createSlice({
       state.amounts[action.payload.name] = action.payload.value;
     },
     zakatMetalInput(state, action) {
-      state.amounts[action.payload.name].karat = action.payload.karat;
-      state.amounts[action.payload.name].unit = action.payload.unit;
-      state.amounts[action.payload.name].weight = action.payload.weight;
-      state.amounts[action.payload.name].value = action.payload.value;
+      const arrayToUpdate = state.amounts[action.payload.name];
+      console.log(arrayToUpdate)
+      const existingIndex = arrayToUpdate.findIndex(
+        (item) => item.key === action.payload.key
+      );
+      if (existingIndex !== -1) {
+        // If the index exists, replace the element at that index
+        arrayToUpdate[existingIndex ] = action.payload;
+      } else {
+        // If the index doesn't exist, push the new element into the array
+        arrayToUpdate.push(action.payload);
+      }
+      state.amounts[action.payload.name] = arrayToUpdate;
+      // state.amounts[action.payload.name].push(action.payload);
+      // state.amounts[action.payload.name].karat = action.payload.karat;
+      // state.amounts[action.payload.name].unit = action.payload.unit;
+      // state.amounts[action.payload.name].weight = action.payload.weight;
+      // state.amounts[action.payload.name].value = action.payload.value;
     },
     zakatResetInput(state, action) {
       state.amounts = initialState.amounts;
@@ -77,7 +95,8 @@ const slice = createSlice({
       state.prices.goldUsd = action.payload?.price.goldPriceInUsd;
       state.prices.silverUsd = action.payload?.price.silverPriceInUsd;
       state.prices.audToUsd =
-        action.payload?.price.goldPriceInUsd / action.payload?.price.goldPriceInAud;
+        action.payload?.price.goldPriceInUsd /
+        action.payload?.price.goldPriceInAud;
       state.prices.loading = false;
       state.prices.updatedAt = action.payload?.price?.updatedAt;
       //////

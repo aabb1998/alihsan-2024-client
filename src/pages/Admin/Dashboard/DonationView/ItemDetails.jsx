@@ -26,8 +26,8 @@ const ItemDetails = ({ data }) => {
       const { total } = data;
       return { Total: total };
     } else if (type === "FEDYAH") {
-      const { type, quantity, amount } = data;
-      return { Type: type, Quantity: quantity, Amount: amount };
+      const { type, quantity, total } = data;
+      return { Type: type, Quantity: quantity, Amount: total };
     } else if (type === "AQEEQAH_ADAHI") {
       const { quantity, videoRequest, phoneNumber, childName } = data;
       return {
@@ -45,21 +45,21 @@ const ItemDetails = ({ data }) => {
         "Rice Quantity": riceQuantity,
       };
     } else if (type === "ZAQAT") {
-      const { amount } = data;
-      return { amount: amount };
+      const { total } = data;
+      return { amount: total };
     } else if (type === "WATER_CAMPAIGN") {
-      const { amount, countryDonation, namePlaque, notes, waterCampaignType } =
+      const { total, countryDonation, namePlaque, notes, waterCampaignType } =
         data;
       return {
-        amount: amount,
+        amount: total,
         "Country Donation": countryDonation,
         "Name Plaque": namePlaque,
         Notes: notes,
         "Water Campaign Type": waterCampaignType,
       };
     } else if (type === "KURBAN") {
-      const { amount, countryDonation, donationItem } = data;
-      return { Amount: amount, Country: countryDonation, Item: donationItem };
+      const { total, countryDonation, donationItem } = data;
+      return { Amount: total, Country: countryDonation, Item: donationItem };
     }
   };
 

@@ -25,7 +25,6 @@ export const View = () => {
   const { pathname } = useLocation();
 
   const { media, isLoading } = useSelector((state) => state.adminMedia);
-  console.log(media);
 
   useEffect(() => {
     if (id) {
@@ -88,7 +87,8 @@ export const View = () => {
                         <div className="w-full overflow-hidden rounded-lg h-80">
                         <YoutubeVideo url={media[detailsValue?.key]} />
                       </div>
-
+											) : media && detailsValue.key==='description' ? (
+												<p dangerouslySetInnerHTML={{__html: media[detailsValue.key]}} />
                       ) : (
                         media && media[detailsValue?.key]
                       )}

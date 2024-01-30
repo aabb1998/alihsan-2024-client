@@ -18,7 +18,7 @@ export const ImpactStoryListItem = ({ item }) => {
           {item?.title}
         </p>
         <p className="mb-5 text-sm text-neutral-600 line-clamp-2">
-          {item?.description}
+          {item?.descriptionText || item?.description}
         </p>
         <Link
           to={`/impact-story/${item?.slug}`}

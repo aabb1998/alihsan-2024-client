@@ -129,7 +129,7 @@ const AddOrCreateModal = ({ onClose, item }) => {
           <div className="flex items-end justify-center min-h-full text-center sm:items-center sm:p-0 max-h-[80vh]">
             <div className="relative z-30 w-full gap-4 text-left transition-all transform sm:max-w-modal-sm">
               <div className="flex px-4 pt-4 pb-7.5 sm:pt-10 sm:pb-10 sm:px-10 bg-white rounded-t-3xl sm:rounded-3xl">
-                <div className="flex flex-col flex-grow gap-4 w-100 sm:gap-8">
+                <div className="flex flex-col flex-grow gap-4 w-100 sm:gap-8 ">
                   <div className="flex justify-between">
                     <div className="font-bold tracking-tighter text-neutral-1000 text-md sm:text-heading-7">
                       {item ? "Edit" : "Add"} Country
@@ -143,11 +143,11 @@ const AddOrCreateModal = ({ onClose, item }) => {
                     className=""
                   >
                     <div className="flex flex-col gap-6">
-                      <div className="flex flex-col gap-6">
+                      <div className="flex flex-col gap-6 pr-2 overflow-auto max-h-96">
 
                           <div className="form-group">
                             <label htmlFor="campaignId" className="block">
-                              Country
+                              Country<span className="text-red-300">*</span>
                             </label>
 
                             <Dropdown
@@ -173,7 +173,7 @@ const AddOrCreateModal = ({ onClose, item }) => {
 
                           <div className="form-group">
                             <label htmlFor="description" className="block">
-                              Description{" "}
+                              Description{""}<span className="text-red-300">*</span>
                             </label>
                             <TextArea
                               handleChange={handleInputChange}
@@ -193,7 +193,7 @@ const AddOrCreateModal = ({ onClose, item }) => {
 
                           <div className="form-group">
                             <label htmlFor="description" className="block">
-                              Image{" "}
+                              Image{""}<span className="text-red-300">*</span>
                             </label>
                             <ImageUpload
                               imagePreviews={imagePreviews}

@@ -7,6 +7,7 @@ import { getUsers } from "../../../features/adminCustomers";
 import Img from "../../../components/Image";
 import { countriesList } from "../../../utils/countries";
 import { UserIcon } from "../../../theme/svg-icons";
+import { currencyConfig } from "../../../utils/constants";
 
 export default function Customers () {
   const { filters, rows, count, loading } = useSelector(state => state.adminCustomers);
@@ -36,7 +37,7 @@ export default function Customers () {
 						setFilters={load}
 						filters={filters}
           />{" "}
-          <div className="relative overflow-x-auto">
+          <div className="overflow-x-auto md:relative">
             <table class="table-auto w-full text-start">
               <thead className="rounded bg-neutral-200">
                 <tr className="">
@@ -86,7 +87,7 @@ export default function Customers () {
 											{i.country && countriesList.find(c => c.code===i.country)?.name}
 										</td>
 										<td className="p-4 text-sm font-medium font-Montserrat text-neutral-700 max-w-[10rem] break-all">
-											${i.totalDonations}
+											{currencyConfig.label}{i.totalDonations}
 										</td>
 										<td className="p-4 text-sm font-medium font-Montserrat text-neutral-700 max-w-[10rem] break-all">
 											{i.lastDayActive}

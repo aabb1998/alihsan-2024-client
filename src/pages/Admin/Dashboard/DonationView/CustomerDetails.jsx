@@ -3,7 +3,7 @@ import React from "react";
 const CustomerDetails = ({ data }) => {
   const rowsData = [
     { label: "Full Name", value: data?.firstName + " " + data?.lastName },
-    { label: "Mobile Number", value: data?.phone },
+    { label: "Phone Number", value: data?.phone },
     { label: "Email", value: data?.email },
     { label: "Company", value: data?.companyName },
     { label: "Address", value: data?.address },
@@ -11,7 +11,7 @@ const CustomerDetails = ({ data }) => {
 
   return (
     <div>
-      <div className="w-full mt-5 md: mt-7.5">
+      <div className="w-full mt-5 md:mt-7.5">
         <div className="flex flex-col mb-6 form-group">
           <table className="w-full table-auto text-start">
             <tbody>

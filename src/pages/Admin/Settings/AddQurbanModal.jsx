@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { addQurban, editQurban } from '../../../features/adminSettings'
 import ArrayInput from './ArrayInput'
 import { countriesList } from '../../../utils/countries'
+import { currencyConfig } from "../../../utils/constants";
 
 const validateNumber = v => !/^[0-9]+(.[0-9]+)?$/.test(v)
 const ErrorLabel = ({ error }) => <div className="mt-2 text-red-300 text-md">{error}</div>
@@ -79,27 +80,27 @@ const AddQurbanModal = ({ onClose, onAdd, state }) => {
                   </div>
                   <div className="flex flex-col">
                     <div className="w-full mb-4 form-group">
-                      <label htmlFor="amount" className="block">Group Name </label>
+                      <label htmlFor="amount" className="block">Group Name<span className="text-red-300">*</span> </label>
                       <input type="text" className="w-full form-control" id="Weight" placeholder="Group Name" name="group" onChange={formState.dispatch} value={formState.values.group} />
                       <ErrorLabel
                         error={formState.touched.group && formState.errors.group}
                       />
                     </div>
                     <div className="mb-4 form-group">
-                      <label htmlFor="cost" className="block">Cost</label>
+                      <label htmlFor="cost" className="block">Donation Amount<span className="text-red-300">*</span></label>
                       {/* <input type="text" className="w-full form-control" id="Weight" placeholder="$130" name="amount" onChange={formState.dispatch} value={formState.values.amount} /> */}
                       <div class="relative overflow-hidden form-group grow basis-0">
                         <div class="absolute justify-center overflow-hidden inset-y-0 w-8 h-full bg-neutral-200 start-0 flex items-center pointer-events-none border border-neutral-300 rounded-md rounded-tr-none rounded-br-none">
                           <Edit3Icon iconSize={18} />
                         </div>
-                        <input type="text" placeholder="$130" name="amount" onChange={formState.dispatch} value={formState.values.amount} className="!pl-9 border form-control border-neutral-300 min-w-[5.75rem] w-full" />
+                        <input type="text" placeholder={currencyConfig.label+"130"} name="amount" onChange={formState.dispatch} value={formState.values.amount} className="!pl-9 border form-control border-neutral-300 min-w-[5.75rem] w-full" />
                       </div>
                       <ErrorLabel
                         error={formState.touched.amount && formState.errors.amount}
                       />
                     </div>
                     <div className="form-group">
-                      <label htmlFor="country" className="block">Country</label>
+                      <label htmlFor="country" className="block">Country<span className="text-red-300">*</span></label>
                       <ArrayInput
                         array={formState.values.country}
                         onChange={formState.dispatch}

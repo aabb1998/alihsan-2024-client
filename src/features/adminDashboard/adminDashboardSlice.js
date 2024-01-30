@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { api } from "../../utils/api";
 import * as XLSX from "xlsx";
+import { getRecurringLabel } from "../../utils/helper";
 
 const initialState = {
   orders: [],
@@ -15,7 +16,6 @@ const initialState = {
 
 function sanitizeExportData(data) {
   return data?.payments?.map((item) => ({
-    Id: item?.donationId,
     "Project Name": item.Campaign.name,
     Date: new Date(item.updatedAt).toLocaleDateString("en-US", {
       month: "numeric",
@@ -23,6 +23,43 @@ function sanitizeExportData(data) {
       year: "numeric",
     }),
     Amount: item?.total,
+    "Checkout Type": item.Campaign?.checkoutType,
+    Description: item.Campaign?.description,
+    Email: item?.email,
+    FirstName: item?.firstName,
+    lastName: item?.lastName,
+    address: item?.address,
+    Country: item?.country,
+    "Donated At": item?.donatedAt,
+    Anonymous: item?.isAnonymous ? "Yes" : "No",
+    "Last Payment Date": item?.lastPaymentDate,
+    "Order Id": item?.orderId,
+    "Payment Gateway": item?.paymentGateway,
+    Phone: item?.phone,
+    State: item?.state,
+    Status: item?.status,
+    Total: item?.total,
+    Zip: item?.zip,
+    "Behalf Of": item?.behalfOf,
+    "Child Name": item?.childName,
+    "Company Name": item?.companyName,
+    "Country Donation": item?.countryDonation,
+    "Donation Item": item?.donationItem,
+    "Donation Item Price": item?.donationItemPrice,
+    "Is Recurring": item?.isRecurring?'Yes':'No',
+    "Name Plaque": item?.namePlaque,
+    "Next PaymentDate": item?.nextPaymentDate,
+    Notes: item?.notes,
+    "Period Days": getRecurringLabel(item?.periodDays),
+    
+    Quantity: item?.quantity,
+    "Rice Price": item?.ricePrice,
+    "Rice Quantity": item?.riceQuantity,
+    "Special Request": item?.specialRequest,
+    Type: item?.type,
+    "Type Price": item?.typePrice,
+    "Video RequestUrl": item?.videoRequestUrl,
+    "Water Campaign Type": item?.waterCampaignType,
   }));
 }
 

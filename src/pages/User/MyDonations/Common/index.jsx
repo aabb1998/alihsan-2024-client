@@ -10,8 +10,8 @@ export const SubscriptionsComponent =() =>{
 
     <div className="flex flex-col gap-5 p-4 border md:flex-row border-neutral-300 rounded-2xl">
         <div className="shrink-0">
-            <div className="relative overflow-hidden rounded-xl">
-                <Img src={"/images/banner/projects/1.jpg"} alt="" className="object-cover h-full min-h-[108px] w-full md:w-[162px] rounded-xl" />
+            <div className="relative w-full sm:h-[6.75rem] h-[8.625rem] sm:w-[10.125rem] overflow-hidden rounded-xl">
+                <Img src={"/images/banner/projects/1.jpg"} alt="" className="object-cover h-full w-full" />
                 <div className='absolute bottom-0 left-0 flex justify-center w-full py-1 bg-primary-200 text-button-md'>Monthly</div>
 
             </div>

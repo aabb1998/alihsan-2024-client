@@ -114,14 +114,14 @@ export const ImageCropper = React.memo(({ onClose, getCroppedImage ,src }) => {
     return (
         <>
             <div >
-              
-                <div className="p-3 bg-white rounded-b-lg min-h-600">
-                    {!imgSrc && <div className="relative">
-                        <input type="file" accept="image/*" onChange={onSelectFile} />
+
+                <div className="bg-white rounded-b-lg min-h-600">
+                    {!imgSrc && <div className="relative my-5">
+                        <input type="file" accept="image/*" onChange={onSelectFile} className='text-sm' />
                     </div>}
-                    <div className='flex flex-col justify-center items-center'>
+                    <div className='flex flex-col items-center justify-center'>
                         <div className={`w-full pb-5 ${cropped ? 'hidden' : 'opacity-100'}`}>
-                            {imgSrc && <button className="cursor-pointer ml-auto flex relative" onClick={closeCropperScreen}>
+                            {imgSrc && <button className="relative flex ml-auto cursor-pointer" onClick={closeCropperScreen}>
                                 <div className="pb-3">
                                     <CloseIcon />
                                 </div>
@@ -162,7 +162,7 @@ export const ImageCropper = React.memo(({ onClose, getCroppedImage ,src }) => {
                     {/* <div className="flex justify-between gap-4 sm:gap-5">
                       <Button
                         variant={"dark"}
-                        
+
                         label={"No, keep it"}
                         onClick={onClose}
                       />
@@ -177,16 +177,16 @@ export const ImageCropper = React.memo(({ onClose, getCroppedImage ,src }) => {
                         />
                       )}
                     </div> */}
-                    <div  className="flex justify-between gap-4 sm:gap-5">
+                    <div  className="flex flex-wrap justify-between gap-4 sm:gap-5">
                         {!cropped ? <>
 
-                            <Button variant={"dark"} disabled={false} type="button" onClick={onClose} label="Cancel" className="flex-grow" />
-                            <Button variant="primary" onClick={handleCrop} disabled={false}  label={"Crop Image"} type="button" className="flex-grow"/>
+                            <Button variant={"dark"} disabled={false} type="button" onClick={onClose} label="Cancel" className="grow basis-0" />
+                            <Button variant="primary" onClick={handleCrop} disabled={!imgSrc}  label={"Crop Image"} type="button" className="grow basis-0"/>
                         </>
                             :
                             <>
-                                <Button variant="secondary" disabled={false} type="button" onClick={handleBack} label="Back"className="flex-grow" />
-                                <Button variant="primary" disabled={false} onClick={handleSubmit} type="button" label={false ? "Assigning..." : "Submit"} className="flex-grow" />
+                                <Button variant="secondary" disabled={false} type="button" onClick={handleBack} label="Back"className="grow basis-0" />
+                                <Button variant="primary" disabled={false} onClick={handleSubmit} type="button" label={false ? "Assigning..." : "Submit"} className="grow basis-0" />
                             </>
                         }
 

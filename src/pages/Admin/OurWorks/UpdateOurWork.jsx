@@ -170,7 +170,7 @@ export const UpdateOurWork = () => {
         <div className="mt-5 md:mt-7.5">
           <div className="flex flex-col mb-6 form-group">
             <label htmlFor="title" className="">
-              Name
+              Name<span className="text-red-300">*</span>
             </label>
             <input
               type="text"
@@ -190,7 +190,7 @@ export const UpdateOurWork = () => {
           </div>
           <div className="flex flex-col mb-6 form-group">
             <label htmlFor="title" className="">
-              Title
+              Title<span className="text-red-300">*</span>
             </label>
             <input
               type="text"
@@ -211,7 +211,7 @@ export const UpdateOurWork = () => {
 
           <div className="relative flex flex-col mb-6 text-area">
             <label htmlFor="content" className="">
-              Description
+              Description<span className="text-red-300">*</span>
             </label>
             <TextArea
               handleChange={handleInputChange}
@@ -228,7 +228,7 @@ export const UpdateOurWork = () => {
           </div>
           <div className="form-group">
             <label htmlFor="content" className="">
-              Image
+              Image<span className="text-red-300">*</span>
             </label>
             <ImageUpload
               imagePreviews={imagePreviews}

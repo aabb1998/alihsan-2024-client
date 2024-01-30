@@ -3,30 +3,32 @@ import { Pagination } from "../../../components/Pagination";
 import {
   ChevronUpIcon,
   ChevronsUpIcon,
-  EyeIcon,
+  DownloadIcon,
 } from "../../../theme/svg-icons";
 import { useSelector, useDispatch } from "react-redux";
 import {
   getInfoTileData,
   getSubscriptions,
 } from "../../../features/adminDonations/adminDonationSlice";
-import { adminItemPerPage, itemPerPage } from "../../../utils/constants";
+import { adminItemPerPage, currencyConfig, itemPerPage } from "../../../utils/constants";
 import { SnackMessages } from "../../../components/Toast";
 import Filter from "../../../components/Filter";
 import Loader from "../../../components/Loader";
 import { formatPrice, getDateRange } from "../../../utils/helper";
-import ViewModal from "./ViewModal";
 import DatePickerModal from "../Dashboard/DatePickerModal";
 import { useNavigate } from "react-router-dom";
 import ActionButtonBgWithIcon from "../Common/ActionButtonBgWithIcon";
 import { generateInvoice } from "../../../features/myDonation/myDonationSlice";
+import { Button } from "../../../components";
+import { downloadReport } from "../../../features/adminDashboard/adminDashboardSlice";
+import { PrimaryLoadingButton } from "../../../components/LoadingButtons";
 
 const AmountFilters = [
   { label: "All", value: "" },
-  { label: "$0 - $50", value: "0-50" },
-  { label: "$50 - $100", value: "50-100" },
-  { label: "$100 - $200", value: "100-200" },
-  { label: "> $200", value: "200-" },
+  { label: `${currencyConfig.label}0 - ${currencyConfig.label}50`, value: "0-50" },
+  { label: `${currencyConfig.label}50 - ${currencyConfig.label}100`, value: "50-100" },
+  { label: `${currencyConfig.label}100 - ${currencyConfig.label}200`, value: "100-200" },
+  { label: `> ${currencyConfig.label}200`, value: "200-" },
 ];
 const PeriodFilters = [
   { label: "All", value: "" },
@@ -51,7 +53,7 @@ const initialState = {
   order: "",
   startDate: "",
   endDate: "",
-  status: "COMPLETED",
+  status: "",
   guest: false,
 };
 
@@ -63,6 +65,8 @@ export default function Subscriptions() {
   const { donations, isLoading, infoTileData, customersList } = useSelector(
     (state) => state?.adminDonations
   );
+  const { isDownloading } = useSelector((state) => state.adminDashboard);
+  console.log(isDownloading);
   const filtersList = [
     {
       label: "Amount",
@@ -107,7 +111,6 @@ export default function Subscriptions() {
       })
     );
   };
-
 
   const { count, rows } = donations?.subscriptionList || { rows: [], count: 0 };
   const navigate = useNavigate();
@@ -188,6 +191,15 @@ export default function Subscriptions() {
     });
   };
 
+  const handleDownloadReport = async () => {
+    const response = await dispatch(downloadReport(filters));
+    if (response?.payload) {
+      showSuccessMessage(response?.payload?.message);
+    } else {
+      showErrorMessage(response?.error?.message);
+    }
+  };
+
   useEffect(() => {
     getData(filters);
   }, [filters]);
@@ -206,6 +218,21 @@ export default function Subscriptions() {
       )}
       <div className="flex items-center justify-between w-full border-b border-neutral-300 pb-3.5">
         <h5 className="text-button-lg md:text-heading-5">Subscriptions</h5>
+        {isDownloading ? (
+          <PrimaryLoadingButton additionalButtonClasses="" />
+        ) : (
+          <Button
+            className=" btn btn-primary text-button-md md:text-button-lg"
+            type="submit"
+            leftIcon={
+              <span className="sm:hidden">
+                <DownloadIcon />
+              </span>
+            }
+            label={<span className="hidden sm:flex">Download Report</span>}
+            onClick={handleDownloadReport}
+          />
+        )}
       </div>
       <div className="flex my-2 sm:my-5 md:my-7.5 gap-2 md:gap-7.5 flex-wrap">
         <InfoTile
@@ -219,7 +246,7 @@ export default function Subscriptions() {
 
         <InfoTile
           title={"Total Subscription Amount"}
-          value={`$${formatPrice(infoTileData?.totalSubscriptionAmount || 0)}`}
+          value={`${currencyConfig.label}${formatPrice(infoTileData?.totalSubscriptionAmount || 0)}`}
         />
       </div>
 
@@ -319,7 +346,7 @@ export default function Subscriptions() {
                         </div>
                       </td>
                       <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
-                        ${donation.total}
+                        {currencyConfig.label}{donation.total}
                       </td>
                       <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
                         {donation.donatedAt}

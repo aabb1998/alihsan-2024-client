@@ -8,6 +8,7 @@ import {
   PlusIcon,
   RiceIcon,
 } from "../../theme/svg-icons";
+import { currencyConfig } from "../../utils/constants";
 import { formatPrice } from "../../utils/helper";
 
 export const BasketItem = ({
@@ -170,7 +171,7 @@ export const BasketItem = ({
                   className="p-0 text-center w-14 min-w-[3.5rem] h-8 rounded-l-none  border-neutral-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   aria-label="amount"
                   type="text"
-                  placeholder="$100"
+                  placeholder={`${currencyConfig.label}100`}
                   value={total}
                   min={0}
                   onInput={(event) => handleInputChange(index, event)}
@@ -189,7 +190,7 @@ export const BasketItem = ({
                   className="p-0 text-center w-14 min-w-[3.5rem] h-8 rounded-l-none  border-neutral-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   aria-label="amount"
                   type="number"
-                  placeholder="$100"
+                  placeholder={`${currencyConfig.label}100`}
                   value={total}
                   readOnly={toggle}
                   disabled
@@ -205,15 +206,15 @@ export const BasketItem = ({
           <div className="flex">
             <div className="font-bold text-md sm:text-heading-7">
               {isCommonORZaqat ? (
-                "$" + formatPrice(total)
+                currencyConfig.label + formatPrice(total)
               ) : isAdeeqah ? (
-                <>{"$" + formatPrice(total)}</>
+                <>{currencyConfig.label + formatPrice(total)}</>
               ) : (
                 <>
                   <span className="font-medium text-md font-Montserrat text-neutral-500">
                     {quantity + " x "}
                   </span>
-                  {"$" + formatPrice(price)}
+                  {currencyConfig.label + formatPrice(price)}
                 </>
               )}
             </div>

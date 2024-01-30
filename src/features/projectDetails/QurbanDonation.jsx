@@ -11,6 +11,7 @@ import { countriesList } from '../../utils/countries';
 import Img from '../../components/Image';
 import { getQurbanGroups } from './projectDetailSlice';
 import { checkAdminPermission } from '../../utils/helper';
+import { currencyConfig } from '../../utils/constants';
 
 const validationSchema = yup.object().shape({
   group: yup.string().required("Group is required"),
@@ -42,7 +43,6 @@ export const QurbanDonation = ({ campaign, handleClose, isModal }) => {
 			setCountryState({ type: 'error', error: 'Country is required.' })
 			return;
 		}
-    checkAdminPermission()
     const checkout = JSON.parse(localStorage.getItem("checkout") || "[]");
     const isInCheckoutList = checkout.find(
       (obj) => obj.campaignId === values.campaignId
@@ -51,8 +51,11 @@ export const QurbanDonation = ({ campaign, handleClose, isModal }) => {
       ...values,
       total: parseInt(values.amount, 10),
       isRecurring: false,
-			country: countryState.value
+			country: countryState.value,
+      Campaign: campaign,
     };
+    checkAdminPermission(newValues)
+
     const action = isInCheckoutList ? updateBasketItem : addBasketItem;
     const updatedCheckout = isInCheckoutList
       ? [
@@ -167,12 +170,12 @@ export const QurbanDonation = ({ campaign, handleClose, isModal }) => {
         <div className="h-px mb-5 bg-neutral-300"></div>
         <div className="flex justify-between mb-3">
           <div>Cost</div>
-          <div>${selectedGroup?.amount || 0}</div>
+          <div>{currencyConfig.label}{selectedGroup?.amount || 0}</div>
         </div>
         <div className="h-px mb-5 bg-neutral-300"></div>
         <div className="flex justify-between mb-3 text-heading-7">
           <div>Subtotal</div>
-          <div>${selectedGroup?.amount || 0}</div>
+          <div>{currencyConfig.label}{selectedGroup?.amount || 0}</div>
         </div>
         <div className="flex flex-col gap-8">
           <div>

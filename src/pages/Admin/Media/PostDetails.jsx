@@ -49,6 +49,7 @@ export const PostDetails = () => {
       url: media?.url ?? "",
       title: media?.title ?? "",
       description: media?.description ?? "",
+      descriptionText: media?.descriptionText ?? media?.description ?? "",
     },
     validationSchema: validationSchema,
     onSubmit: async (values, { resetForm }) => {
@@ -57,6 +58,7 @@ export const PostDetails = () => {
       formData.append("title", values.title);
       formData.append("slug", values.slug);
       formData.append("description", values.description);
+      formData.append("descriptionText", values.descriptionText);
 
       try {
         let response;
@@ -118,6 +120,11 @@ export const PostDetails = () => {
       fileInput.value = null;
     }
   };
+
+	const handleDescriptionChange = e => {
+		formik.setFieldValue('description', e.target.value.html)
+		formik.setFieldValue('descriptionText', e.target.value.text)
+	}
 
 
   const getCroppedImage = async (url) => {
@@ -189,7 +196,7 @@ export const PostDetails = () => {
         <div className="mt-5 md:mt-7.5">
           <div className="flex flex-col mb-6 form-group">
             <label htmlFor="title" className="">
-              Title
+              Title<span className="text-red-300">*</span>
             </label>
             <input
               type="text"
@@ -209,7 +216,7 @@ export const PostDetails = () => {
           </div>
           <div className="flex flex-col mb-6 form-group">
             <label htmlFor="blog-title" className="">
-              Slug
+              Slug<span className="text-red-300">*</span>
             </label>
             <input
               type="text"
@@ -230,11 +237,11 @@ export const PostDetails = () => {
 
           <div className="relative flex flex-col mb-6 text-area">
             <label htmlFor="content" className="">
-              Description
+              Description<span className="text-red-300">*</span>
             </label>
 						<QuillEditor
 							value={formik.values.description}
-							onChange={handleInputChange}
+							onChange={e => handleDescriptionChange(e)}
 							name="description"
 						/>
             {/* <TextArea
@@ -252,9 +259,9 @@ export const PostDetails = () => {
           </div>
           <div className="flex flex-col mb-6 form-group">
             <label htmlFor="title" className="">
-              Image
+              Image<span className="text-red-300">*</span>
             </label>
-            
+
             <ImageUpload
               imagePreviews={imagePreviews}
               name={"images"}

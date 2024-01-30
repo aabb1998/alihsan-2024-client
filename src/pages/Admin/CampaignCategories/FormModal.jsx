@@ -24,10 +24,10 @@ const CategoryFormModal = ({ onClose, state }) => {
         initialValue: '',
         validator: v => !v.length && 'This field is required',
       },
-      description: {
-        initialValue: '',
-        validator: v => !v.length && 'This field is required',
-      },
+      // description: {
+      //   initialValue: '',
+      //   validator: v => !v.length && 'This field is required',
+      // },
     }, onSubmit: ({ values }) => {
       let promise;
       if (state === true)
@@ -76,13 +76,13 @@ const CategoryFormModal = ({ onClose, state }) => {
                         error={formState.touched.group && formState.errors.group}
                       />
                     </div>
-                    <div className="w-full form-group">
+                    {/* <div className="w-full form-group">
                       <label htmlFor="cost" className="block">Description</label>
                       <textarea type="text" className="w-full form-control min-h-[7.5em]" id="Weight" placeholder="Description" name="description" onChange={formState.dispatch} value={formState.values.description} />
                       <ErrorLabel
                         error={formState.touched.description && formState.errors.description}
                       />
-                    </div>
+                    </div> */}
                   </div>
 
                   <div className="flex gap-5 sm:gap-7.5">

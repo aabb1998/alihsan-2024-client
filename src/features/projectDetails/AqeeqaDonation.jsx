@@ -16,6 +16,7 @@ import { FormikValidationError } from "../Common/FormikValidationError";
 import PhoneInput from "react-phone-input-2";
 import * as yup from "yup";
 import { checkAdminPermission } from "../../utils/helper";
+import { currencyConfig } from "../../utils/constants";
 
 const { showSuccessMessage } = SnackMessages();
 
@@ -23,7 +24,6 @@ export const AqeeqaDonation = ({ campaign, handleClose, isModal }) => {
   const dispatch = useDispatch();
 
   const handleDonation = async (values, { resetForm }) => {
-    checkAdminPermission()
     const checkout = JSON.parse(localStorage.getItem("checkout") || "[]");
     const isInCheckoutList = checkout.find(
       (obj) => obj.campaignId === values.campaignId
@@ -32,7 +32,10 @@ export const AqeeqaDonation = ({ campaign, handleClose, isModal }) => {
       ...values,
       total: parseInt(values.amount * values.quantity, 10),
       isRecurring: false,
+      Campaign: campaign,
     };
+    checkAdminPermission(newValues)
+
     const action = isInCheckoutList ? updateBasketItem : addBasketItem;
     const updatedCheckout = isInCheckoutList
       ? [
@@ -130,7 +133,7 @@ export const AqeeqaDonation = ({ campaign, handleClose, isModal }) => {
         >
           <div className="flex items-center gap-4 mb-5 md:mb-8">
             <div className="font-bold text-heading-5 md:heading-4">
-              ${campaign?.prices?.aqeeqahAdahiPrice?.toLocaleString()}
+              {currencyConfig.label}{campaign?.prices?.aqeeqahAdahiPrice?.toLocaleString()}
             </div>
             <div className="custom-number-input form-group">
               <label htmlFor="custom-input-number" className="sr-only">
@@ -263,14 +266,14 @@ export const AqeeqaDonation = ({ campaign, handleClose, isModal }) => {
                 <div>Aqeeqah Adahi</div>
                 <div>{formik.values?.quantity}KG x</div>
                 <div>
-                  ${campaign?.prices?.aqeeqahAdahiPrice?.toLocaleString()}
+                  {currencyConfig.label}{campaign?.prices?.aqeeqahAdahiPrice?.toLocaleString()}
                 </div>
               </div>
               <div className="h-px my-5 bg-neutral-300"></div>
               <div className="flex justify-between text-button-lg md:text-heading-7">
                 <div>Subtotal</div>
                 <div>
-                  $
+                  {currencyConfig.label}
                   {(
                     campaign?.prices?.aqeeqahAdahiPrice *
                     formik.values?.quantity

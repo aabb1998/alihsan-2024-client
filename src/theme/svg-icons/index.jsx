@@ -409,7 +409,7 @@ export const TwitterIcon = ({ iconSize = 18 }) => {
       viewBox="0 0 39 38"
     >
       <path
-        fill="#fff"
+        fill="currentcolor"
         d="M.92 0l14.662 21.375L1.23 38h3.18l12.576-14.578 10 14.578H39L23.682 15.67 37.199 0h-3.17L22.275 13.617 12.934 0H.92zm3.797 2h7.164l23.322 34H28.04L4.717 2z"
       ></path>
     </svg>

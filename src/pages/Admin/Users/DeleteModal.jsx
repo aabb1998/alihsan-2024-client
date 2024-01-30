@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { CloseIcon } from '../../../theme/svg-icons';
 import Button from '../../../components/Button';
 
-export default function DeleteModal ({ id, onClose, onDelete }) {
+export default function DeleteModal ({ id, isUnblocking, onClose, onDelete }) {
   return (
     <>
       <div
@@ -19,7 +19,7 @@ export default function DeleteModal ({ id, onClose, onDelete }) {
                   <div className="flex flex-col flex-grow w-100">
                     <div className="flex justify-between mb-4">
                       <div className="font-bold tracking-tighter text-neutral-1000 text-md sm:text-heading-7">
-                        Delete Admin
+                        {isUnblocking?'Unblock':'Block'} Admin
                       </div>
                       <button className="transition-colors ease-in-out text-neutral-1000 opacity-90 hover:text-neutral-800">
                         <CloseIcon iconSize={24} onClick={onClose} />
@@ -27,12 +27,12 @@ export default function DeleteModal ({ id, onClose, onDelete }) {
                     </div>
                     <div className='mb-7.5 sm:mb-10'>
                       <p className='font-medium text-neutral-600 text-md'>
-                        Are you sure you want to delete this admin?
+                        Are you sure you want to {isUnblocking?'unblock':'block'} this admin?
                       </p>
                     </div>
                     <div className='flex justify-between gap-4 sm:gap-5'>
                       <Button variant={"dark"} className="flex-grow" label={"No, keep it"} onClick={onClose} />
-                      <Button variant={"primary"} className="flex-grow" label={"Yes, delete"} onClick={() => {onDelete();onClose();}} />
+                      <Button variant={"primary"} className="flex-grow" label={"Yes, "+(isUnblocking?'Unblock':'Block')} onClick={() => {onDelete();onClose();}} />
                     </div>
                   </div>
                 </div>

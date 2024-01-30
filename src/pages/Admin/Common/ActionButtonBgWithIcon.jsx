@@ -12,6 +12,8 @@ import { Button } from "../../../components";
 
 export default function ActionButtonBgWithIcon({
   handleRemove,
+  handleBlock,
+  handleUnblock,
   handleEdit,
   handleView,
   handleStatus,
@@ -93,6 +95,28 @@ export default function ActionButtonBgWithIcon({
                   leftIcon={<Trash2Icon iconSize={16} />}
                   variant={"none"}
                   label={"Delete"}
+                />
+              </Menu.Item>
+            )}
+            {handleBlock && (
+              <Menu.Item>
+                <Button
+                  className="flex w-full gap-2 px-3 py-2 text-sm font-medium rounded text-start text-neutral-1000 font-Montserrat hover:bg-primary-200"
+                  onClick={handleBlock}
+                  leftIcon={<Trash2Icon iconSize={16} />}
+                  variant={"none"}
+                  label={"Block"}
+                />
+              </Menu.Item>
+            )}
+            {handleUnblock && (
+              <Menu.Item>
+                <Button
+                  className="flex w-full gap-2 px-3 py-2 text-sm font-medium rounded text-start text-neutral-1000 font-Montserrat hover:bg-primary-200"
+                  onClick={handleUnblock}
+                  leftIcon={<Trash2Icon iconSize={16} />}
+                  variant={"none"}
+                  label={"Unblock"}
                 />
               </Menu.Item>
             )}

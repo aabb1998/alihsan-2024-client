@@ -109,8 +109,7 @@ export const loadCampaignFormData = createAsyncThunk(
   'get/admin/campaign-formdata',
   async() => {
     const response = await api.get('/project/category')
-    // return response.data.payload;
-		return {categories: [{id: 1, name: 'jhdf'}], organisers: [{id: 1, firstName: 'Something', lastName: 'Hey'}]}
+    return response.data.payload;
   }
 )
 

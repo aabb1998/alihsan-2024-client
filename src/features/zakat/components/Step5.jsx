@@ -38,6 +38,9 @@ export default function Step5() {
   const { zakatItem, loading } = useSelector((state) => state.basketItem);
 
   const { amounts, prices } = useSelector((state) => state.zakatCalculator);
+  const total = (arrayData) =>
+    arrayData.reduce((sum, { value }) => sum + value, 0);
+
   const {
     unit,
     cash,
@@ -53,8 +56,8 @@ export default function Step5() {
   const wealth =
     cash +
     bank +
-    silver.value +
-    gold.value +
+    total(silver) +
+    total(gold) +
     investmentProfit +
     shareResale +
     merchandise +
@@ -72,7 +75,6 @@ export default function Step5() {
   };
 
   const handleDonation = async () => {
-    checkAdminPermission()
     const checkout = JSON.parse(
       localStorage.getItem(LOCAL_STORAGE_KEY) || "[]"
     );
@@ -87,10 +89,11 @@ export default function Step5() {
       campaignId: zakatCampaign?.id,
       name: zakatCampaign?.name,
       coverImage: zakatCampaign?.coverImage,
-      amount: parseFloat(zakatableAmount(nisabSilver, wealth)),
-      total: parseFloat(zakatableAmount(nisabSilver, wealth)),
+      amount: parseFloat(usdToUnit(zakatableAmount(nisabSilver, wealth))),
+      total: parseFloat(usdToUnit(zakatableAmount(nisabSilver, wealth))),
       isRecurring: JSON.parse(false),
     };
+    checkAdminPermission(newValues);
 
     const updatedCheckout = isInCheckoutList
       ? [
@@ -143,9 +146,9 @@ export default function Step5() {
               variant={"primary"}
               onClick={handleDonation}
               label={`Donate ${unit} ${formatPrice(
-                zakatableAmount(nisabSilver, wealth)
+                usdToUnit(zakatableAmount(nisabSilver, wealth))
               )}`}
-              disabled={zakatableAmount(nisabSilver, wealth) <= 0}
+              disabled={usdToUnit(zakatableAmount(nisabSilver, wealth)) <= 0}
             />
           )}
         </div>

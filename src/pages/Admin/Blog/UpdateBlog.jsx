@@ -58,6 +58,7 @@ export const UpdateBlog = () => {
       slug: news?.slug ?? "",
       tags: news?.Tags?.map((item) => item.id)?.join(",") ?? "",
       content: news?.content ?? "",
+      contentText: news?.contentText ?? news?.content ?? "",
       coverImage: news?.coverImage ?? "",
       status: "",
       images: Array.from({ length: 4 }).fill(undefined),
@@ -67,6 +68,7 @@ export const UpdateBlog = () => {
       const formData = new FormData();
       formData.append("title", values.title);
       formData.append("content", values.content);
+      formData.append("contentText", values.contentText);
       formData.append("slug", values.slug);
       formData.append("tags", values.tags);
       formData.append("coverImage", values.coverImage);
@@ -210,6 +212,10 @@ export const UpdateBlog = () => {
       reader.readAsDataURL(file);
     }
   };
+	const handleDescriptionChange = e => {
+		formik.setFieldValue('content', e.target.value.html)
+		formik.setFieldValue('contentText', e.target.value.text)
+	}
 
   useEffect(() => {
     if (id) {
@@ -342,7 +348,7 @@ export const UpdateBlog = () => {
                   className="!mb-0 cursor-pointer absolute right-5 bottom-5"
                 >
                   <div className="flex flex-col items-center justify-center px-5 py-3 rounded-lg bg-primary-100 text-primary-300 text-button-lg">
-                    Change Cover
+                    Add Cover
                   </div>
                   <input
                     id="dropzone-file"
@@ -366,7 +372,7 @@ export const UpdateBlog = () => {
           </div>
           <div className="flex flex-col mb-6 form-group">
             <label htmlFor="title" className="">
-              Title
+              Title<span className="text-red-300">*</span>
             </label>
             <input
               type="text"
@@ -387,7 +393,7 @@ export const UpdateBlog = () => {
           <div className="grid grid-cols-1 md:gap-6 md:grid-cols-2">
             <div className="flex flex-col mb-6 form-group">
               <label htmlFor="slug" className="">
-                Slug
+                Slug<span className="text-red-300">*</span>
               </label>
               <input
                 type="text"
@@ -409,7 +415,7 @@ export const UpdateBlog = () => {
               <div className="flex flex-wrap items-end gap-2 md:flex-nowrap">
                 <div className="flex flex-col form-group grow">
                   <label htmlFor="slug" className="">
-                    Tag
+                    Tag<span className="text-red-300">*</span>
                   </label>
 
                   <TagSelection
@@ -438,11 +444,11 @@ export const UpdateBlog = () => {
 
           <div className="relative flex flex-col mb-6 text-area">
             <label htmlFor="content" className="">
-              Content
+              Content<span className="text-red-300">*</span>
             </label>
             <QuillEditor
               value={formik.values.content}
-              onChange={handleInputChange}
+              onChange={handleDescriptionChange}
               name="content"
             />
             {formik.touched.content && Boolean(formik.errors.content) && (

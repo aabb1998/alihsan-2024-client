@@ -18,11 +18,12 @@ import { Button } from "../../components";
 import { generateInvoice, exportInvoice } from "../myDonation/myDonationSlice";
 import { Menu } from "@headlessui/react";
 import Loader from "../../components/Loader";
+import { adminItemPerPage, currencyConfig } from "../../utils/constants";
 
 const initialState = {
   page: "1",
   fromdate: "monthly",
-  limit: process.env.REACT_APP_PAGINATION_PER_PAGE,
+  limit: adminItemPerPage,
 };
 
 const now = new Date();
@@ -177,92 +178,93 @@ export default function PaymentList() {
 
         {payments.length > 0 ? (
           <div className="grid">
-  <div className="relative overflow-x-auto">
-            <table className="w-full mb-5 table-auto">
-              <thead className="text-sm text-left bg-neutral-200">
-                <tr>
-                  <th className="text-center rounded-l-md">
-                    <input
-                      type="checkbox"
-                      name=""
-                      id=""
-                      checked={selectAll}
-                      onChange={handleAllClick}
-                    />
-                  </th>
-                  <th className="p-4 font-medium">Project Name</th>
-                  <th className="hidden p-4 font-medium sm:table-cell">Date</th>
-                  <th className="p-4 font-medium">Amount</th>
-                  <th className="hidden p-4 font-medium text-center sm:table-cell">
-                    Invoice
-                  </th>
-                  <th className="p-4 font-medium text-center sm:hidden rounded-r-md">
-                    Action
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {payments.map((i, index) => (
-                  <tr key={i.id}>
-                    <td className="p-4 text-center border-b border-neutral-300">
+            <div className="relative overflow-x-auto">
+              <table className="w-full mb-5 table-auto">
+                <thead className="text-sm text-left bg-neutral-200">
+                  <tr>
+                    <th className="text-center rounded-l-md">
                       <input
                         type="checkbox"
                         name=""
                         id=""
-                        onChange={() => handleSingleChange(index)}
-                        checked={i.checked}
+                        checked={selectAll}
+                        onChange={handleAllClick}
                       />
-                    </td>
-                    <td className="p-4 border-b border-neutral-300 ">
-                      <div className="max-w-[340px] line-clamp-1">
-                        {i.Campaign.name}
-                      </div>
-                    </td>
-                    <td className="hidden p-4 border-b border-neutral-300 sm:table-cell">
-                      {i.updatedAt}
-                    </td>
-                    <td className="p-4 border-b border-neutral-300">
-                      ${i.total}
-                    </td>
-                    <td className="hidden p-4 text-center border-b border-neutral-300 sm:table-cell">
-                      <Button
-                        variant={"none"}
-                        label="Download"
-                        className="text-button-md text-primary-300"
-                        onClick={() => handleDownload(i.donationId)}
-                      />
-                    </td>
-                    <td className="p-4 text-center border-b border-neutral-300 sm:hidden">
-                      <Menu
-                        as="div"
-                        className="relative inline-block text-left"
-                      >
-                        <div>
-                          <Menu.Button className="">
-                            <MoreverticalIcon />
-                          </Menu.Button>
-                        </div>
-                        <Menu.Items className="absolute right-0 z-10 mt-2 bg-white border rounded-md shadow-lg w-fit border-neutral-200">
-                          <div className="p-2.5">
-                            <Menu.Item>
-                              <button
-                                className="flex w-full gap-2 px-3 py-2 text-sm font-medium rounded hover:bg-primary-200 text-start text-neutral-1000 font-Montserrat"
-                                onClick={() => handleDownload(i.id)}
-                              >
-                                Download
-                              </button>
-                            </Menu.Item>
-                          </div>
-                        </Menu.Items>
-                      </Menu>
-                    </td>
+                    </th>
+                    <th className="p-4 font-medium">Project Name</th>
+                    <th className="hidden p-4 font-medium sm:table-cell">
+                      Date
+                    </th>
+                    <th className="p-4 font-medium">Amount</th>
+                    <th className="hidden p-4 font-medium text-center sm:table-cell">
+                      Invoice
+                    </th>
+                    <th className="p-4 font-medium text-center sm:hidden rounded-r-md">
+                      Action
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {payments.map((i, index) => (
+                    <tr key={i.id}>
+                      <td className="p-4 text-center border-b border-neutral-300">
+                        <input
+                          type="checkbox"
+                          name=""
+                          id=""
+                          onChange={() => handleSingleChange(index)}
+                          checked={i.checked}
+                        />
+                      </td>
+                      <td className="p-4 border-b border-neutral-300 ">
+                        <div className="max-w-[340px] line-clamp-1">
+                          {i.Campaign.name}
+                        </div>
+                      </td>
+                      <td className="hidden p-4 border-b border-neutral-300 sm:table-cell">
+                        {i.updatedAt}
+                      </td>
+                      <td className="p-4 border-b border-neutral-300">
+                        {currencyConfig.label}{i.total}
+                      </td>
+                      <td className="hidden p-4 text-center border-b border-neutral-300 sm:table-cell">
+                        <Button
+                          variant={"none"}
+                          label="Download"
+                          className="text-button-md text-primary-300"
+                          onClick={() => handleDownload(i.donationId)}
+                        />
+                      </td>
+                      <td className="p-4 text-center border-b border-neutral-300 sm:hidden">
+                        <Menu
+                          as="div"
+                          className="relative inline-block text-left"
+                        >
+                          <div>
+                            <Menu.Button className="">
+                              <MoreverticalIcon />
+                            </Menu.Button>
+                          </div>
+                          <Menu.Items className="absolute right-0 z-10 mt-2 bg-white border rounded-md shadow-lg w-fit border-neutral-200">
+                            <div className="p-2.5">
+                              <Menu.Item>
+                                <button
+                                  className="flex w-full gap-2 px-3 py-2 text-sm font-medium rounded hover:bg-primary-200 text-start text-neutral-1000 font-Montserrat"
+                                  onClick={() => handleDownload(i.id)}
+                                >
+                                  Download
+                                </button>
+                              </Menu.Item>
+                            </div>
+                          </Menu.Items>
+                        </Menu>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-          </div>
-
         ) : (
           <div className="text-neutral-600 text-md font-medium my-7.5 text-start">
             No payment history is currently available

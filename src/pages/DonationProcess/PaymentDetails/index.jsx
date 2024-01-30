@@ -41,10 +41,8 @@ const CheckoutPaymentComponent = () => {
   const [isLoading, setIsLoading] = useState(false);
   const profile = useSelector((state) => state.profile);
   const { basketItems } = useSelector((state) => state.basketItem);
-  const isAnyActive = basketItems.some((item) => item.isRecurring);
-
-  console.log(basketItems, "basketItems");
-  const [iframeUrl, setIframeUrl] = useState("");
+  const recurringItems = basketItems.filter((item) => item.isRecurring);
+  const numberOfRecurringItems = recurringItems.length;
 
   const [state, setState] = useState({
     loading: false,
@@ -58,7 +56,6 @@ const CheckoutPaymentComponent = () => {
   const handleAddCard = async () => {
     const isLoggedIn = localStorage.getItem("loggedIn");
     const userDetails = JSON.parse(isLoggedIn);
-    // console.log(location?.state,'location?.state');
     if (!profile.email || userDetails?.role === "ADMIN") {
       if (location?.state?.clientSecret) {
         setState((s) => ({
@@ -74,6 +71,7 @@ const CheckoutPaymentComponent = () => {
         setState((s) => ({
           ...s,
           loading: false,
+          status: response.payload?.payload?.status,
           clientSecret: response.payload?.payload?.clientSecret,
         }));
         setShowNewPayment(false);
@@ -102,6 +100,7 @@ const CheckoutPaymentComponent = () => {
     //   });
   };
   const handleDonationProcess = async (cardSelected) => {
+    setState((s) => ({ ...s, loading: true }));
     const response = await dispatch(
       handleBasketCheckout({
         isAnonymous: isAnonymous,
@@ -109,8 +108,15 @@ const CheckoutPaymentComponent = () => {
       })
     );
     if (response?.payload?.success) {
-      // window.location.href = response?.payload?.payload?.returnUrl;
-      window.location.href = '/thank-you';
+      if (response?.payload?.payload.status === "succeeded") {
+        window.location.href = "/thank-you";
+      } else {
+        setState((s) => ({
+          ...s,
+          clientSecret: response.payload.payload.clientSecret,
+          status: response.payload.payload.status,
+        }));
+      }
     } else {
       showErrorMessage(response?.error?.message);
     }
@@ -139,10 +145,6 @@ const CheckoutPaymentComponent = () => {
     //   });
   };
 
-  useEffect(() => {
-    console.log(iframeUrl, "changed it", iframeUrl);
-  }, [iframeUrl]);
-
   const handlePaypalSubmit = async () => {
     setIsLoading(true);
     if (role === "USER") {
@@ -153,7 +155,7 @@ const CheckoutPaymentComponent = () => {
       );
       if (response?.payload?.success && !response.payload.payload?.error) {
         setIsLoading(false);
-        setIframeUrl(response?.payload?.payload?.approvalUrl);
+        window.location.href = response?.payload?.payload?.approvalUrl;
       } else {
         setIsLoading(false);
         if (response.payload.payload?.error)
@@ -173,7 +175,7 @@ const CheckoutPaymentComponent = () => {
       );
       if (resp?.payload?.success && !resp.payload.payload?.error) {
         setIsLoading(false);
-        setIframeUrl(resp?.payload?.payload?.approvalUrl);
+        window.location.href = resp?.payload?.payload?.approvalUrl;
       } else {
         setIsLoading(false);
         if (resp.payload.payload?.error)
@@ -289,7 +291,10 @@ const CheckoutPaymentComponent = () => {
                           Card
                         </label>
                       </div>
-                      {!isAnyActive && (
+                      {!recurringItems?.length ||
+                      (basketItems?.length === 1 &&
+                        basketItems[0]?.Campaign?.isRamadanCampaign ==
+                          false) ? (
                         <div className="flex gap-2">
                           <input
                             id="default-radio-1"
@@ -307,17 +312,13 @@ const CheckoutPaymentComponent = () => {
                             Paypal
                           </label>
                         </div>
+                      ) : (
+                        ""
                       )}
                     </div>
                     {paymentType ? (
                       <>
-                        {isShowNewPayment ? (
-                          <CardList
-                            handleAddCard={handleAddCard}
-                            state={state}
-                            handleDonationProcess={handleDonationProcess}
-                          />
-                        ) : state.clientSecret ? (
+                        {state.clientSecret ? (
                           <Elements
                             options={{
                               clientSecret: state.clientSecret,
@@ -327,6 +328,12 @@ const CheckoutPaymentComponent = () => {
                           >
                             <CheckoutForm setState={setState} state={state} />
                           </Elements>
+                        ) : isShowNewPayment ? (
+                          <CardList
+                            handleAddCard={handleAddCard}
+                            loading={state.loading}
+                            handleDonationProcess={handleDonationProcess}
+                          />
                         ) : state.loading ? (
                           "Loading..."
                         ) : (
@@ -350,18 +357,6 @@ const CheckoutPaymentComponent = () => {
           </section>
         </div>
       </div>
-      <div
-        className={
-          "fixed z-10 top-0 right-0 bottom-0 left-0 flex items-center justify-center bg-neutral-900 bg-opacity-60 " +
-          (iframeUrl ? "" : "hidden")
-        }
-      >
-        <div className="bg-white">
-          {iframeUrl ? (
-            <iframe width={800} height={500} url={iframeUrl} />
-          ) : null}
-        </div>
-      </div>
     </>
   );
 };
@@ -370,6 +365,35 @@ function CheckoutForm({ setState, state }) {
   const stripe = useStripe();
   const elements = useElements();
   const paymentElementOptions = { layout: "tabs", autocomplete: "off" };
+
+  useEffect(() => {
+    if (!stripe) return;
+
+    if (!state.status && !state.error) {
+      stripe.retrievePaymentIntent(state.clientSecret).then((res) => {
+        if (res.error) {
+          console.error(res.error);
+          setState((s) => ({ ...s, loading: false, error: res.error }));
+        } else {
+          setState((s) => ({ ...s, status: res.paymentIntent.status }));
+        }
+      });
+    } else if (!state.showElements) {
+      switch (state.status) {
+        case "requires_payment_method":
+          setState((s) => ({ ...s, loading: false, showElements: true }));
+          break;
+        case "requires_action":
+          setState((s) => (s.loading ? s : { ...s, loading: true }));
+          stripe.handleNextAction({ clientSecret: state.clientSecret });
+          break;
+        default:
+          const e = new Error("Unknown payment intent status: " + state.status);
+          e.status = state.status;
+          throw e;
+      }
+    }
+  }, [state, stripe]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -399,26 +423,35 @@ function CheckoutForm({ setState, state }) {
   };
   return (
     <form id="PaymentDetails" aria-label="Signup Form" onSubmit={handleSubmit}>
-      <PaymentElement
-        id="payment-element"
-        options={paymentElementOptions}
-        onChange={() =>
-          setState((s) => ({
-            ...s,
-            loading: false,
-            error: null,
-          }))
-        }
-      />
+      {state.showElements && (
+        <>
+          <PaymentElement
+            id="payment-element"
+            options={paymentElementOptions}
+            onChange={() =>
+              setState((s) => ({
+                ...s,
+                loading: false,
+                error: null,
+              }))
+            }
+          />
+        </>
+      )}
       <Button
         variant="primaryFull"
+        type="submit"
         label="Complete Donation"
-        disabled={state.error || state.loading || !stripe}
+        disabled={
+          state.error || state.loading || !stripe || !state.showElements
+        }
       />
       {state.error && state.error?.type !== "validation_error" && (
         <div className="flex items-start w-full gap-2 mt-2 text-sm text-red-300">
           <AlertCircle />
-          <span className="break-words">{state.error.message}</span>
+          <span className="break-words">
+            {state.error.message || "Something went wrong"}
+          </span>
         </div>
       )}
     </form>

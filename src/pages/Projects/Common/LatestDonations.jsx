@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { CloseIcon, SearchIcon } from "../../../theme/svg-icons";
 import Button from "../../../components/Button";
+import { currencyConfig } from "../../../utils/constants";
 
 export const LatestDonations = (props) => {
   const { topDonations } = props;
@@ -41,7 +42,7 @@ export const LatestDonations = (props) => {
                 </div>
               </div>
               <div className="font-bold heading-5">
-                ${donation?.total?.toLocaleString()}
+                {currencyConfig.label}{donation?.total?.toLocaleString()}
               </div>
             </div>
           ))}
@@ -137,7 +138,7 @@ const LiveDonationsModal = ({ setIsOpen, topDonations }) => {
                             </div>
                           </div>
                           <div className="font-bold heading-5">
-                            ${donation?.total?.toLocaleString()}
+                            {currencyConfig.label}{donation?.total?.toLocaleString()}
                           </div>
                         </div>
                       ))}

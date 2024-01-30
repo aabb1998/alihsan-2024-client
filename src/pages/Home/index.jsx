@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { ArrowRightIcon, HeartFilledIcon } from "../../theme/svg-icons";
 import Button from "../../components/Button";

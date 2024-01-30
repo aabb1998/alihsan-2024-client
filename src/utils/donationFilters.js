@@ -1,9 +1,11 @@
+import { currencyConfig } from "./constants";
+
 export const AmountFilters = [
     { label: "All", value: "" },
-    { label: "$0 - $50", value: "0-50" },
-    { label: "$50 - $100", value: "50-100" },
-    { label: "$100 - $200", value: "100-200" },
-    { label: "> $200", value: "200-" },
+    { label: `${currencyConfig.label}0 - ${currencyConfig.label}50`, value: "0-50" },
+    { label: `${currencyConfig.label}50 - ${currencyConfig.label}100`, value: "50-100" },
+    { label: `${currencyConfig.label}100 - ${currencyConfig.label}200`, value: "100-200" },
+    { label: `> ${currencyConfig.label}200`, value: "200-" },
   ];
 export const PeriodFilters = [
     { label: "All", value: "" },
@@ -14,6 +16,6 @@ export const PeriodFilters = [
     { label: "Custom Date", value: "custom_date" },
   ];
   export const StatusFilters = [
-    { label: "Active", value: "ACTIVE" },
-    { label: "Completed", value: "COMPLETED" },
+    { label: "Paid", value: "paid" },
+    { label: "Pending", value: "pending" },
   ];
