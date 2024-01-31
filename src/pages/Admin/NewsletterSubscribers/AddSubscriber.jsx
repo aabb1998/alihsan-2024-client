@@ -66,7 +66,7 @@ export const AddSubscriber = ({ onClose, item }) => {
 
                           <div className="form-group">
                             <label htmlFor="title" className="block">
-                              Email
+                              Email<span className="text-red-300">*</span>
                             </label>
                             <input
                               type="text"

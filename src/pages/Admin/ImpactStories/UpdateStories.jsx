@@ -12,7 +12,6 @@ import {
 } from "../../../features/adminStories/adminStoriesSlice";
 import { SnackMessages } from "../../../components/Toast";
 import { FormikValidationError } from "../../../features/Common/FormikValidationError";
-import TextArea from "../../../components/TextArea";
 import { Dropdown } from "../../../components/Dropdown";
 import { getQucikDonation } from "../../../features/quickDonation/quickDonationSlice";
 import {
@@ -20,11 +19,20 @@ import {
   resetImpactStory,
 } from "../../../features/impactStories/impactStories";
 import ImageUpload from "../../../components/ImageUpload";
+import { makeSlug, validateSlug } from "../../../utils/helper";
+import QuillEditor from "../../../components/QuillEditor";
+import Modal from "../../../components/ImageUpload/Modal";
 const { showSuccessMessage, showErrorMessage } = SnackMessages();
 
 const validationSchema = yup.object({
   campaignId: yup.string().required("Campaign is required"),
   title: yup.string().required("Title is required"),
+  slug: yup.string().required("Slug is required")
+		.test(
+			'test-slug',
+			'Only lower case alphabets, numbers, hyphens (-) and underscores (_) are allowed',
+			v => !validateSlug(v),
+		),
   description: yup.string().required("Description is required"),
   coverImage: yup.string().required("Cover Image is required"),
 });
@@ -34,6 +42,7 @@ export const UpdateStory = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isCropOpen, setCropOpen] = useState(false);
 
   const { quickdonations } = useSelector((state) => state.quickDonations);
   const { impactStory } = useSelector((state) => state.impactStories);
@@ -43,9 +52,11 @@ export const UpdateStory = () => {
   const formik = useFormik({
     initialValues: {
       id: impactStory?.id ?? "",
+      slug: impactStory?.slug ?? "",
       campaignId: impactStory?.campaignId ?? "",
       title: impactStory?.title ?? "",
       description: impactStory?.description ?? "",
+      descriptionText: impactStory?.descriptionText ?? impactStory?.description ?? "",
       images: Array.from({ length: 4 }).fill(undefined),
       coverImage: null,
     },
@@ -55,7 +66,9 @@ export const UpdateStory = () => {
       formData.append("coverImage", values.coverImage);
       formData.append("campaignId", values.campaignId);
       formData.append("title", values.title);
+      formData.append("slug", values.slug);
       formData.append("description", values.description);
+      formData.append("descriptionText", values.descriptionText);
       values.images?.forEach((file, index) => {
         if (file) {
           formData.append(`images`, file, `image_${index + 1}.png`);
@@ -86,9 +99,15 @@ export const UpdateStory = () => {
       } catch (error) {}
     },
   });
+	const handleDescriptionChange = e => {
+		formik.setFieldValue('description', e.target.value.html)
+		formik.setFieldValue('descriptionText', e.target.value.text)
+	}
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     formik.setFieldValue(name, value);
+		if(name==='title' && !formik.values.id && !formik.touched.slug)
+			formik.setFieldValue('slug', makeSlug(value))
   };
   const handleCampaignChange = (e) => {
     formik.setFieldValue("campaignId", e.value);
@@ -135,13 +154,46 @@ export const UpdateStory = () => {
     }
   };
 
+  const getCroppedImage = async (url, index) => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const file = blob;
+    // const newImagePreviews = [...imagePreviews];
+    // newImagePreviews[index] = file;
+    // setImagePreviews(imagePreviews);
+    // formik.setFieldValue(`images.0`, file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const newImagePreviews = [...imagePreviews];
+        newImagePreviews[index] = reader.result;
+        setImagePreviews(newImagePreviews);
+        formik.setFieldValue(`images.${index}`, file);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const getCroppedCoverImage = async (url) => {
+    const response = await fetch(url);
+    const file = await response.blob();
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setCoverPreviews(reader.result);
+        formik.setFieldValue(`coverImage`, file);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   useEffect(() => {
     dispatch(getQucikDonation());
   }, []);
 
   useEffect(() => {
     if (id) {
-      dispatch(getImpactStory(id));
+      dispatch(getImpactStory({id}));
     }
   }, [id]);
 
@@ -162,6 +214,16 @@ export const UpdateStory = () => {
 
   return (
     <div className="py-10 px-2 sm:px-7.5 w-full h-[calc(100vh-4.5rem)] overflow-auto">
+       {isCropOpen && (
+        <Modal
+          getCroppedImage={(e) => {
+            setCropOpen(false);
+            getCroppedCoverImage(e);
+          }}
+          aspect={16 / 9}
+          onClose={() => setCropOpen(false)}
+        />
+      )}
       <form onSubmit={formik.handleSubmit} className="w-full">
         <div className="flex flex-wrap gap-4 items-center justify-between w-full border-b border-neutral-300 pb-3.5">
           <Button
@@ -189,7 +251,7 @@ export const UpdateStory = () => {
         <div className="flex flex-col mb-6 form-group mt-5 md:mt-7.5">
           <div
             htmlFor="dropzone-file"
-            className="relative flex flex-col items-center justify-center w-full overflow-hidden bg-center bg-no-repeat bg-cover cursor-pointer rounded-3xl h-76 bg-choose-cover"
+            className="relative flex flex-col items-center justify-center w-full overflow-hidden bg-center bg-no-repeat bg-cover rounded-3xl h-76 bg-choose-cover"
           >
             {coverPreviews ? (
               <img
@@ -206,15 +268,17 @@ export const UpdateStory = () => {
                 className="!mb-0 cursor-pointer absolute right-5 bottom-5"
               >
                 <div className="flex flex-col items-center justify-center px-5 py-3 rounded-lg bg-primary-100 text-primary-300 text-button-lg">
-                  Change Cover
+                  Add Cover
                 </div>
                 <input
                   id="dropzone-file"
-                  type="file"
+                  // type="file"
                   className="hidden"
                   name={`coverImage`}
                   onChange={(event) => handleCoverImage(event)}
                   accept="image/*"
+                  onClick={() => setCropOpen(true)}
+
                 />
               </label>
             </div>
@@ -228,7 +292,7 @@ export const UpdateStory = () => {
         </div>
         <div className="flex flex-col mb-6 form-group">
           <label htmlFor="title" className="">
-            Campaign
+            Campaign<span className="text-red-300">*</span>
           </label>
           <Dropdown
             className={"!w-full"}
@@ -250,16 +314,16 @@ export const UpdateStory = () => {
         </div>
         <div className="flex flex-col mb-6 form-group">
           <label htmlFor="title" className="">
-            Title
+            Title<span className="text-red-300">*</span>
           </label>
           <input
             type="text"
             name="title"
             className="w-full bg-white form-control"
             id="blog-title"
-            placeholder="Blog title goes here"
+            placeholder="Title goes here"
             value={formik.values.title}
-            onChange={formik.handleChange}
+            onChange={handleInputChange}
           />
           {formik.touched.title && Boolean(formik.errors.title) && (
             <FormikValidationError
@@ -268,16 +332,41 @@ export const UpdateStory = () => {
             />
           )}
         </div>
+        <div className="flex flex-col mb-6 form-group">
+          <label htmlFor="blog-slug" className="">
+            Slug<span className="text-red-300">*</span>
+          </label>
+          <input
+            type="text"
+            name="slug"
+            className="w-full bg-white form-control"
+            id="blog-slug"
+            placeholder="Slug goes here"
+            value={formik.values.slug}
+            onChange={formik.handleChange}
+          />
+          {formik.touched.slug && Boolean(formik.errors.slug) && (
+            <FormikValidationError
+              formikTouched={formik.touched.slug}
+              formikError={formik.errors.slug}
+            />
+          )}
+        </div>
 
         <div className="relative flex flex-col mb-6 text-area">
           <label htmlFor="description" className="">
-            Description
+            Description<span className="text-red-300">*</span>
           </label>
-          <TextArea
+          {/* <TextArea
             handleChange={handleInputChange}
             name="description"
             value={formik.values.description}
-          />
+          /> */}
+					<QuillEditor
+						value={formik.values.description}
+						onChange={handleDescriptionChange}
+						name="description"
+					/>
           {formik.touched.description && Boolean(formik.errors.description) && (
             <FormikValidationError
               formikTouched={formik.touched.description}
@@ -299,6 +388,7 @@ export const UpdateStory = () => {
               name={"images-" + index}
               handleImageDelete={(event) => handleImageDelete(event, index)}
               handleImageChange={(event) => handleImageChange(event, index)}
+              getCroppedImage={(e) => getCroppedImage(e, index)}
             />
           ))}
           {formik.touched.images && Boolean(formik.errors.images) && (

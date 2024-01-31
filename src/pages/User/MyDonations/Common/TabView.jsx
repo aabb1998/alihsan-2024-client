@@ -34,7 +34,7 @@ function DonationsTab() {
                             <div className="form-group">
                                 <label className="relative block !mb-0">
                                     <span className="sr-only">Search</span>
-                                    <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-neutral-500">
+                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-500">
                                         <SearchIcon />
                                     </span>
                                     <input className="block w-full !py-2.5 !pr-3 bg-white border rounded-md form-control !pl-11 md:w-[200px] lg:w-[300px]" placeholder="Search" type="text" name="search" />
@@ -68,7 +68,7 @@ function DonationsTab() {
                             <div className="form-group">
                                 <label className="relative block !mb-0">
                                     <span className="sr-only">Search</span>
-                                    <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-neutral-500">
+                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-500">
                                         <SearchIcon />
                                     </span>
                                     <input className="block w-full !py-2.5 !pr-3 bg-white border rounded-md form-control !pl-11 md:w-[200px] lg:w-[300px]" placeholder="Search" type="text" name="search" />

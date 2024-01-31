@@ -7,20 +7,15 @@ import {
     SearchIcon,
 } from "../../../../../theme/svg-icons";
 // import ActionButtonBgWithIcon from "../../Common/ActionButtonBgWithIcon";
-import { AddDonationModalComponent } from "../Campaign/Common/AddDonationModal";
 import { Pagination } from "../../../../../features/projects/Pagination";
-import { Button } from "../../../../../components";
 import Img from "../../../../../components/Image";
-import Filter from "../../../../../components/Filter";
 import { AddNewGroup } from "./Common";
 import ActionButtonBgWithIcon from "../../../Common/ActionButtonBgWithIcon";
 
-const dates = ["Monday", "THis Month", "This Year"];
 const options = ["This Week", "THis Month", "This Year"];
 export const HomepageSettings = () => {
     const [selected, setSelected] = useState(options[0]);
     const [isOpen, setIsOpen] = useState(false);
-    const handleChange = () => { };
     return (
         <>
             <div className="py-6 px-3 sm:!px-5 md:!px-7.5 sm:py-7.5 md:py-10 w-full h-[calc(100vh-4.5rem)] overflow-auto">
@@ -48,7 +43,7 @@ export const HomepageSettings = () => {
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <p className="font-medium grow basis-0 text-md text-neutral-600">Clothe Poor People</p>
+                                        <p className="font-medium grow basis-0 text-md text-neutral-600 ">Clothe Poor People</p>
                                         <div class="relative overflow-hidden form-group grow basis-0">
                                             <div class="absolute justify-center overflow-hidden inset-y-0 w-8 h-full bg-neutral-200 start-0 flex items-center pointer-events-none border border-neutral-300 rounded-md rounded-tr-none rounded-br-none">
                                                 <Edit3Icon iconSize={18} />
@@ -281,7 +276,8 @@ export const HomepageSettings = () => {
                                         />
                                     )}
                                 </div>
-                                <div className="relative mt-5 overflow-x-auto md:mt-7">
+                                <div className="grid mt-5 md:mt-7">
+                                <div className="relative overflow-x-auto ">
                                     <table class="table-auto w-full text-start">
                                         <thead className="rounded bg-neutral-200">
                                             <tr className="">
@@ -309,37 +305,14 @@ export const HomepageSettings = () => {
                                                     $100
                                                 </td>
                                                 <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
-                                                    <div className="flex gap-3">
+                                                    <div className="flex flex-wrap gap-3">
                                                         <div className="flex gap-2 p-1 pr-2 rounded w-fit bg-neutral-200">
                                                             <Img src={'../images/flags/US.png'} className={'w-[1.375rem] h-auto'} alt="flag" />
-                                                            <p className="text-sm text-neutral-800">US</p>
+                                                            <p className="text-sm text-neutral-800 line-clamp-1">US</p>
                                                         </div>
                                                         <div className="flex gap-2 p-1 pr-2 rounded w-fit bg-neutral-200">
                                                             <Img src={'../images/flags/US.png'} className={'w-[1.375rem] h-auto'} alt="flag" />
-                                                            <p className="text-sm text-neutral-800">US</p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
-                                                    <ActionButtonBgWithIcon />
-                                                </td>
-                                            </tr>
-                                            <tr className="border-b bg-neutral-100 border-neutral-300 hover:bg-primary-100">
-                                                <td className="p-4 text-button-md font-Montserrat text-neutral-700">
-                                                    Group B
-                                                </td>
-                                                <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
-                                                    $100
-                                                </td>
-                                                <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
-                                                    <div className="flex gap-3">
-                                                        <div className="flex gap-2 p-1 pr-2 rounded w-fit bg-neutral-200">
-                                                            <Img src={'../images/flags/US.png'} className={'w-[1.375rem] h-auto'} alt="flag" />
-                                                            <p className="text-sm text-neutral-800">US</p>
-                                                        </div>
-                                                        <div className="flex gap-2 p-1 pr-2 rounded w-fit bg-neutral-200">
-                                                            <Img src={'../images/flags/US.png'} className={'w-[1.375rem] h-auto'} alt="flag" />
-                                                            <p className="text-sm text-neutral-800">US</p>
+                                                            <p className="text-sm text-neutral-800 line-clamp-1">US</p>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -358,11 +331,34 @@ export const HomepageSettings = () => {
                                                     <div className="flex gap-3">
                                                         <div className="flex gap-2 p-1 pr-2 rounded w-fit bg-neutral-200">
                                                             <Img src={'../images/flags/US.png'} className={'w-[1.375rem] h-auto'} alt="flag" />
-                                                            <p className="text-sm text-neutral-800">US</p>
+                                                            <p className="text-sm text-neutral-800 line-clamp-1">US</p>
                                                         </div>
                                                         <div className="flex gap-2 p-1 pr-2 rounded w-fit bg-neutral-200">
                                                             <Img src={'../images/flags/US.png'} className={'w-[1.375rem] h-auto'} alt="flag" />
-                                                            <p className="text-sm text-neutral-800">US</p>
+                                                            <p className="text-sm text-neutral-800 line-clamp-1">US</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
+                                                    <ActionButtonBgWithIcon />
+                                                </td>
+                                            </tr>
+                                            <tr className="border-b bg-neutral-100 border-neutral-300 hover:bg-primary-100">
+                                                <td className="p-4 text-button-md font-Montserrat text-neutral-700">
+                                                    Group B
+                                                </td>
+                                                <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
+                                                    $100
+                                                </td>
+                                                <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
+                                                    <div className="flex gap-3">
+                                                        <div className="flex gap-2 p-1 pr-2 rounded w-fit bg-neutral-200">
+                                                            <Img src={'../images/flags/US.png'} className={'w-[1.375rem] h-auto'} alt="flag" />
+                                                            <p className="text-sm text-neutral-800 line-clamp-1">US</p>
+                                                        </div>
+                                                        <div className="flex gap-2 p-1 pr-2 rounded w-fit bg-neutral-200">
+                                                            <Img src={'../images/flags/US.png'} className={'w-[1.375rem] h-auto'} alt="flag" />
+                                                            <p className="text-sm text-neutral-800 line-clamp-1">US</p>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -376,6 +372,8 @@ export const HomepageSettings = () => {
                                         <Pagination />
                                     </div>
                                 </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>

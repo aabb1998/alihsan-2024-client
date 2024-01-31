@@ -14,24 +14,30 @@ const initialState = {
     cash: 0,
     unit: "AUD",
     bank: 0,
-    silver: {
-      karat: "24",
-      unit: "gram",
-      weight: 0,
-      value: 0,
-    },
-    gold: {
-      karat: "24",
-      unit: "gram",
-      weight: 0,
-      value: 0,
-    },
+    silver: [
+      {
+        karat: "1",
+        unit: "gram",
+        weight: 0,
+        value: 0,
+      },
+    ],
+    gold: [
+      {
+        karat: "1",
+        unit: "gram",
+        weight: 0,
+        value: 0,
+      },
+    ],
     investmentProfit: 0,
     shareResale: 0,
     merchandise: 0,
     loan: 0,
     other: 0,
   },
+  goldAudList: [],
+  goldUsdList: [],
 };
 
 export const getMetalPrices = createAsyncThunk(
@@ -39,7 +45,7 @@ export const getMetalPrices = createAsyncThunk(
   async () => {
     try {
       const response = await api.get("/metal-price");
-      return response.data.payload.price;
+      return response.data.payload;
     } catch (error) {
       throw new Error(error.response?.data?.message || error.message);
     }
@@ -57,10 +63,24 @@ const slice = createSlice({
       state.amounts[action.payload.name] = action.payload.value;
     },
     zakatMetalInput(state, action) {
-      state.amounts[action.payload.name].karat = action.payload.karat;
-      state.amounts[action.payload.name].unit = action.payload.unit;
-      state.amounts[action.payload.name].weight = action.payload.weight;
-      state.amounts[action.payload.name].value = action.payload.value;
+      const arrayToUpdate = state.amounts[action.payload.name];
+      console.log(arrayToUpdate)
+      const existingIndex = arrayToUpdate.findIndex(
+        (item) => item.key === action.payload.key
+      );
+      if (existingIndex !== -1) {
+        // If the index exists, replace the element at that index
+        arrayToUpdate[existingIndex ] = action.payload;
+      } else {
+        // If the index doesn't exist, push the new element into the array
+        arrayToUpdate.push(action.payload);
+      }
+      state.amounts[action.payload.name] = arrayToUpdate;
+      // state.amounts[action.payload.name].push(action.payload);
+      // state.amounts[action.payload.name].karat = action.payload.karat;
+      // state.amounts[action.payload.name].unit = action.payload.unit;
+      // state.amounts[action.payload.name].weight = action.payload.weight;
+      // state.amounts[action.payload.name].value = action.payload.value;
     },
     zakatResetInput(state, action) {
       state.amounts = initialState.amounts;
@@ -72,16 +92,32 @@ const slice = createSlice({
   },
   extraReducers(builder) {
     builder.addCase(getMetalPrices.fulfilled, (state, action) => {
-      state.prices.goldUsd = action.payload.goldPriceInUsd;
-      state.prices.silverUsd = action.payload.silverPriceInUsd;
+      state.prices.goldUsd = action.payload?.price.goldPriceInUsd;
+      state.prices.silverUsd = action.payload?.price.silverPriceInUsd;
       state.prices.audToUsd =
-        action.payload.goldPriceInUsd / action.payload.goldPriceInAud;
+        action.payload?.price.goldPriceInUsd /
+        action.payload?.price.goldPriceInAud;
       state.prices.loading = false;
-      state.prices.updatedAt = action.payload.updatedAt;
+      state.prices.updatedAt = action.payload?.price?.updatedAt;
+      //////
+      state.goldPriceList = {
+        goldPriceInUsd: action.payload.goldPriceInUsd,
+        goldPriceInAud: action.payload.goldPriceInAud,
+        silverFinePriceInUsd: action.payload.silverFinePriceInUsd,
+        silverFinePriceInAud: action.payload.silverFinePriceInAud,
+        silverSterlingPriceInUsd: action.payload.silverSterlingPriceInUsd,
+        silverSterlingPriceInAud: action.payload.silverSterlingPriceInAud,
+      };
     });
   },
 });
 
 export default slice.reducer;
 
-export const { zakatStep, zakatInput, zakatMetalInput,zakatResetInput ,resetZakatInput} = slice.actions;
+export const {
+  zakatStep,
+  zakatInput,
+  zakatMetalInput,
+  zakatResetInput,
+  resetZakatInput,
+} = slice.actions;

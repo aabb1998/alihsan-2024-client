@@ -15,7 +15,7 @@ export const SelectedCampaignComponent = () => {
                         <div className="flex items-center justify-center w-full h-full">
                             <label for="dropzone-file" className="!mb-0 cursor-pointer absolute right-5 bottom-5">
                                 <div className="flex flex-col items-center justify-center px-5 py-3 rounded-lg bg-primary-100 text-primary-300 text-button-lg">
-                                    Change Cover
+                                    Add Cover
                                 </div>
                                 <input id="dropzone-file" type="file" className="hidden"/>
                             </label>
@@ -28,7 +28,7 @@ export const SelectedCampaignComponent = () => {
                 </div>
                 <div className="relative flex flex-col mb-6 text-area">
                     <label htmlFor="description" className="">Project Description</label>
-                    <textarea onChange={e => setCount(e.target.value.length)} rows={5} className="w-full bg-white !min-h-40 form-control" id="description" placeholder="Project Description">
+                    <textarea onChange={e => setCount(e.target.value.length)} rows={5} className="w-full bg-white !min-h-40 form-control !text-neutral-1000" id="description" placeholder="Project Description">
                     </textarea>
                     <p className='absolute font-medium bg-white text-button-md text-neutral-800 bottom-2 right-2'>{count}/500</p>
                 </div>

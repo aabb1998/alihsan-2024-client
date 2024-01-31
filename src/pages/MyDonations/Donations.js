@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Disclosure, Transition } from "@headlessui/react";
-import { UserSidebar } from "../User/Common/UserSidebar";
-import { FilterIcon, SearchIcon, SortIcon } from "../../theme/svg-icons";
+import { SearchIcon, SortIcon } from "../../theme/svg-icons";
 import { Pagination } from "../../features/projects/Pagination";
-import { OneTimeItem } from "../../features/myDonation/OneTimeItem";
 import { useDispatch, useSelector } from "react-redux";
 import { getMyDonations } from "../../features/myDonation/myDonationSlice";
 import { RecurringItem } from "../../features/myDonation/RecurringItem";
 import { MyDonationTypes } from "../../utils/constants";
-import { ModalLoader, LoaderIcon } from "../../theme/svg-icons";
 import { Dropdown } from "../../components/Dropdown";
 
 const sortList = [
@@ -19,6 +16,14 @@ const sortList = [
   { label: "Amount (Highest to Lowest)", value: "total-r" },
   { label: "Amount (Lowest to Highest)", value: "total" },
 ];
+const donationFilter = [
+  { text: "Date (Last to First)", value: "date-r" },
+  { text: "Date (First to Last)", value: "date" },
+  { text: "Name (A-Z)", value: "name" },
+  { text: "Name (Z-A)", value: "name-r" },
+  { text: "Amount (Highest to Lowest)", value: "total-r" },
+  { text: "Amount (Lowest to Highest)", value: "total" },
+];
 
 export const Donations = ({
   type,
@@ -26,6 +31,7 @@ export const Donations = ({
   toggleModal,
   handleCancel,
   handleViewDetails,
+  setIdForPayment
 }) => {
   const dispatch = useDispatch();
   const donations = useSelector((state) => {
@@ -106,14 +112,7 @@ export const Donations = ({
                     </span>
                   </Disclosure.Button>
                   <Disclosure.Panel className="absolute z-40 flex flex-col p-2 mt-2 origin-top-right transform scale-100 bg-white rounded-md shadow-sm shadow opacity-100 w-fit">
-                    {[
-                      { text: "Date (Last to First)", value: "date-r" },
-                      { text: "Date (First to Last)", value: "date" },
-                      { text: "Name (A-Z)", value: "name" },
-                      { text: "Name (Z-A)", value: "name-r" },
-                      { text: "Amount (Highest to Lowest)", value: "total-r" },
-                      { text: "Amount (Lowest to Highest)", value: "total" },
-                    ].map((item, index) => (
+                    {donationFilter.map((item, index) => (
                       <div
                         className={`group flex w-full items-center bg-white px-3 py-2 text-sm gap-4 text-button text-neutral-600 ${
                           filters.sort === item.value
@@ -137,7 +136,7 @@ export const Donations = ({
             <div className="form-group">
               <label className="relative block !mb-0">
                 <span className="sr-only">Search</span>
-                <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-neutral-500">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-500">
                   <SearchIcon />
                 </span>
                 <input
@@ -166,6 +165,7 @@ export const Donations = ({
                   toggleModal={toggleModal}
                   handleCancel={handleCancel}
                   handleViewDetails={handleViewDetails}
+                  setIdForPayment={setIdForPayment}
                 />
               ))}
             </div>

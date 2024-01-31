@@ -2,7 +2,7 @@ import React from "react";
 import Button from "../../components/Button";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import { toggleBasket } from "../basket/basketSlice";
 import {
   addBasketItem,
@@ -14,25 +14,18 @@ import { FormikValidationError } from "../Common/FormikValidationError";
 import { SnackMessages } from "../../components/Toast";
 import { ReccuringOptions } from "./ReccuringOptions";
 import PropTypes from "prop-types";
+import { checkAdminPermission } from "../../utils/helper";
+import { currencyConfig } from "../../utils/constants";
 
-const { showSuccessMessage } = SnackMessages();
+const { showSuccessMessage, showErrorMessage } = SnackMessages();
 const paymentTypes = [
   { value: "false", label: "One-time" },
   { value: "true", label: "Recurring" },
 ];
-const donationAmounts = [
-  { value: "100", label: "$100" },
-  { value: "500", label: "$500" },
-  { value: "800", label: "$800" },
-  { value: "Other", label: "Other" },
-];
-const recurringPeriods = [
-  { value: "7", label: "Weekly" },
-  { value: "30", label: "Monthly" },
-  { value: "365", label: "Yearly" },
-];
 
 export const CommonDonation = ({ campaign, handleClose, isModal }) => {
+  const user = localStorage.getItem("loggedIn");
+	const generalAmounts = useSelector(state => state.settings.settings?.generalAmounts)
   const dispatch = useDispatch();
 
   const handleDonation = async (values, { resetForm }) => {
@@ -46,8 +39,10 @@ export const CommonDonation = ({ campaign, handleClose, isModal }) => {
       total: parseFloat(values.amount, 10),
       periodDays: parseInt(values.periodDays, 10),
       isRecurring: JSON.parse(values.isRecurring),
+      Campaign: campaign,
     };
-
+    checkAdminPermission(newValues);
+    
     const action = isInCheckoutList ? updateBasketItem : addBasketItem;
     const updatedCheckout = isInCheckoutList
       ? [
@@ -62,7 +57,6 @@ export const CommonDonation = ({ campaign, handleClose, isModal }) => {
           ),
         ]
       : [...checkout, newValues];
-
     dispatch(addBasket(updatedCheckout));
     localStorage.setItem("checkout", JSON.stringify(updatedCheckout));
     await dispatch(action(newValues));
@@ -95,6 +89,10 @@ export const CommonDonation = ({ campaign, handleClose, isModal }) => {
   };
 
   const handleChange = (e) => {
+    if (e.target.name === "isRecurring" && !user && e.target.value === "true") {
+      showErrorMessage("Please login to access this feature");
+      return;
+    }
     formik.setFieldValue([e.target.name], e.target.value);
   };
 
@@ -152,9 +150,9 @@ export const CommonDonation = ({ campaign, handleClose, isModal }) => {
           </div>
           {formik?.values.isRecurring === "true" && (
             <ReccuringOptions
-              recurringPeriods={recurringPeriods}
               handleChange={handleChange}
               periodDays={formik?.values.periodDays}
+              isRamadanCampaign={campaign?.isRamadanCampaign}
             />
           )}
 
@@ -166,19 +164,19 @@ export const CommonDonation = ({ campaign, handleClose, isModal }) => {
             }`}
           >
             <legend className="sr-only">Select an amount to donate</legend>
-            {donationAmounts.map((option) => (
-              <div key={option.value} className="col-span-1">
+            {[...generalAmounts, "Other"].map((option) => (
+              <div key={option} className="col-span-1">
                 <Button
                   type="button"
                   onClick={handleAmount}
-                  value={option.value}
-                  label={option.label}
+                  value={option}
+                  label={option==="Other"?"Other":currencyConfig.label+option}
                   name="amount"
                   variant={"secondaryOutlineFull"}
                   className={
-                    option.value === formik.values.amount ||
+                    option === formik.values.amount ||
                     (formik.values.custom && option.value === "Other")
-                      ? "bg-primary-300 !text-white"
+                      ? "button-focus "
                       : ""
                   }
                 />

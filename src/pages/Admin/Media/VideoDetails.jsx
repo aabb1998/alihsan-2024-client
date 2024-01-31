@@ -30,7 +30,7 @@ const validationSchema = yup.object({
   description: yup.string().required("Description is required"),
 });
 
-export const VideoDetails = () => {
+const VideoDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -60,7 +60,7 @@ export const VideoDetails = () => {
           );
           if (response?.payload?.success) {
             showSuccessMessage(response?.payload?.message);
-            navigate('/admin/videos');
+            navigate("/admin/videos");
           } else {
             showErrorMessage(response?.payload?.message);
           }
@@ -72,7 +72,7 @@ export const VideoDetails = () => {
             setImagePreviews(Array(4).fill(null));
             setCoverPreviews("");
             resetForm();
-            navigate('/admin/videos');
+            navigate("/admin/videos");
           } else {
             showErrorMessage(response?.payload?.message);
           }
@@ -144,7 +144,7 @@ export const VideoDetails = () => {
         <div className="mt-5 md:mt-7.5">
           <div className="flex flex-col mb-6 form-group">
             <label htmlFor="title" className="">
-              Title
+              Title<span className="text-red-300">*</span>
             </label>
             <input
               type="text"
@@ -165,7 +165,7 @@ export const VideoDetails = () => {
 
           <div className="relative flex flex-col mb-6 text-area">
             <label htmlFor="content" className="">
-              Description
+              Description<span className="text-red-300">*</span>
             </label>
             <TextArea
               handleChange={handleInputChange}
@@ -182,7 +182,7 @@ export const VideoDetails = () => {
           </div>
           <div className="flex flex-col mb-6 form-group">
             <label htmlFor="title" className="">
-              URL
+              URL<span className="text-red-300">*</span>
             </label>
             <input
               type="text"
@@ -205,3 +205,5 @@ export const VideoDetails = () => {
     </div>
   );
 };
+
+export default VideoDetails;

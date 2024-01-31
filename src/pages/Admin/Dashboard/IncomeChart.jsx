@@ -48,7 +48,7 @@ const IncomeChart = ({ data }) => {
     };
   }, [data]); // Empty dependency array means this effect will only run once after initial render
 
-  return <div id="main" className="w-full dashboard-canvas" style={{  width: "100%", height: "400px" }}></div>;
+  return <div id="main" className="w-full " style={{  height: "400px" }}></div>;
 };
 
 export default IncomeChart;

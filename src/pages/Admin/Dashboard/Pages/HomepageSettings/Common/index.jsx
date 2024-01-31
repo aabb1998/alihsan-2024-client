@@ -19,9 +19,9 @@ export const AddNewGroup = ({ onClose }) => {
                                     </div>
                                     <div className="w-full form-group">
                                         <label htmlFor="amount" className="block">Group Name</label>
-                                        <input type="text" className="w-full form-control" id="Weight" placeholder="Group F" />
+                                        <input type="text" className="w-full form-control" id="Weight" placeholder="Group Name" />
                                     </div>
-                                    <div className="flex flex-col gap-4 sm:gap-5 max-h-[calc(100vh-20rem)] overflow-auto">
+                                    <div className="flex flex-col gap-4 sm:gap-5 max-h-[calc(100vh-20rem)] overflow-auto pr-2">
                                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
                                             <div className="form-group">
                                                 <label htmlFor="country" className="block">Country</label>

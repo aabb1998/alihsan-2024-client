@@ -3,6 +3,7 @@ import {
   ChevronDownIcon,
   ShoppingCartIcon,
   MenuIcon,
+  HeartFilledIcon,
 } from "../../theme/svg-icons";
 import { toggleBasket } from "../../features/basket/basketSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,6 +15,7 @@ import { MenuData } from "../../utils/constants";
 import { useQuickDonation } from "../../features/quickDonation";
 import { HeaderModal } from "../HeaderModal";
 import ModalItems from "./ModalItems";
+import { Tooltip } from "react-tooltip";
 
 const HeaderMain = ({ isSidebar, setSidebar }) => {
   const navigate = useNavigate();
@@ -39,11 +41,14 @@ const HeaderMain = ({ isSidebar, setSidebar }) => {
 
   const handleToggle = (index) => {
     const selectedItem = MenuData[index] || {};
+    console.log(index);
+
     setSelectedIndex(!headerModal?.isOpen ? index : -1);
     if (selectedItem?.subMenu?.length || selectedItem?.menu === "campaigns") {
       setHeaderModal({
         ...headerModal,
-        isOpen: !headerModal?.isOpen,
+        // isOpen: !headerModal?.isOpen,
+        isOpen: true,
         children: (
           <ModalItems selectedItem={selectedItem} handleClick={handleClick} />
         ),
@@ -63,11 +68,11 @@ const HeaderMain = ({ isSidebar, setSidebar }) => {
   }, []);
 
   return (
-    <div className="bg-neutral-200 z-30">
+    <div className=" bg-neutral-200">
       <div
         className={`hidden${
           headerModal?.isOpen ? " md:block" : ""
-        } absolute top-0 bottom-0 left-0 right-0 z-0`}
+        } absolute top-0 bottom-0 left-0 right-0 z-0 `}
         onClick={() =>
           setHeaderModal({
             ...headerModal,
@@ -75,11 +80,20 @@ const HeaderMain = ({ isSidebar, setSidebar }) => {
           })
         }
       ></div>
-      <HeaderModal
-        children={headerModal?.children}
-        show={headerModal?.isOpen}
-      />
-      <div className="container flex items-center justify-between !py-6 md:!py-3 relative z-1">
+      <div
+        onMouseLeave={() => {
+          setHeaderModal({
+            ...headerModal,
+            isOpen: false,
+          });
+        }}
+      >
+        <HeaderModal
+          children={headerModal?.children}
+          show={headerModal?.isOpen}
+        />
+      </div>
+      <div className="container flex items-center justify-between !py-6 md:!py-3 relative">
         <div className="flex items-center gap-4">
           <div className="flex items-center md:hidden">
             <button
@@ -97,7 +111,7 @@ const HeaderMain = ({ isSidebar, setSidebar }) => {
             <Link to="/">
               <img
                 src="/images/assets/logo.svg"
-                className="w-auto h-6 md:h-11"
+                className="w-auto h-10 lg:h-11"
                 alt="Al-Ihsan Foundation"
               />
             </Link>
@@ -111,13 +125,20 @@ const HeaderMain = ({ isSidebar, setSidebar }) => {
                   key={index}
                   onMouseOver={(e) => {
                     e.preventDefault();
-                    if(item.menu){
+                    if (item.menu) {
                       handleToggle(index);
+                    } else {
+                      setHeaderModal({
+                        ...headerModal,
+                        isOpen: false,
+                        children: null,
+                      });
                     }
                   }}
                 >
                   <Link
                     to={item.to || `/`}
+                    data-tooltip-id={"megamenu-tooltip"}
                     className={
                       item.menu ? "flex items-center gap-1 lg:gap-1.5 " : ""
                     }
@@ -155,6 +176,7 @@ const HeaderMain = ({ isSidebar, setSidebar }) => {
                 label="Donate now"
                 className={"text-sm"}
                 onClick={() => quickDonation()}
+                leftIcon={<span className="relative flex"> <span className="absolute inline-flex w-full h-full transition-all ease-in-out delay-75 bg-red-300 rounded-full animate-ping bg-sky-400 opacity-90"></span> <div className="text-red-300 rounded-full "> <HeartFilledIcon /> </div> </span>}
               />
             </div>
           </div>

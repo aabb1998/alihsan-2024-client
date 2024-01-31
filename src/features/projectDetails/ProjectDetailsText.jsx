@@ -9,12 +9,11 @@ export const ProjectDetailsText = ({ details }) => {
     <>
       <div>
         <p
+					dangerouslySetInnerHTML={{__html: details?.description}}
           className={`mb-2 md:mb-5 text-neutral-800 ${
             fullScreen && "line-clamp-5 sm:line-clamp-none"
           }`}
-        >
-          {details?.description}
-        </p>
+        ></p>
         {/* <p className="hidden mb-5 text-neutral-800 md:block">
           {details?.description}
         </p> */}

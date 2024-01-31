@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Button from "../../components/Button";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { SnackMessages } from "../../components/Toast";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -16,18 +16,20 @@ import {
 
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import { checkAdminPermission } from "../../utils/helper";
+import { currencyConfig } from "../../utils/constants";
 
-const { showSuccessMessage } = SnackMessages();
+const { showSuccessMessage, showErrorMessage } = SnackMessages();
 const paymentTypes = [
   { value: "false", label: "One-time" },
   { value: "true", label: "Recurring" },
 ];
-const donationAmounts = [
-  { value: "100", label: "$100" },
-  { value: "200", label: "$500" },
-  { value: "800", label: "$800" },
-  { value: "Other", label: "Other" },
-];
+// const donationAmounts = [
+//   { value: "100", label: "$100" },
+//   { value: "200", label: "$500" },
+//   { value: "800", label: "$800" },
+//   { value: "Other", label: "Other" },
+// ];
 
 const recurringPeriods = [
   { value: "7", label: "Weekly" },
@@ -36,9 +38,10 @@ const recurringPeriods = [
 ];
 
 export const ZaqatDonation = ({ campaign, handleClose, isModal }) => {
+	const user = localStorage.getItem('loggedIn');
+	const generalDonations = useSelector(state => state.settings.settings.generalAmounts)
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const handleDonation = async (values, { resetForm }) => {
     const checkout = JSON.parse(localStorage.getItem("checkout") || "[]");
     const isInCheckoutList = checkout.find(
@@ -51,7 +54,10 @@ export const ZaqatDonation = ({ campaign, handleClose, isModal }) => {
       total: parseFloat(values.amount, 10),
       periodDays: parseInt(values.periodDays, 10),
       isRecurring: JSON.parse(values.isRecurring),
+      Campaign: campaign,
+
     };
+    checkAdminPermission(newValues)
 
     const action = isInCheckoutList ? updateBasketItem : addBasketItem;
     const updatedCheckout = isInCheckoutList
@@ -81,6 +87,10 @@ export const ZaqatDonation = ({ campaign, handleClose, isModal }) => {
   };
 
   const handleChange = (e) => {
+		if(e.target.name==='isRecurring' && !user && e.target.value==='true') {
+			showErrorMessage('Please login to access this feature')
+			return;
+		}
     formik.setFieldValue([e.target.name], e.target.value);
   };
   const handleAmount = (e) => {
@@ -171,7 +181,7 @@ export const ZaqatDonation = ({ campaign, handleClose, isModal }) => {
                       name="periodDays"
                       className={
                         option.value === formik?.values.periodDays
-                          ? "bg-primary-300 !text-white"
+                          ? "button-focus"
                           : ""
                       }
                       value={option.value}
@@ -192,20 +202,19 @@ export const ZaqatDonation = ({ campaign, handleClose, isModal }) => {
             }`}
           >
             <legend className="sr-only">Select an amount to donate</legend>
-            {donationAmounts.map((option) => (
-              <div key={option.value} className="col-span-1">
+            {[...generalDonations, 'Other'].map((option) => (
+              <div key={option} className="col-span-1">
                 <Button
                   type="button"
                   onClick={handleAmount}
-                  value={option.value}
-                  id={option.value}
-                  label={option.label}
+                  value={option}
+                  label={option==='Other'?option:currencyConfig.label+option}
                   name="amount"
                   variant={"secondaryOutlineFull"}
                   className={
-                    option.value === formik.values.amount ||
-                    (formik.values.custom && option.value === "Other")
-                      ? "bg-primary-300 !text-white"
+                    option === formik.values.amount ||
+                    (formik.values.custom && option === "Other")
+                      ? "button-focus"
                       : ""
                   }
                 />

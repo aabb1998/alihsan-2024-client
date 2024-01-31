@@ -20,6 +20,7 @@ import MoreMenuButton from "../../../components/MoreMenuButton";
 import { loadCampaignDonations } from '../../../features/adminCampaigns'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import { currencyConfig } from "../../../utils/constants";
 
 export default function CampaignDonations() {
   const params = useParams();
@@ -72,7 +73,7 @@ export default function CampaignDonations() {
         </div>
         {/* card area */}
         <div className="flex my-2 sm:my-5 md:my-7.5 gap-2 md:gap-7.5 flex-wrap">
-          <div className="py-5 px-4 md:py-7.5 md:px-6 border border-neutral-300 rounded-2xl w-full flex-1 bg-neutral-200 hover:bg-accent-300 cursor-pointer grow basis-0">
+          <div className="py-5 px-4 md:py-7.5 md:px-6 border border-neutral-300 rounded-2xl w-full flex-1 bg-neutral-200 grow basis-0">
             <h6 className="mb-3 md:mb-5 text-base !font-medium md:text-lg font-Montserrat text-neutral-600">
               {" "}
               Total Donations
@@ -81,7 +82,7 @@ export default function CampaignDonations() {
               <h2 className="text-heading-5 md:text-heading-2">{campaignDetails.totals.totalOrders || 0}</h2>
             </div>
           </div>
-          <div className="py-5 px-4 md:py-7.5 md:px-6 border border-neutral-300 rounded-2xl w-full flex-1 bg-neutral-200 hover:bg-accent-300 cursor-pointer grow basis-0">
+          <div className="py-5 px-4 md:py-7.5 md:px-6 border border-neutral-300 rounded-2xl w-full flex-1 bg-neutral-200 grow basis-0">
             <h6 className="mb-3 md:mb-5 text-base !font-medium md:text-lg font-Montserrat text-neutral-600">
               {" "}
               Total Donors
@@ -90,13 +91,13 @@ export default function CampaignDonations() {
               <h2 className="text-heading-5 md:text-heading-2">{campaignDetails.totals.totalDonors || 0}</h2>
             </div>
           </div>
-          <div className="py-5 grow basis-0 px-4 md:py-7.5 md:px-6 border border-neutral-300 rounded-2xl w-full flex-1 bg-neutral-200 hover:bg-accent-300 cursor-pointer">
+          <div className="py-5 grow basis-0 px-4 md:py-7.5 md:px-6 border border-neutral-300 rounded-2xl w-full flex-1 bg-neutral-200 cursor-pointer">
             <h6 className="mb-3 md:mb-5 text-base !font-medium md:text-lg font-Montserrat text-neutral-600">
               {" "}
               Total Donation Amount
             </h6>
             <div className="flex items-center justify-between">
-              <h2 className="text-heading-5 md:text-heading-2">${campaignDetails.totals.totalOrderAmount || 0}</h2>
+              <h2 className="text-heading-5 md:text-heading-2">{currencyConfig.label}{campaignDetails.totals.totalOrderAmount || 0}</h2>
             </div>
           </div>
         </div>
@@ -104,7 +105,7 @@ export default function CampaignDonations() {
         <div className="mt-6 md:mt-10">
           <Filter filters={list.filters} setFilters={setFilters} />
 
-          <div className="relative overflow-x-auto -z-1">
+          <div className="overflow-x-auto">
             <table class="table-auto w-full text-start">
               <thead className="rounded bg-neutral-200">
                 <tr className="">
@@ -147,7 +148,7 @@ export default function CampaignDonations() {
                     Email
                   </th>
                   <th className="p-4 text-sm font-medium text-start font-Montserrat text-neutral-600">
-                    Phone Numbesr
+                    Phone Number
                   </th>
                 </tr>
               </thead>
@@ -167,16 +168,16 @@ export default function CampaignDonations() {
                       </div>
                     </td>
                     <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
-                      ${donation.total}
+                      {currencyConfig.label}{donation.total}
                     </td>
                     <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
                       {donation.donatedAt}
                     </td>
                     <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
-                      {donation.User?.email || donation.email}
+                      {donation.email || donation.User?.email || '-'}
                     </td>
                     <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
-                      {donation.User?.phone || donation.phone || '-'}
+                      {donation.phone || donation.User?.phone || '-'}
                     </td>
                     {/*
                     <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
@@ -198,12 +199,12 @@ export default function CampaignDonations() {
                 ))}
               </tbody>
             </table>
-            <div className="mt-5">
+            <div className="mt-5 mb-5">
               {list.count===0?(
                 <div className="">No Data Found.</div>
               ):(
                 <Pagination
-                  totalPages={Math.ceil(list.count/20)}
+                  totalPages={Math.ceil(list.count/process.env.REACT_APP_PAGINATION_PER_PAGE)}
                   currentPage={list.filters.page}
                   onPageChange={(page) => setFilters({ page })} />
               )}
@@ -219,10 +220,10 @@ export default function CampaignDonations() {
 
 const AmountFilters = [
   {label: "All", value: ""},
-  {label: "$0 - $50", value: "0-50"},
-  {label: "$50 - $100", value: "50-100"},
-  {label: "$100 - $200", value: "100-200"},
-  {label: "> $200", value: "200-"},
+  {label: `${currencyConfig.label}0 - ${currencyConfig.label}50`, value: "0-50"},
+  {label: `${currencyConfig.label}50 - ${currencyConfig.label}100`, value: "50-100"},
+  {label: `${currencyConfig.label}100 - ${currencyConfig.label}200`, value: "100-200"},
+  {label: `> ${currencyConfig.label}200`, value: "200-"},
 ]
 const PeriodFilters = [
   {label: "All", value: ""},
@@ -244,8 +245,8 @@ function Filter({ filters, setFilters }) {
 	}, [filters])
 	return (
 		<>
-			<div className='flex flex-wrap sm:flex-nowrap items-center justify-between mt-7.5 mb-5'>
-				<form className='flex items-center gap-4 mb-3 sm:mb-0'>
+			<div className='flex flex-wrap sm:flex-nowrap items-center justify-between my-5 md:my-7.5'>
+				<form className='flex items-center gap-4'>
 					<label onClick={() => toggleSidebar(true)} className='flex items-center gap-1 cursor-pointer text-button-md text-neutral-1000'>
 						<span className=' md:hidden'><FilterIcon /> </span>Filter
 					</label>
@@ -414,6 +415,9 @@ function Filter({ filters, setFilters }) {
 											)}
 										</Disclosure>
 									</div>
+								</div>
+                <div className="flex items-center justify-between mt-2 cursor-pointer" onClick={() => setFilters()}>
+									<h3 className="text-button-lg text-neutral-800">Clear</h3>
 								</div>
 							</div>
 						</aside>

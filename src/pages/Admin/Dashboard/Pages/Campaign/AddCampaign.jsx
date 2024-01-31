@@ -22,7 +22,7 @@ export const AddCampaignComponent = () => {
             </div>
             <form className='w-full mt-7.5'>
                 <div className="flex flex-col mb-6 form-group">
-                    <div for="dropzone-file" className="relative flex flex-col items-center justify-center w-full overflow-hidden bg-center bg-no-repeat bg-cover cursor-pointer rounded-3xl h-76 bg-choose-cover">
+                    <div for="dropzone-file" className="relative flex flex-col items-center justify-center w-full overflow-hidden bg-center bg-no-repeat bg-cover rounded-3xl h-76 bg-choose-cover">
                         {/* <img src="" alt="preview" className='object-cover w-full' /> */}
                         {/* <Button className='absolute btn btn-lite-primary text-button-md md:text-button-lg right-5 bottom-5' label={'Change Cover'} /> */}
                         <div className="flex items-center justify-center w-full h-full">
@@ -41,7 +41,7 @@ export const AddCampaignComponent = () => {
                 </div>
                 <div className="relative flex flex-col mb-6 text-area">
                     <label htmlFor="description" className="">Project Description</label>
-                    <textarea onChange={e => setCount(e.target.value.length)} rows={5} className="w-full bg-white !min-h-40 form-control" id="description" placeholder="Project Description">
+                    <textarea onChange={e => setCount(e.target.value.length)} rows={5} className="w-full bg-white !min-h-40 form-control !text-neutral-1000" id="description" placeholder="Project Description">
                     </textarea>
                     <p className='absolute font-medium bg-white text-button-md text-neutral-800 bottom-2 right-2'>{count}/500</p>
                 </div>

@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import Button from "../Button";
 import { formatPrice } from "../../utils/helper";
+import { currencyConfig } from "../../utils/constants";
 
 export const BasketTotal = ({ items, handleClick }) => {
   const { settings } = useSelector((state) => state.mapCountries);
@@ -26,20 +27,20 @@ export const BasketTotal = ({ items, handleClick }) => {
           <div className="flex justify-between text-md sm:text-heading-7">
             <div className="font-medium sm:font-bold">Subtotal</div>
             <div className="font-medium sm:font-bold">
-              ${formatPrice(totalPoints)}
+              {currencyConfig.label}{formatPrice(totalPoints)}
             </div>
           </div>
           <div className="h-px my-3 sm:my-5 bg-neutral-300"></div>
           <div className="flex justify-between text-md sm:text-heading-7">
             <div className="font-medium sm:font-bold">Processing Fee</div>
             <div className="font-medium sm:font-bold">
-              ${formatPrice(processingAmount)}
+              {currencyConfig.label}{formatPrice(processingAmount)}
             </div>
           </div>
           <div className="h-px my-3 sm:my-5 bg-neutral-300"></div>
           <div className="flex justify-between text-md sm:text-heading-6">
             <div className="font-bold">Total</div>
-            <div className="font-bold">${formatPrice(grossTotal)}</div>
+            <div className="font-bold">{currencyConfig.label}{formatPrice(grossTotal)}</div>
           </div>
         </div>
       )}

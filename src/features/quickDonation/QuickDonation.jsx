@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { CheckIcon, ChevronDownIcon, CloseIcon } from "../../theme/svg-icons";
+import { CloseIcon } from "../../theme/svg-icons";
 import { CommonDonation } from "../projectDetails/CommonDonation";
 import { AqeeqaDonation } from "../projectDetails/AqeeqaDonation";
 import { AdeeqahDonation } from "../projectDetails/AdeeqahDonation";
@@ -9,7 +9,6 @@ import {
   getQucikDonation,
   getQucikDonationProject,
 } from "../quickDonation/quickDonationSlice";
-import { getProject, resetProject } from "../projectDetails/projectDetailSlice";
 import { ModalLoader } from "../../theme/svg-icons";
 import { Transitions } from "../../utils/constants";
 import { Transition, Dialog } from "@headlessui/react";
@@ -24,41 +23,33 @@ const QuickDonation = ({ isOpen, onClose, project }) => {
   const { quickdonations, qucikDonationProject, loading } = useSelector(
     (state) => state.quickDonations
   );
-
-  // const projectDetails = useSelector((state) => state.project);
   const checkout = qucikDonationProject?.campaign?.checkoutType;
+  const [isActualOpen, setIsActualOpen] = useState(false);
+  const [isLoading, setLoading] = useState(false);
+  const [isOpaque, setIsOpaque] = useState(false);
+  const handleChange = (e) => {
+    dispatch(getQucikDonationProject(e.slug));
+  };
+
+  const getQuickDonation = async () => {
+    setLoading(true);
+    const quickDonationCampaigns = await dispatch(getQucikDonation());
+    const firstCampaign = quickDonationCampaigns?.payload[0];
+    console.log(quickDonationCampaigns?.payload[0]);
+    if (project) {
+      await dispatch(getQucikDonationProject(project?.slug));
+      setLoading(false);
+    } else {
+      await dispatch(getQucikDonationProject(firstCampaign?.slug));
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (!isOpen) return;
-    if (project) {
-      // dispatch(getProject(project?.id));
-      dispatch(getQucikDonationProject(project?.id));
-    } else {
-      // dispatch(getProject(220));
-      dispatch(getQucikDonationProject(220));
-    }
-    dispatch(getQucikDonation());
-    return () => {
-      // dispatch(resetProject());
-    };
+    getQuickDonation();
   }, [isOpen]);
 
-  const handleChange = (e) => {
-    dispatch(getQucikDonationProject(e.value));
-  };
-
-  const style = {
-    control: (base) => ({
-      ...base,
-      // This line disable the blue border
-      boxShadow: "none",
-      ringOffset: "0",
-      ring: "0",
-      outLine: "0",
-    }),
-  };
-  const [isActualOpen, setIsActualOpen] = useState(false);
-  const [isOpaque, setIsOpaque] = useState(false);
   useEffect(() => {
     if (isOpen) setIsActualOpen(true);
     else setIsOpaque(false);
@@ -101,9 +92,9 @@ const QuickDonation = ({ isOpen, onClose, project }) => {
                 leaveTo="opacity-0 scale-75"
               >
                 <div className="flex items-end justify-center min-h-full text-center sm:items-center sm:p-0 max-h-[80vh]">
-                  <div className="relative grid max-h-[30rem] min-h-[30rem] w-full  sm:grid-cols-2 gap-4 overflow-hidden text-left transition-all transform sm:max-w-[816px]">
+                  <div className="relative grid max-h-[35rem] min-h-[35rem] w-full  sm:grid-cols-2 gap-4 overflow-hidden text-left transition-all transform sm:max-w-[816px]">
                     <div className="hidden overflow-hidden bg-white sm:block rounded-t-3xl sm:rounded-3xl">
-                      {loading ? (
+                      {isLoading ? (
                         <ModalLoader />
                       ) : (
                         <div className="flex flex-col">
@@ -122,14 +113,26 @@ const QuickDonation = ({ isOpen, onClose, project }) => {
                               {qucikDonationProject?.campaign?.name ||
                                 `Sample Header Goes Here`}
                             </h2>
-                            <p className="text-lg font-medium text-neutral-600 line-clamp-6">
-                              {qucikDonationProject?.campaign?.description ||
-                                ` Al-Ihsan Foundation International Limited (formed in
-                  2014) is a non-profit public relief organisation
-                  dedicated to assisting all people and families in need.
-                  The Arabic word Al-Ihsan means “perfection” or
-                  “excellence.”`}{" "}
-                            </p>
+                            {qucikDonationProject?.campaign?.descriptionText ||
+                            qucikDonationProject?.campaign?.description ? (
+                              <p
+                                className="text-lg font-medium text-neutral-600 line-clamp-6"
+                                dangerouslySetInnerHTML={{
+                                  __html:
+                                    qucikDonationProject?.campaign
+                                      .descriptionText ||
+                                    qucikDonationProject?.campaign.description,
+                                }}
+                              />
+                            ) : (
+                              <p className="text-lg font-medium text-neutral-600 line-clamp-6">
+                                {` Al-Ihsan Foundation International Limited (formed in
+										2014) is a non-profit public relief organisation
+										dedicated to assisting all people and families in need.
+										The Arabic word Al-Ihsan means “perfection” or
+										“excellence.”`}{" "}
+                              </p>
+                            )}
                           </div>
                         </div>
                       )}
@@ -147,7 +150,7 @@ const QuickDonation = ({ isOpen, onClose, project }) => {
                             <CloseIcon iconSize={24} />
                           </button>
                         </div>
-                        <div className="flex flex-col h-full overflow-y-auto max-h-[23rem]">
+                        <div className="flex flex-col h-full overflow-y-auto max-h-[28rem] pr-2">
                           <div className="mb-4 sm:mb-5">
                             <label
                               htmlFor="SelectProject"
@@ -160,7 +163,11 @@ const QuickDonation = ({ isOpen, onClose, project }) => {
                               id="SelectProject"
                               value={
                                 quickdonations
-                                  ?.map((e) => ({ label: e.name, value: e.id }))
+                                  ?.map((e) => ({
+                                    label: e.name,
+                                    value: e.id,
+                                    slug: e.slug,
+                                  }))
                                   .filter(
                                     (option) =>
                                       parseInt(option.value) ===
@@ -184,6 +191,7 @@ const QuickDonation = ({ isOpen, onClose, project }) => {
                               options={quickdonations?.map((e) => ({
                                 label: e.name,
                                 value: e.id,
+                                slug: e.slug,
                               }))}
                             />
                           </div>

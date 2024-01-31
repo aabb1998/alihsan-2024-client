@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { getTopDonation } from "../quickDonation/quickDonationSlice";
 import { DonationModal } from "./DonationModal";
 import { NoDataFound } from "../../components/NoDataFound";
+import { currencyConfig } from "../../utils/constants";
 
 const initialState = {
   sort: "createdAt",
@@ -15,13 +16,13 @@ const initialState = {
 
 export const LiveDonations = (props) => {
   const dispatch = useDispatch();
-  const { liveDonations, topDonations } = props;
+  const { liveDonations, topDonations, campaign } = props;
+  const id = campaign?.id;
   const [period, setPeriod] = useState("allTime");
   const [isOpen, setIsOpen] = useState(false);
   const donations = useSelector((state) => state.quickDonations);
   const [selectedFilters, setSelectedFilters] = useState(initialState);
   const [selectedSort, setSelectedSort] = useState("");
-  const { id } = useParams();
 
   const handleFilterChange = (e) => {
     const { value } = e;
@@ -126,7 +127,7 @@ export const LiveDonations = (props) => {
                   </div>
                 </div>
                 <div className="font-bold heading-5">
-                  ${donation?.total?.toLocaleString()}
+                  {currencyConfig.label}{donation?.total?.toLocaleString()}
                 </div>
               </div>
             ))

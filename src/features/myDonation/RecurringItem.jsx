@@ -11,6 +11,7 @@ import { Button } from "../../components";
 import ViewDetailsRecurring from "../../../src/pages/User/MyDonations/Common/ViewOnetimeModal";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { currencyConfig } from "../../utils/constants";
 
 export const RecurringItem = ({
   type,
@@ -18,6 +19,7 @@ export const RecurringItem = ({
   onReload,
   toggleModal,
   handleViewDetails,
+  setIdForPayment,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const date = new Date(
@@ -40,18 +42,17 @@ export const RecurringItem = ({
     setLoading(false);
     setIsModalOpen(false);
   };
-
   return (
     <div className="flex flex-col gap-5 p-4 border md:flex-row border-neutral-300 rounded-2xl">
       <div className="shrink-0">
-        <div className="relative overflow-hidden rounded-xl">
+        <div className="relative w-full sm:h-[6.75rem] h-[8.625rem] sm:w-[10.125rem] overflow-hidden rounded-xl">
           <img
             src={
               mydonation?.Campaign?.coverImage ||
               "/images/banner/projects/1.jpg"
             }
             alt=""
-            className="object-cover h-full min-h-[108px] w-full md:w-[162px] rounded-xl"
+            className="object-cover w-full h-full"
           />
           {mydonation.isRecurring ? (
             <div className="absolute bottom-0 left-0 flex justify-center w-full py-1 bg-primary-200 text-button-md">
@@ -59,6 +60,10 @@ export const RecurringItem = ({
                 ? "Weekly"
                 : mydonation.periodDays === 30
                 ? "Monthly"
+                : mydonation.periodDays === 1
+                ? "Daily"
+                : mydonation.periodDays === 10
+                ? "Last 10 days"
                 : `Yearly`}
             </div>
           ) : null}
@@ -67,7 +72,7 @@ export const RecurringItem = ({
       <div className="flex flex-col justify-between grow">
         <div>
           <Link
-            to={`/project/${mydonation?.Campaign?.id}`}
+            to={`/project/${mydonation?.Campaign?.slug}`}
             className="mb-1 text-heading-7 text-neutral-800"
           >
             {mydonation?.Campaign?.name}
@@ -77,7 +82,7 @@ export const RecurringItem = ({
             {mydonation?.Campaign?.description}
           </p>
         </div>
-        <div className="flex flex-wrap justify-between gap-4 sm:gap-5">
+        <div className="flex justify-between gap-4 sm:gap-5">
           <div className="flex gap-2">
             <div className="flex items-center justify-center w-10 h-10 p-2 text-yellow-500 rounded bg-accent-300">
               <DollarSignIcon iconSize={24} strokeWidth={1.5} />
@@ -85,7 +90,7 @@ export const RecurringItem = ({
             <div className="flex flex-col gap-1">
               <div className="text-xs text-neutral-600">Donation Amount</div>
               <div className="font-bold">
-                $
+                {currencyConfig.label}
                 {(
                   parseFloat(mydonation?.total) +
                   parseFloat(mydonation?.processingFee)
@@ -95,47 +100,57 @@ export const RecurringItem = ({
               </div>
             </div>
           </div>
-
-          <div className="flex gap-2">
+          <div className="flex justify-between gap-2">
             <div className="flex items-center justify-center w-10 h-10 p-2 text-green-500 bg-green-300 rounded">
               <CalendarIcon iconSize={24} />
             </div>
             <div className="flex flex-col gap-1">
               <div className="text-xs text-neutral-600">
                 {mydonation.periodDays && mydonation.status === "ACTIVE"
-                  ? "Next Payment On"
+                  ? `Next Payment On ${
+                      mydonation?.Campaign?.isRamadanCampaign
+                        ? "After 8 PM"
+                        : ""
+                    }`
                   : "Payment Date"}
               </div>
               <div className="font-bold">{outputDateString}</div>
             </div>
           </div>
-          <div className="flex flex-row flex-grow gap-4 sm:flex-grow-0">
-            {mydonation.periodDays && mydonation.status === "ACTIVE" ? (
+        </div>
+        <div className="flex flex-wrap justify-end gap-4 mt-6">
+          {type !== "ONETIME" && (
+                <Button
+                  onClick={() => setIdForPayment(mydonation?.id)}
+                  label="Payment Details"
+                  type="button"
+                />
+              )}
+              {mydonation.periodDays && mydonation.status === "ACTIVE" ? (
+                <button
+                  className="!py-2 btn btn-outline-secondary flex-grow sm:flex-grow-0"
+                  onClick={() => toggleModal(mydonation?.id)}
+                  disabled={loading}
+                >
+                  {" "}
+                  Cancel
+                </button>
+              ) : null}
               <button
-                className="!py-2 btn btn-outline-secondary flex-grow sm:flex-grow-0"
-                onClick={() => toggleModal(mydonation?.id)}
-                disabled={loading}
+                className="!py-2 btn btn-secondary flex-grow sm:flex-grow-0"
+                onClick={() => handleViewDetails(mydonation)}
+                // onClick={() => setIsOpen(true)}
               >
                 {" "}
-                Cancel
+                <span>View</span> <ArrowRightIcon iconSize={20} />{" "}
               </button>
-            ) : null}
-            <button
-              className="!py-2 btn btn-secondary flex-grow sm:flex-grow-0"
-              onClick={() => handleViewDetails(mydonation)}
-              // onClick={() => setIsOpen(true)}
-            >
-              {" "}
-              <span>View</span> <ArrowRightIcon iconSize={20} />{" "}
-            </button>
-            {isOpen && (
-              <ViewDetailsRecurring
-                isOpen={isOpen}
-                onClose={() => setIsOpen(false)}
-                mydonation={mydonation}
-              />
-            )}
-          </div>
+              {isOpen && (
+                <ViewDetailsRecurring
+                  isOpen={isOpen}
+                  onClose={() => setIsOpen(false)}
+                  mydonation={mydonation}
+                />
+              )}
         </div>
       </div>
       {isModalOpen && (

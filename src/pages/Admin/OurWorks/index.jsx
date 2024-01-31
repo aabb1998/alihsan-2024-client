@@ -112,7 +112,7 @@ export const OurWorks = () => {
             </div>
           </div>
           <div className="grid">
-            <div className="relative overflow-x-auto">
+          <div className="relative overflow-x-auto">
               <table className="w-full table-auto text-start">
                 <thead className="rounded bg-neutral-200">
                   <tr className="">

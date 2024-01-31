@@ -21,7 +21,7 @@ const initialState = {
   tags: [],
   order: "desc",
 };
-export const Blogs = () => {
+const Blogs = () => {
   const { blogs, loading } = useSelector((state) => state.adminBlog);
   const { showSuccessMessage, showErrorMessage } = SnackMessages();
 
@@ -200,3 +200,6 @@ export const Blogs = () => {
     </>
   );
 };
+
+
+export default Blogs;

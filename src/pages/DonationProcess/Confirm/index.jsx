@@ -11,7 +11,7 @@ export const ConfirmComponent = () => {
                 <div className="h-full px-5 py-7.5 overflow-y-auto bg-neutral-100">
                     <div className="flex items-center justify-between mb-4">
                         <a href="/">
-                        <img src="/images/assets/logo.svg" className="w-auto h-6" alt="Al-Ihsan Foundation" />
+                        <img src="/images/assets/logo.svg" className="w-auto h-10" alt="Al-Ihsan Foundation" />
                         </a>
                         <CloseIcon iconSize={24} />
                     </div>
@@ -130,7 +130,7 @@ export const ConfirmComponent = () => {
                         </div>
                         <div>
                             <a href="/">
-                            <img src="/images/assets/logo.svg" className="w-auto h-6 md:h-11" alt="Al-Ihsan Foundation" />
+                            <img src="/images/assets/logo.svg" className="w-auto h-10 md:h-11" alt="Al-Ihsan Foundation" />
                             </a>
                         </div>
                         </div>

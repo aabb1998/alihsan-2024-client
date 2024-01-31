@@ -19,6 +19,7 @@ const initialState = {
     loading: false,
     saving: false,
     categories: null,
+		organisers: null,
   },
 
   donations: {

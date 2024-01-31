@@ -8,6 +8,7 @@ import {
   PlusIcon,
   RiceIcon,
 } from "../../theme/svg-icons";
+import { currencyConfig } from "../../utils/constants";
 import { formatPrice } from "../../utils/helper";
 
 export const BasketItem = ({
@@ -44,8 +45,14 @@ export const BasketItem = ({
         return "Weekly";
       case 30:
         return "Monthly";
-      default:
+      case 365:
         return "Yearly";
+      case 1:
+        return "Daily";
+      case 10:
+        return "10 Days";
+      default:
+        return "";
     }
   };
 
@@ -75,7 +82,11 @@ export const BasketItem = ({
               <p className="my-1 text-xs line-clamp-1 text-neutral-600 sm:text-sm sm:my-0">
                 {checkoutType === "COMMON"
                   ? "General Campaign"
-                  : `${checkoutType === "FEDYAH" ? "FEDYAH/KAFFARAH" : checkoutType}`}
+                  : `${
+                      checkoutType === "FEDYAH"
+                        ? "FEDYAH/KAFFARAH"
+                        : checkoutType
+                    }`}
               </p>
             </div>
             <div className="text-red-300 cursor-pointer">
@@ -90,7 +101,7 @@ export const BasketItem = ({
           {!isCommonORZaqat ? (
             <div className="flex items-center justify-between">
               {!isAdeeqah && (
-                <div className="relative flex flex-row w-auto h-8 bg-transparent rounded-lg">
+                <div className="relative flex flex-row w-auto h-10 bg-transparent rounded-lg">
                   <button
                     onClick={() => handleQuantityChange(index, "sub")}
                     data-action="decrement"
@@ -160,7 +171,7 @@ export const BasketItem = ({
                   className="p-0 text-center w-14 min-w-[3.5rem] h-8 rounded-l-none  border-neutral-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   aria-label="amount"
                   type="text"
-                  placeholder="$100"
+                  placeholder={`${currencyConfig.label}100`}
                   value={total}
                   min={0}
                   onInput={(event) => handleInputChange(index, event)}
@@ -179,7 +190,7 @@ export const BasketItem = ({
                   className="p-0 text-center w-14 min-w-[3.5rem] h-8 rounded-l-none  border-neutral-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   aria-label="amount"
                   type="number"
-                  placeholder="$100"
+                  placeholder={`${currencyConfig.label}100`}
                   value={total}
                   readOnly={toggle}
                   disabled
@@ -195,15 +206,15 @@ export const BasketItem = ({
           <div className="flex">
             <div className="font-bold text-md sm:text-heading-7">
               {isCommonORZaqat ? (
-                "$" + formatPrice(total)
+                currencyConfig.label + formatPrice(total)
               ) : isAdeeqah ? (
-                <>{"$" + formatPrice(total)}</>
+                <>{currencyConfig.label + formatPrice(total)}</>
               ) : (
                 <>
                   <span className="font-medium text-md font-Montserrat text-neutral-500">
                     {quantity + " x "}
                   </span>
-                  {"$" + formatPrice(price)}
+                  {currencyConfig.label + formatPrice(price)}
                 </>
               )}
             </div>

@@ -7,9 +7,9 @@ import {
   loadCampaignDonations,
   saveCampaign,
   addCampaign,
-  loadCategories,
   addCampaignUpdate,
   editCampaignUpdate,
+	loadCampaignFormData,
 } from './actions'
 
 
@@ -18,7 +18,6 @@ const slice = createSlice({
 	initialState,
   reducers: {
     openModal (state, action) {
-      console.log(action.payload, state.modal)
       state.modal = {
         display: true,
         title: action.payload.title,
@@ -86,14 +85,14 @@ const slice = createSlice({
           totalOrders: action.payload.totalOrders,
           totalDonors: action.payload.totalDonors,
           totalOrderAmount: action.payload.totalOrderAmount,
-        }
+        },
+        haveDonations: action.payload.haveDonations,
       }
       state.details.id = action.payload.campaign.id;
 			state.details.error = null;
 		}).addCase(loadCampaignDetails.rejected, (state, action) => {
 			state.details.loading = false;
-			state.details.error = action.error.response?.data?.message
-				|| action.error.message;
+      state.details.error = action.error.code==='ERR_BAD_REQUEST' ? 'NotFound' : action.error.message;
     })
 
 
@@ -125,14 +124,15 @@ const slice = createSlice({
     })
 
 
-    builder.addCase(loadCategories.pending, (state, action) => {
+    builder.addCase(loadCampaignFormData.pending, (state, action) => {
       state.add.loading = true;
-    }).addCase(loadCategories.fulfilled, (state, action) => {
+    }).addCase(loadCampaignFormData.fulfilled, (state, action) => {
       state.add.categories = action.payload;
       state.add.loading = false;
-    }).addCase(loadCategories.rejected, (state, action) => {
+    }).addCase(loadCampaignFormData.rejected, (state, action) => {
       state.add.loading = false;
       state.add.categories = [];
+      state.add.organisers = [];
     })
 
 

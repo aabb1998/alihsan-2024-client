@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  ArrowLeftIcon,
-  CloseIcon,
-  PlusIcon,
-  TrashIcon,
-} from "../../../theme/svg-icons";
+import { ArrowLeftIcon } from "../../../theme/svg-icons";
 import { Button } from "../../../components";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,7 +9,6 @@ import * as yup from "yup";
 import { SnackMessages } from "../../../components/Toast";
 import { getNews } from "../../../features/news/news";
 import { FormikValidationError } from "../../../features/Common/FormikValidationError";
-import TextArea from "../../../components/TextArea";
 import {
   addBlog,
   getTags,
@@ -24,13 +18,23 @@ import { resetNews } from "../../../features/news/news";
 import TagSelection from "../../../components/TagSelection";
 import AddTags from "./AddTags";
 import ImageUpload from "../../../components/ImageUpload";
+import { makeSlug, validateSlug } from "../../../utils/helper";
+import QuillEditor from "../../../components/QuillEditor";
+import Modal from "../../../components/ImageUpload/Modal";
 
 const { showSuccessMessage, showErrorMessage } = SnackMessages();
 
 const validationSchema = yup.object({
   title: yup.string().required("Title is required"),
   content: yup.string().required("Content is required"),
-  slug: yup.string().required("Slug is required"),
+  slug: yup
+    .string()
+    .required("Slug is required")
+    .test(
+      "test-slug",
+      "Only lower case alphabets, numbers, hyphens (-) and underscores (_) are allowed",
+      (v) => !validateSlug(v)
+    ),
   tags: yup.string().required("Tag is required"),
   // coverImage: yup.string().required("Cover Image is required"),
 });
@@ -39,14 +43,14 @@ export const UpdateBlog = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
-  const { news } = useSelector((state) => state.news);
+  const { news, loading } = useSelector((state) => state.news);
   const { tags } = useSelector((state) => state.adminBlog);
   const [selectionTags, setSelectionTags] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-
   const [coverPreviews, setCoverPreviews] = useState("");
   const [imagePreviews, setImagePreviews] = useState(Array(4).fill(null));
-  console.log(news, "ssssssss");
+  const [isCropOpen, setCropOpen] = useState(false);
+
   const formik = useFormik({
     initialValues: {
       id: news?.id ?? "",
@@ -54,6 +58,7 @@ export const UpdateBlog = () => {
       slug: news?.slug ?? "",
       tags: news?.Tags?.map((item) => item.id)?.join(",") ?? "",
       content: news?.content ?? "",
+      contentText: news?.contentText ?? news?.content ?? "",
       coverImage: news?.coverImage ?? "",
       status: "",
       images: Array.from({ length: 4 }).fill(undefined),
@@ -63,15 +68,11 @@ export const UpdateBlog = () => {
       const formData = new FormData();
       formData.append("title", values.title);
       formData.append("content", values.content);
+      formData.append("contentText", values.contentText);
       formData.append("slug", values.slug);
       formData.append("tags", values.tags);
       formData.append("coverImage", values.coverImage);
       formData.append("status", values.submitType);
-      values.images?.forEach((file, index) => {
-        if (file) {
-          formData.append(`images`, file, `image_${index + 1}.png`);
-        }
-      });
       values.images?.forEach((file, index) => {
         if (file) {
           formData.append(`images`, file, `image_${index + 1}.png`);
@@ -106,6 +107,9 @@ export const UpdateBlog = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     formik.setFieldValue(name, value);
+    if (name === "title" && !formik.values.id && !formik.touched.slug) {
+      formik.setFieldValue("slug", makeSlug(value));
+    }
   };
 
   const handleCoverImage = (event) => {
@@ -142,7 +146,7 @@ export const UpdateBlog = () => {
     }
   };
   const getNewsDetails = async () => {
-    const news = await dispatch(getNews(id));
+    const news = await dispatch(getNews({ id }));
     let getAllValues = news?.payload;
     if (getAllValues?.success) {
       if (!Object.isExtensible(getAllValues)) {
@@ -177,6 +181,41 @@ export const UpdateBlog = () => {
       fileInput.value = null;
     }
   };
+  const getCroppedCoverImage = async (url) => {
+    const response = await fetch(url);
+    const file = await response.blob();
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setCoverPreviews(reader.result);
+        formik.setFieldValue(`coverImage`, file);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  const getCroppedImage = async (url, index) => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const file = blob;
+    const newImagePreviews = [...imagePreviews];
+    newImagePreviews[index] = file;
+    setImagePreviews(imagePreviews);
+    formik.setFieldValue(`images.0`, file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const newImagePreviews = [...imagePreviews];
+        newImagePreviews[index] = reader.result;
+        setImagePreviews(newImagePreviews);
+        formik.setFieldValue(`images.${index}`, file);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+	const handleDescriptionChange = e => {
+		formik.setFieldValue('content', e.target.value.html)
+		formik.setFieldValue('contentText', e.target.value.text)
+	}
 
   useEffect(() => {
     if (id) {
@@ -209,13 +248,19 @@ export const UpdateBlog = () => {
     dispatch(getTags());
   }, [isOpen]);
 
+  const isDraft = news?.status === "DRAFT";
+
   return (
     <div className="py-10 px-2 sm:px-7.5 w-full h-[calc(100vh-4.5rem)] overflow-auto">
-      {isOpen && (
-        <AddTags
-          onClose={() => setIsOpen(false)}
-          // confirmDelete={confirmDelete}
-          title={"Blog"}
+      {isOpen && <AddTags onClose={() => setIsOpen(false)} title={"Blog"} />}
+      {isCropOpen && (
+        <Modal
+          getCroppedImage={(e) => {
+            setCropOpen(false);
+            getCroppedCoverImage(e);
+          }}
+          aspect={16 / 9}
+          onClose={() => setCropOpen(false)}
         />
       )}
       <form onSubmit={formik.handleSubmit}>
@@ -232,31 +277,54 @@ export const UpdateBlog = () => {
             }
           />
 
-          <div className="flex flex-wrap items-center gap-2 lg:gap-3">
-            <Button
-              className="flex-grow btn btn-outline-secondary text-button-md md:text-button-lg"
-              variant=""
-              type="button"
-              label={"Cancel"}
-              onClick={() => navigate("/admin/blog")}
-            />
+          {!loading && (
+            <div className="flex flex-wrap items-center gap-2 lg:gap-3">
+              <Button
+                className="flex-grow btn btn-outline-secondary text-button-md md:text-button-lg"
+                variant=""
+                type="button"
+                label={"Cancel"}
+                onClick={() => navigate("/admin/blog")}
+              />
+              {news !== null ? (
+                <Button
+                  className="flex-grow btn btn-secondary text-button-md md:text-button-lg"
+                  variant=""
+                  type="submit"
+                  onClick={() =>
+                    formik.setFieldValue(
+                      "submitType",
+                      isDraft ? "DRAFT" : "PUBLISHED"
+                    )
+                  }
+                  label={"Update"}
+                />
+              ) : (
+                ""
+              )}
+              {(news === null || !isDraft) && (
+                <Button
+                  className="flex-grow btn btn-dark text-button-md md:text-button-lg"
+                  variant=""
+                  type="submit"
+                  onClick={() => formik.setFieldValue("submitType", "DRAFT")}
+                  label={"Save as Draft"}
+                />
+              )}
 
-            <Button
-              className="flex-grow btn btn-dark text-button-md md:text-button-lg"
-              variant=""
-              type="submit"
-              onClick={() => formik.setFieldValue("submitType", "DRAFT")}
-              label={"Save as Draft"}
-            />
-
-            <Button
-              className="flex-grow btn btn-primary text-button-md md:text-button-lg"
-              variant=""
-              type="submit"
-              onClick={() => formik.setFieldValue("submitType", "PUBLISHED")}
-              label={"Publish"}
-            />
-          </div>
+              {(news === null || isDraft) && (
+                <Button
+                  className="flex-grow btn btn-primary text-button-md md:text-button-lg"
+                  variant=""
+                  type="submit"
+                  onClick={() =>
+                    formik.setFieldValue("submitType", "PUBLISHED")
+                  }
+                  label={"Publish"}
+                />
+              )}
+            </div>
+          )}
         </div>
         <div className="w-full mt-7.5">
           <div className="flex flex-col mb-6 form-group">
@@ -280,15 +348,17 @@ export const UpdateBlog = () => {
                   className="!mb-0 cursor-pointer absolute right-5 bottom-5"
                 >
                   <div className="flex flex-col items-center justify-center px-5 py-3 rounded-lg bg-primary-100 text-primary-300 text-button-lg">
-                    Change Cover
+                    Add Cover
                   </div>
                   <input
                     id="dropzone-file"
-                    type="file"
+                    // type="file"
                     className="hidden"
                     name={`coverImage`}
                     accept="image/*"
-                    onChange={(event) => handleCoverImage(event)}
+                    onClick={() => setCropOpen(true)}
+
+                    // onChange={(event) => handleCoverImage(event)}
                   />
                 </label>
               </div>
@@ -302,7 +372,7 @@ export const UpdateBlog = () => {
           </div>
           <div className="flex flex-col mb-6 form-group">
             <label htmlFor="title" className="">
-              Title
+              Title<span className="text-red-300">*</span>
             </label>
             <input
               type="text"
@@ -311,7 +381,7 @@ export const UpdateBlog = () => {
               id="blog-title"
               placeholder="Blog title goes here"
               value={formik.values.title}
-              onChange={formik.handleChange}
+              onChange={handleInputChange}
             />
             {formik.touched.title && Boolean(formik.errors.title) && (
               <FormikValidationError
@@ -323,7 +393,7 @@ export const UpdateBlog = () => {
           <div className="grid grid-cols-1 md:gap-6 md:grid-cols-2">
             <div className="flex flex-col mb-6 form-group">
               <label htmlFor="slug" className="">
-                Slug
+                Slug<span className="text-red-300">*</span>
               </label>
               <input
                 type="text"
@@ -341,44 +411,45 @@ export const UpdateBlog = () => {
                 />
               )}
             </div>
-            <div className="flex flex-wrap items-end gap-2 mb-6 md:flex-nowrap">
-              <div className="flex flex-col form-group grow">
-                <label htmlFor="slug" className="">
-                  Tag
-                </label>
+            <div className="flex flex-col mb-6">
+              <div className="flex flex-wrap items-end gap-2 md:flex-nowrap">
+                <div className="flex flex-col form-group grow">
+                  <label htmlFor="slug" className="">
+                    Tag<span className="text-red-300">*</span>
+                  </label>
 
-                <TagSelection
-                  tags={tags}
-                  onTagSelection={onTagSelection}
-                  selectionTags={selectionTags}
-                />
-
-                {formik.touched.tags && Boolean(formik.errors.tags) && (
-                  <FormikValidationError
-                    formikTouched={formik.touched.tags}
-                    formikError={formik.errors.tags}
+                  <TagSelection
+                    tags={tags}
+                    onTagSelection={onTagSelection}
+                    selectionTags={selectionTags}
                   />
-                )}
+                </div>
+
+                <Button
+                  label={"Add Tag"}
+                  type="button"
+                  onClick={() => setIsOpen(true)}
+                  className={"h-fit w-full md:w-fit !p-3"}
+                  variant={"primary"}
+                />
               </div>
-              <Button
-                label={"Add Tag"}
-                type="button"
-                onClick={() => setIsOpen(true)}
-                className={"h-fit w-full md:w-fit !p-3"}
-                variant={"primary"}
-              />
+              {formik.touched.tags && Boolean(formik.errors.tags) && (
+                <FormikValidationError
+                  formikTouched={formik.touched.tags}
+                  formikError={formik.errors.tags}
+                />
+              )}
             </div>
           </div>
 
           <div className="relative flex flex-col mb-6 text-area">
             <label htmlFor="content" className="">
-              Content
+              Content<span className="text-red-300">*</span>
             </label>
-
-            <TextArea
-              handleChange={handleInputChange}
-              name="content"
+            <QuillEditor
               value={formik.values.content}
+              onChange={handleDescriptionChange}
+              name="content"
             />
             {formik.touched.content && Boolean(formik.errors.content) && (
               <FormikValidationError
@@ -409,6 +480,8 @@ export const UpdateBlog = () => {
               name={"images-" + index}
               handleImageDelete={(event) => handleImageDelete(event, index)}
               handleImageChange={(event) => handleImageChange(event, index)}
+              getCroppedImage={(e) => getCroppedImage(e, index)}
+              aspect={16 / 9}
             />
           ))}
         </div>

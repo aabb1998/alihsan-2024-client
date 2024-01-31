@@ -22,7 +22,8 @@ const CampaignDetails = () => {
   useEffect(() => {
     if (campaignId != campaignDetails.id) {
       dispatch(loadCampaignDetails(campaignId));
-    }
+    } else if(!campaignDetails.loading && campaignDetails.error && campaignDetails.error==='NotFound')
+      navigate('/admin/campaigns')
   }, [campaignId, campaignDetails]);
 
   return (

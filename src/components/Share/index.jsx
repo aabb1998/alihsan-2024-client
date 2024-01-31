@@ -19,8 +19,8 @@ const Share = () => {
     },
     {
       link: "https://twitter.com/intent/tweet?url=" + shareUrl,
-      icon: <TwitterIcon iconSize={24} />,
-      color: "#47ACDF",
+      icon: <TwitterIcon iconSize={20} />,
+      color: "#000000",
     },
     {
       link: `https://api.whatsapp.com/send?text=${encodeURIComponent(

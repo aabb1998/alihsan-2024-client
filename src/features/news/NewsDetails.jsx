@@ -9,14 +9,15 @@ import Loader from "../../components/Loader";
 import Img from "../../components/Image";
 import PageHead from "../../components/PageHead";
 import { BannerImage } from "../../pages/Include/BannerImage";
+import { NoDataFound } from "../../components/NoDataFound";
 
 export const NewsDetailsComponent = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showAll, setShowAll] = useState(false);
 
-  const { news, loading } = useSelector((state) => state.news);
+  const { news, loading, error } = useSelector((state) => state.news);
   const maxTagsToShow = 2;
   const visibleTags = showAll
     ? news?.Tags
@@ -26,8 +27,8 @@ export const NewsDetailsComponent = () => {
   const handleShowMore = () => {
     setShowAll(!showAll);
   };
-  const getNewsDetailsById = async (id) => {
-    await dispatch(getNews(id));
+  const getNewsDetailsById = async (slug) => {
+    await dispatch(getNews(slug));
   };
 
   useEffect(() => {
@@ -38,9 +39,10 @@ export const NewsDetailsComponent = () => {
   }, []);
 
   useEffect(() => {
-    getNewsDetailsById(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+    getNewsDetailsById(slug);
+  }, [slug]);
+
+  if (error) return <NoDataFound title={"No Data Found"} />;
 
   return (
     <div>
@@ -84,7 +86,7 @@ export const NewsDetailsComponent = () => {
                     {visibleTags?.map((tag, i) => (
                       <li
                         key={i}
-                        className="p-2 rounded text-primary-300"
+                        className="p-2 text-white capitalize rounded"
                         style={{ backgroundColor: tag.color }}
                       >
                         {tag.text}
@@ -93,7 +95,7 @@ export const NewsDetailsComponent = () => {
                     {news?.Tags?.slice(0, visibleTags)?.map((tag) => (
                       <li
                         key={tag?.id}
-                        className="p-2 rounded text-primary-300 bg-accent-300"
+                        className="p-2 text-white capitalize rounded bg-accent-300"
                         style={{ backgroundColor: tag.color }}
                       >
                         {tag?.text}
@@ -118,12 +120,13 @@ export const NewsDetailsComponent = () => {
                 />
               </div>
 
-              <h1 className="mb-3 sm:mb-5 md:mb-10 text-heading-6 sm:text-heading-4 md:text-heading-2">
+              <h1 className="mb-3 break-words sm:mb-5 md:mb-10 text-heading-6 sm:text-heading-4 md:text-heading-2">
                 {news?.title}
               </h1>
-              <p className="mb-5 text-sm font-medium text-neutral-800">
-                {news?.content}
-              </p>
+              <p
+								dangerouslySetInnerHTML={{__html: news?.content}}
+								className="mb-5 text-sm font-medium break-words text-neutral-800"
+							></p>
 
               <div className="flex flex-col gap-10">
                 {news?.BlogMedia?.map((e) => (

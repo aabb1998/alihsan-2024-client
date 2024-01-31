@@ -1,10 +1,7 @@
-import React, { useEffect, useState, Fragment } from "react";
-//import { PaginationFull } from "../Include/paginationFull";
-import { Pagination } from "../../features/projects/Pagination";
-import { CloseIcon, FilterIcon, SearchIcon } from "../../theme/svg-icons";
+import React, { useState, Fragment } from "react";
+import { CloseIcon } from "../../theme/svg-icons";
 import { Tab } from "@headlessui/react";
-import { RecurringItem } from "../../features/myDonation/RecurringItem";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   cancelMyDonation,
   getMyDonations,
@@ -15,13 +12,16 @@ import { Donations } from "./Donations";
 import { Button } from "../../components";
 import ViewDetailsRecurring from "../../../src/pages/User/MyDonations/Common/ViewOnetimeModal";
 import PageHead from "../../components/PageHead";
+import PaymentDetailsModal from "./PaymentDetailsModal";
 
 export const RecurringDonation = () => {
   const [tab, setTab] = useState("active-sub");
+  const [isPaymentModal, setPaymentModal] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [deleteItem, setDeleteItem] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [viewDonation, setViewDonation] = useState(null);
+  const [idForPayment, setIdForPayment] = useState(null);
   const dispatch = useDispatch();
 
   const handleCancel = async () => {
@@ -104,6 +104,10 @@ export const RecurringDonation = () => {
                             setIsModalOpen(!isModalOpen);
                           }}
                           handleViewDetails={handleViewDetails}
+                          setIdForPayment={(id) => {
+                            setPaymentModal(true);
+                            setIdForPayment(id);
+                          }}
                         />
                       </Tab.Panel>
                       <Tab.Panel>
@@ -115,6 +119,10 @@ export const RecurringDonation = () => {
                             setIsModalOpen(!isModalOpen);
                           }}
                           handleViewDetails={handleViewDetails}
+                          setIdForPayment={(id) => {
+                            setPaymentModal(true);
+                            setIdForPayment(id);
+                          }}
                         />
                       </Tab.Panel>
                     </Tab.Panels>
@@ -132,6 +140,12 @@ export const RecurringDonation = () => {
           />
         )}
       </section>
+      {isPaymentModal && (
+        <PaymentDetailsModal
+          setIsOpen={() => setPaymentModal(false)}
+          idForPayment={idForPayment}
+        />
+      )}
       {isModalOpen && (
         <div
           className="relative z-10"

@@ -9,6 +9,7 @@ import {
 import { SnackMessages } from "../../../../components/Toast";
 import { Transition } from "@headlessui/react";
 import Img from "../../../../components/Image";
+import { currencyConfig } from "../../../../utils/constants";
 
 const { showSuccessMessage, showErrorMessage } = SnackMessages();
 
@@ -16,6 +17,7 @@ const ProjectDetailsOnetime = ({ mydonation, isOpen }) => {
   const [loading, setLoading] = useState(false);
   const [invoice, setInvoice] = useState(null);
   const dispatch = useDispatch();
+  const isInvoiceExist = parseInt(mydonation?.totalPayments) > 0;
 
   const convertDateString = (dateTime) => {
     const date = new Date(dateTime);
@@ -87,7 +89,7 @@ const ProjectDetailsOnetime = ({ mydonation, isOpen }) => {
       >
         <div className="flex flex-col gap-4 sm:gap-5">
           <div className="flex flex-col gap-4 sm:gap-5 max-h-[calc(100vh-16rem)] overflow-auto">
-          <div className="mt-5 md:mt-7.5">
+            <div className="mt-5 md:mt-7.5">
               <Img
                 src={
                   mydonation?.Campaign?.coverImage ||
@@ -116,7 +118,7 @@ const ProjectDetailsOnetime = ({ mydonation, isOpen }) => {
                       Donation Amount
                     </div>
                     <div className="font-bold text-neutral-800 text-button-lg">
-                      $
+                      {currencyConfig.label}
                       {(
                         parseFloat(mydonation?.total) +
                         parseFloat(mydonation?.processingFee)
@@ -163,7 +165,7 @@ const ProjectDetailsOnetime = ({ mydonation, isOpen }) => {
               className="flex-grow btn btn-primary "
               label="Get Invoice"
               onClick={() => downloadInvoice()}
-              disabled={loading}
+              disabled={loading || !isInvoiceExist}
             >
               Get Invoice
             </button>

@@ -3,7 +3,7 @@ import Slider from "react-slick";
 import Img from "../../components/Image";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
-import { sponsorList } from "../../utils/constants";
+import { currencyConfig, sponsorList } from "../../utils/constants";
 import { Form } from "./Form";
 import PageHead from "../../components/PageHead";
 
@@ -74,7 +74,7 @@ const BecomeASponsor = () => {
                 range of products and services you have to offer, raise your
                 business’s profile and image, as well as promote your unique
                 brands and products. Al-Ihsan Foundation holds a DGR (deductible
-                gift recipient), meaning that all donations above $2 are tax
+                gift recipient), meaning that all donations above {currencyConfig.label}2 are tax
                 deductible. By financially supporting us, your business will
                 receive a tax statement showing your donation, allowing you to
                 claim a tax deduction when it is time for tax return.

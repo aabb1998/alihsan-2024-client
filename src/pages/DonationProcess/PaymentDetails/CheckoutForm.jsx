@@ -131,8 +131,8 @@ export const CheckoutForm = ({ setState, state }) => {
   }, [deleteId]);
 
   return (
-    <div className="px-4 py-5 sm:p-10 bg-neutral-200 rounded-2xl">
-      <div>
+    <div className="bg-neutral-200 rounded-2xl">
+      <div className="flex flex-col gap-4">
         <div
           for="dropzone-file"
           className="flex flex-col items-center justify-center flex-grow p-4 border-2 border-dashed cursor-pointer rounded-2xl border-neutral-300"

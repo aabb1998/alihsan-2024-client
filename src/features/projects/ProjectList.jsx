@@ -29,6 +29,38 @@ const ProjectList = () => {
   const { projects, count, loading, categories, countries } = useSelector(
     (state) => state.projects
   );
+  const filtersList = [
+    {
+      label: "Select Category",
+      name: "category",
+      value: "category",
+      defaultSelect: "Category",
+      options:
+        categories?.map((i) => ({
+          value: i.id,
+          label: i.name,
+        })) || [],
+    },
+    {
+      label: "Select Country",
+      name: "country",
+      value: "country",
+      defaultSelect: "Location",
+      options:
+        countries?.map((i) => ({
+          value: i.code,
+          label: i.name,
+        })) || [],
+    },
+  ];
+  const sortLists = [
+    {
+      label: "Sort By",
+      name: "order",
+      value: "order",
+      options: sortList,
+    },
+  ];
   const itemsPerPage = 20;
   const [currentPage, setCurrentPage] = useState(1);
   const [isFilter, setIsFilter] = useState(false);
@@ -76,10 +108,7 @@ const ProjectList = () => {
     });
     setIsFilter(false);
   };
-  const handleFilterClick = () => {
-    dispatch(getProjects({ ...selectedFilters, search: "" }));
-    setIsFilter(true);
-  };
+
   const handleFilterReset = () => {
     setSelectedFilters({
       ...selectedFilters,
@@ -128,38 +157,8 @@ const ProjectList = () => {
                 handleFilterChange={handleFilterChange}
                 handleFilterReset={handleFilterReset}
                 filters={selectedFilters}
-                filtersList={[
-                  {
-                    label: "Select Category",
-                    name: "category",
-                    value: "category",
-                    defaultSelect: "Category",
-                    options:
-                      categories?.map((i) => ({
-                        value: i.id,
-                        label: i.name,
-                      })) || [],
-                  },
-                  {
-                    label: "Select Country",
-                    name: "country",
-                    value: "country",
-                    defaultSelect: "Location",
-                    options:
-                      countries?.map((i) => ({
-                        value: i.code,
-                        label: i.name,
-                      })) || [],
-                  },
-                ]}
-                sortList={[
-                  {
-                    label: "Sort By",
-                    name: "order",
-                    value: "order",
-                    options: sortList,
-                  },
-                ]}
+                filtersList={filtersList}
+                sortList={sortLists}
                 isSearch
               />{" "}
               {/*  */}
@@ -257,12 +256,6 @@ const FilterSection = ({
                     onChange={(e) => setSearch(e.target.value)}
                   />
                 </label>
-                {/* <Button
-                  name="search"
-                  value={search}
-
-                  label="search"
-                /> */}
               </div>
               <div className="flex flex-col gap-7.5">
                 <div className="flex flex-col gap-7.5">

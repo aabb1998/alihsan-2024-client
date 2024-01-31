@@ -47,9 +47,9 @@ export const deleteImpactStories = createAsyncThunk(
 
 export const getImpactStory = createAsyncThunk(
   "get/impactStory",
-  async (id, thunkAPI) => {
+  async (params, thunkAPI) => {
     try {
-      const response = await api.get(`/impact-stories/details/${id}`);
+      const response = await api.get(`/impact-stories/${typeof params==='string'?params:'details/'+params.id}`);
       let data = response?.data?.payload?.impactStories;
       if (response.status === 200) {
         return data;
@@ -85,7 +85,18 @@ export const impactStorySlice = createSlice({
 
     builder.addCase(getImpactStory.fulfilled, (state, action) => {
       state.impactStory = action?.payload;
+      state.loading = false;
     });
+    builder.addCase(getImpactStory.pending, (state, action) => {
+      state.loading = true;
+      state.error = "";
+    });
+    builder.addCase(getImpactStory.rejected, (state, action) => {
+      console.log(action?.payload?.message);
+      state.loading = false;
+      state.error = action?.payload?.message;
+    });
+
     builder.addCase(deleteImpactStories.fulfilled, (state, action) => {
       state.loading = false;
     });

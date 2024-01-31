@@ -58,7 +58,7 @@ export default function PostUpdateModal() {
                     <form className='flex flex-col gap-4 sm:gap-5'>
                         <div className="relative flex flex-col text-area">
                             <label htmlFor="description" className="text-sm font-medium sm:text-md text-neutral-1000">Post</label>
-                            <textarea  rows={5}  className="w-full bg-white !min-h-40 form-control" id="description" placeholder="Write your post content">
+                            <textarea  rows={5}  className="w-full bg-white !min-h-40 form-control !text-neutral-1000" id="description" placeholder="Write your post content">
                             </textarea>
                             <p className='absolute font-medium bg-white text-button-md text-neutral-800 bottom-2 right-2'>0/500</p>
                         </div>

@@ -70,7 +70,7 @@ export default function Modals({ modalOptions, setModalOptions }) {
                         <div className="w-4/12" key={project.id}>
                           <div className="mb-4 overflow-hidden rounded-lg">
                             <Link
-                              to={"/project/" + project.id}
+                              to={"/project/" + project.slug}
                               onClick={() => setModalOptions(null)}
                             >
                               <img
@@ -81,7 +81,7 @@ export default function Modals({ modalOptions, setModalOptions }) {
                             </Link>
                           </div>
                           <Link
-                            to={"/project/" + project.id}
+                            to={"/project/" + project.slug}
                             onClick={() => setModalOptions(null)}
                           >
                             <h6 className="heading-7 mb-1.5 line-clamp-1">

@@ -10,7 +10,7 @@ export const ProjectListItem = ({ project }) => {
   return (
     <div className="transition-all ease-in border rounded-xl bg-neutral-100 border-neutral-300 hover:border-neutral-100 focus:border-primary-300 hover:shadow-card">
       <div className="flex flex-col gap-5 p-5">
-        <Link to={`/project/${project?.id}`} className="w-full h-[11.875rem] md:h-44 overflow-hidden">
+        <Link to={`/project/${project?.slug}`} className="w-full h-[11.875rem] md:h-44 overflow-hidden">
           <Img
             src={project?.coverImage}
             className="object-cover w-full h-full rounded-xl"
@@ -19,11 +19,11 @@ export const ProjectListItem = ({ project }) => {
         </Link>
         <div>
           <h3 className="mb-3 text-heading-7 sm:heading-6 line-clamp-1">
-            <Link to={`/project/${project?.id}`}>{project?.name}</Link>
+            <Link to={`/project/${project?.slug}`}>{project?.name}</Link>
           </h3>
-          <Link to={`/project/${project?.id}`}>
-            <p className="text-sm font-normal line-clamp-2">
-              {project?.description}
+          <Link to={`/project/${project?.slug}`}>
+            <p className="text-sm font-normal line-clamp-2 sm:min-h-[2.5rem]">
+              {project?.descriptionText || project?.description}
             </p>
           </Link>
         </div>

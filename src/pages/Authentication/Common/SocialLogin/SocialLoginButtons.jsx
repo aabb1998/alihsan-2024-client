@@ -47,6 +47,10 @@ export const SocialLoginButtons = () => {
           "loggedIn",
           JSON.stringify({
             token: apiResponse.data.payload.token,
+            role: apiResponse?.data?.payload?.role,
+            firstName: apiResponse?.data?.payload?.firstName,
+            lastName: apiResponse?.data?.payload?.lastName,
+            id: apiResponse?.data?.payload?.id,
             isloggedIn: true,
           })
         );
@@ -54,10 +58,16 @@ export const SocialLoginButtons = () => {
           "loggedIn",
           JSON.stringify({
             token: apiResponse.data.payload.token,
+            role: apiResponse?.data?.payload?.role,
+            firstName: apiResponse?.data?.payload?.firstName,
+            lastName: apiResponse?.data?.payload?.lastName,
+            id: apiResponse?.data?.payload?.id,
             isloggedIn: true,
           })
         );
-        api.defaults.headers.common["Authorization"] = `Bearer ${apiResponse.data.payload.token}`;
+        api.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${apiResponse.data.payload.token}`;
 
         await updateSelectedItems();
         navigate("/");
@@ -75,6 +85,7 @@ export const SocialLoginButtons = () => {
   };
 
   const onGoogleResolve = async (response) => {
+
     try {
       setIsLoading(true);
       const apiResponse = await googleLogin(
@@ -88,6 +99,10 @@ export const SocialLoginButtons = () => {
           "loggedIn",
           JSON.stringify({
             token: apiResponse.data.payload.token,
+            role: apiResponse?.data?.payload?.role,
+            firstName: apiResponse?.data?.payload?.firstName,
+            lastName: apiResponse?.data?.payload?.lastName,
+            id: apiResponse?.data?.payload?.id,
             isloggedIn: true,
           })
         );
@@ -95,10 +110,16 @@ export const SocialLoginButtons = () => {
           "loggedIn",
           JSON.stringify({
             token: apiResponse.data.payload.token,
+            role: apiResponse?.data?.payload?.role,
+            firstName: apiResponse?.data?.payload?.firstName,
+            lastName: apiResponse?.data?.payload?.lastName,
+            id: apiResponse?.data?.payload?.id,
             isloggedIn: true,
           })
         );
-        api.defaults.headers.common["Authorization"] = `Bearer ${apiResponse.data.payload.token}`;
+        api.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${apiResponse.data.payload.token}`;
         await updateSelectedItems();
 
         navigate("/");
@@ -146,7 +167,7 @@ export const SocialLoginButtons = () => {
 
       {!isLoading ? (
         <LoginSocialFacebook
-        appId={process.env.REACT_APP_FACEBOOK_APP_ID}
+          appId={process.env.REACT_APP_FACEBOOK_APP_ID}
           onLoginStart={() => onSocialLoginStart(facebook)}
           onResolve={onFbResolve}
           onReject={onFbReject}

@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import TableActionbtn from "../../Admin/Dashboard/Common/TableActionbtn";
-import { Pagination } from "../../../components/Pagination";
 import {
   DownloadIcon,
   ChevronUpIcon,
-  ChevronsUpIcon,
   ChevronDownIcon,
 } from "../../../theme/svg-icons";
 import { Dropdown } from "../../../components/Dropdown";
-import Img from "../../../components/Image";
 import {
   downloadReport,
   getDashboardData,
@@ -21,14 +17,15 @@ import { getQucikDonation } from "../../../features/quickDonation/quickDonationS
 import Loader from "../../../components/Loader";
 import IncomeChart from "./IncomeChart";
 import { Table } from "./Table";
-import { getDateRange } from "../../../utils/helper";
+import { formatPrice, getDateRange } from "../../../utils/helper";
 import DatePickerModal from "./DatePickerModal";
 import VisitorChart from "./VisitorChart";
 import { Button } from "../../../components";
 import { PrimaryLoadingButton } from "../../../components/LoadingButtons";
 import { SnackMessages } from "../../../components/Toast";
+import { Tooltip } from "react-tooltip";
+import { currencyConfig } from "../../../utils/constants";
 
-const options = [{ label: "Campaign 1", value: "a" }];
 export const itemPerPage = 10;
 const initialState = {
   limit: itemPerPage,
@@ -67,7 +64,7 @@ const AdminsDashboard = () => {
   } = useSelector((state) => state.adminDashboard);
   const { quickdonations } = useSelector((state) => state.quickDonations);
   const [filter, setFilter] = useState(initialState);
-  const [selectedOption, setSelectedOption] = useState("today");
+  const [selectedOption, setSelectedOption] = useState("this_month");
   const [customDate, setCustomDate] = useState(false);
   const [date, setDate] = useState({
     startDate: "",
@@ -79,18 +76,20 @@ const AdminsDashboard = () => {
     dispatch(getIncomeOverview({ campaignId: e.value }));
   };
 
-  const handleVisitorChange = (e) => {
+  const handleVisitorCampaignChange = (e) => {
     setCampSelected(e.value);
     dispatch(
       getVisitorsOverview({
         campaignId: e.value,
         startDate: date?.startDate,
         endDate: date?.endDate,
+        selectedDate: selectedOption,
       })
     );
   };
 
   const handleOptionChange = (option) => {
+    console.log(option);
     setSelectedOption(option?.value);
     if (option?.value === "custom_date") {
       setCustomDate(true);
@@ -101,9 +100,13 @@ const AdminsDashboard = () => {
           startDate: startDate,
           endDate: endDate,
           campaignId: campSelected,
+          selectedDate: option?.value,
         })
       );
-      setDate({ startDate: startDate, endDate: endDate });
+      setDate({
+        startDate: startDate,
+        endDate: endDate,
+      });
       console.log({ startDate: startDate, endDate: endDate });
     }
   };
@@ -116,6 +119,7 @@ const AdminsDashboard = () => {
         campaignId: campSelected,
         startDate: startDate,
         endDate: endDate,
+        selectedDate: "custom_date",
       })
     );
     setCustomDate(false);
@@ -196,6 +200,8 @@ const AdminsDashboard = () => {
                 total={dashboardData?.visitorsCount}
                 percentage={dashboardData?.visitorsPercentage}
                 title="Total Page Views"
+                value={dashboardData?.visitorsRealCount}
+                id={"visitorsCount"}
               />
             </div>
             <div className="py-5 px-4 md:py-7.5 md:px-6 border border-neutral-300 rounded-2xl w-full flex-1 bg-neutral-200 hover:bg-primary-200 cursor-pointer">
@@ -203,6 +209,8 @@ const AdminsDashboard = () => {
                 total={dashboardData?.totalUsers}
                 percentage={dashboardData?.totalUsersPercentage}
                 title="Total Users"
+                value={dashboardData?.totalRealUsers}
+                id={"totalUsers"}
               />
             </div>
             <div className="py-5 px-4 md:py-7.5 md:px-6 border border-neutral-300 rounded-2xl w-full flex-1 bg-neutral-200 hover:bg-primary-200 cursor-pointer">
@@ -210,13 +218,17 @@ const AdminsDashboard = () => {
                 total={dashboardData?.totalOrders}
                 percentage={dashboardData?.totalOrdersPercentage}
                 title="Total Orders"
+                value={dashboardData?.totalRealOrders}
+                id={"totalOrders"}
               />
             </div>
             <div className="py-5 px-4 md:py-7.5 md:px-6 border border-neutral-300 rounded-2xl w-full flex-1 bg-neutral-200 hover:bg-primary-200 cursor-pointer">
               <NotableTile
-                total={"$" + dashboardData?.totalSales}
+                total={currencyConfig.label + dashboardData?.totalSales}
                 percentage={dashboardData?.totalSalesPercentage}
                 title="Total Sale Amounts"
+                value={dashboardData?.totalRealSales}
+                id={"totalSales"}
               />
             </div>
           </div>
@@ -230,7 +242,7 @@ const AdminsDashboard = () => {
                 <div className="flex flex-wrap gap-2 sm:flex-nowrap md:gap-5">
                   <Dropdown
                     value={campSelected}
-                    onChange={handleVisitorChange}
+                    onChange={handleVisitorCampaignChange}
                     options={[
                       ...[{ label: "All", value: "" }],
                       ...quickdonations?.map((e) => ({
@@ -249,21 +261,16 @@ const AdminsDashboard = () => {
               </div>
               <div className="mt-5">
                 <VisitorChart data={visitorsOverview} />{" "}
-                {/* <Img
-                  className="w-fit md:w-full"
-                  src={"../images/line-area-graph.png"}
-                  alt="line area chart"
-                /> */}
               </div>
             </div>
             <div className="py-5 px-4 md:py-7.5 md:px-6 border border-neutral-300 rounded-2xl flex-grow md:flex-grow-0 w-full sm:w-2/6">
-              <div className="flex flex-wrap items-center justify-between pb-5 border-b border-neutral-300">
+              <div className="flex flex-wrap items-center justify-between gap-2 pb-5 border-b md:flex-nowrap border-neutral-300">
                 <div className="mb-3 lg:mb-0">
                   <p className="mb-1 text-xs font-medium font-Montserrat text-neutral-500">
                     Income Overview
                   </p>
-                  <h5 className="text-button-lg md:text-heading-7">
-                    ${totalAmount ?? 0}
+                  <h5 className="break-words text-button-lg md:text-heading-7">
+                    {currencyConfig.label}{formatPrice(totalAmount)}
                   </h5>
                 </div>
                 <Dropdown
@@ -307,7 +314,7 @@ const AdminsDashboard = () => {
 
 export default AdminsDashboard;
 
-function NotableTile({ total, percentage, title }) {
+function NotableTile({ total, percentage, title, value, id }) {
   return (
     <>
       <h6 className="mb-3 md:mb-5 text-base !font-medium md:text-lg font-Montserrat text-neutral-600">
@@ -315,7 +322,20 @@ function NotableTile({ total, percentage, title }) {
         {title}
       </h6>
       <div className="flex items-center justify-between gap-2">
-        <h2 className="uppercase text-heading-5 md:text-heading-2">{total}</h2>
+        <h2
+          className="uppercase text-heading-5 md:text-heading-2"
+          data-tooltip-id={id}
+        >
+          {total}
+        </h2>
+        <Tooltip
+          id={id}
+          className="tooltip opacity-100"
+          style={{ color: "#000" }}
+        >
+          {formatPrice(value)}
+        </Tooltip>
+
         <h6
           className={`flex items-center ${
             parseInt(percentage) > 0 ? "text-green-300" : "text-red-300"

@@ -12,7 +12,7 @@ import { DeleteConfirmation } from "./DeleteConfirmation";
 import { CardItem } from "./CardItem";
 const { showSuccessMessage, showErrorMessage } = SnackMessages();
 
-const CardList = ({ handleAddCard, handleDonationProcess }) => {
+const CardList = ({ handleAddCard, handleDonationProcess, loading }) => {
   const [confirmModal, setConfirmModal] = useState(false);
   const [deleteId, setDeleteId] = useState("");
   const [cardSelected, setCardSelection] = useState("");
@@ -41,8 +41,8 @@ const CardList = ({ handleAddCard, handleDonationProcess }) => {
   }, [deleteId]);
 
   return (
-    <div className="px-4 py-5 sm:p-10 bg-neutral-200 rounded-2xl">
-      <div>
+    <div className=" bg-neutral-200 rounded-2xl">
+      <div className="flex flex-col gap-4">
         <div
           htmlFor="dropzone-file"
           className="flex flex-col items-center justify-center flex-grow p-4 border-2 border-dashed cursor-pointer rounded-2xl border-neutral-300"
@@ -69,7 +69,7 @@ const CardList = ({ handleAddCard, handleDonationProcess }) => {
         <Button
           variant="primaryFull"
           label="Complete Donation"
-          disabled={!cardSelected}
+          disabled={!cardSelected || loading}
           onClick={() => handleDonationProcess(cardSelected)}
         />
       </div>

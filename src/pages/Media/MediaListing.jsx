@@ -70,7 +70,7 @@ export const MediaListing = () => {
 
 export const MediaCard = ({ Title, Date, Image }) => {
   return (
-    <div className="col-span-1 p-3 border border-neutral-300 rounded-2xl">
+    <div className="col-span-1 p-3 duration-700 ease-in-out border border-neutral-300 rounded-2xl hover:scale-95">
       <div className="w-full h-48 mb-4 overflow-hidden rounded-lg sm:h-45">
         <Img src={`/images/banner/projects/${Image}`} alt={`${Title}`} className="object-cover w-full h-full" />
       </div>

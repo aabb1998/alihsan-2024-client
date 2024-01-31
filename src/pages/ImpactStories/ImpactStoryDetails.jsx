@@ -8,17 +8,21 @@ import { Button } from "../../components";
 import { Im } from "react-flags-select";
 import Img from "../../components/Image";
 import PageHead from "../../components/PageHead";
+import { NoDataFound } from "../../components/NoDataFound";
 
 const ImpactStoryDetails = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { impactStory } = useSelector((state) => state.impactStories);
-
+  const { impactStory, error } = useSelector((state) => state.impactStories);
   useEffect(() => {
-    dispatch(getImpactStory(id));
-  }, [id]);
+    dispatch(getImpactStory(slug));
+  }, [slug]);
 
+  if (error) {
+    return <NoDataFound title={"No Data Found"} />;
+  }
   return (
     <div>
       <PageHead title={"Impact Story Details"} />
@@ -35,8 +39,8 @@ const ImpactStoryDetails = () => {
         </div>
         <section aria-label="Impact Stories">
           <div className="container">
-            <div className="flex items-center justify-between mb-3 sm:mb-10">
-              <h1 className=" text-heading-6 sm:text-heading-2">
+            <div className="flex items-center justify-between gap-5 mb-3 sm:mb-10">
+              <h1 className="break-words text-heading-6 sm:text-heading-2 line-clamp-2">
                 {impactStory?.title}
               </h1>
               <div className="">
@@ -48,9 +52,7 @@ const ImpactStoryDetails = () => {
               </div>
             </div>
 
-            <p className="mb-5 text-sm font-medium text-neutral-800">
-              {impactStory?.description}
-            </p>
+            <p dangerouslySetInnerHTML={{__html: impactStory?.description}} className="mb-5 text-sm font-medium break-words text-neutral-800"></p>
             <div className="flex flex-col gap-10 sm:flex-row">
               {impactStory?.ImpactStoryMedia.map((e) => (
                 <div className="w-full overflow-hidden h-45 sm:h-[18.25rem] flex-grow-1">

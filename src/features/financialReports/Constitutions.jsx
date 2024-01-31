@@ -30,7 +30,7 @@ export const Constitution = ({ isOpen }) => {
   const handleDownload = async (doc) => {
     try {
       const response = await fetch(doc);
-      console.log(doc)
+      console.log(doc);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -67,7 +67,6 @@ export const Constitution = ({ isOpen }) => {
             name: "year",
             value: "year",
             options: [{ label: "Year", value: "" }, ...financialYearList],
-
           },
         ]}
         sortList={[
@@ -131,6 +130,7 @@ export const Constitution = ({ isOpen }) => {
                 )
               )}
             </div>
+            <div>No constituruoins</div>
           </div>
           <Pagination
             totalPages={Math.ceil(constitutionCount / itemPerPage)}

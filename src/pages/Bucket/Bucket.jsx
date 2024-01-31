@@ -19,10 +19,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { NoDataFound } from "../../components/NoDataFound";
 import { formatPrice } from "../../utils/helper";
+import PageHead from "../../components/PageHead";
+import { currencyConfig } from "../../utils/constants";
 
 const Basket = () => {
   const { basketItems } = useSelector((state) => state.basketItem);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   useEffect(() => {
@@ -30,7 +31,6 @@ const Basket = () => {
       top: 0,
       behavior: "smooth",
     });
-    document.title = "Al-Ihsan Foundation - Basket";
   }, []);
 
   const handleRemoveBasketItems = async (item) => {
@@ -108,7 +108,7 @@ const Basket = () => {
         "COMMON",
         "WATER_CAMPAIGN",
         "KURBAN",
-        item?.quantity === null ? "FEDYAH" : ""
+        item?.quantity === null ? "FEDYAH" : "",
       ].includes(checkoutType);
       let total = item?.total;
       const quanity = isAdeeqah
@@ -142,7 +142,13 @@ const Basket = () => {
                           ? "Weekly"
                           : parseInt(item.periodDays) === 30
                           ? "Monthly"
-                          : `Yearly`}
+                          : parseInt(item.periodDays) === 1
+                          ? "Daily"
+                          : parseInt(item.periodDays) === 10
+                          ? "10 Days"
+                          : parseInt(item.periodDays) === 365
+                          ? "Yearly"
+                          : ``}
                       </div>
                     ) : null}
                   </div>
@@ -182,7 +188,7 @@ const Basket = () => {
                       </div>
                     )}
                     <div className="text-xs font-bold md:font-medium md:hidden">
-                      {"$" + total?.toLocaleString()}
+                      {currencyConfig.label + total?.toLocaleString()}
                     </div>
                   </div>
                   {/*  */}
@@ -208,7 +214,7 @@ const Basket = () => {
                 </div>
               </>
             ) : (
-              "$" + total?.toLocaleString()
+              currencyConfig.label + total?.toLocaleString()
             )}
             {/* ${(item?.amount ?? item?.total)?.toLocaleString()} */}
           </td>
@@ -255,7 +261,7 @@ const Basket = () => {
             </div>
           </td>
           <td className="hidden px-2 py-4 text-center border-b md:p-4 md:table-cell border-neutral-300 text-button-lg">
-            {"$" + formatPrice(total)}
+            {currencyConfig.label + formatPrice(total)}
           </td>
         </tr>
       );
@@ -273,6 +279,8 @@ const Basket = () => {
 
   return (
     <div>
+      <PageHead title={"Basket"} />
+
       <div className="py-7.5 md:py-15">
         <section aria-label="Basket">
           <div className="container">
@@ -288,9 +296,7 @@ const Basket = () => {
                         <th className="p-4 font-medium text-center rounded-l-md">
                           Donation Type
                         </th>
-                        <th className="p-4 font-medium text-center ">
-                          Amount
-                        </th>
+                        <th className="p-4 font-medium text-center ">Amount</th>
                         <th className="hidden p-4 font-medium text-center md:table-cell rounded-r-md md:rounded-none">
                           Quantity
                         </th>

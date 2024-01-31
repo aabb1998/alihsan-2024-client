@@ -1,7 +1,6 @@
 import React from "react";
-const maxLength = 500;
 
-export const TextArea = ({ value, name, handleChange }) => {
+export const TextArea = ({ value, name, handleChange, maxLength=500 }) => {
   const handleInputChange = (event) => {
     let inputValue = event.target.value;
     if (inputValue.length <= maxLength) {

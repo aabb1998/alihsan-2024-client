@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowRightIcon, CalendarIcon, DollarSignIcon } from '../../theme/svg-icons';
 import Img from '../../components/Image';
+import { currencyConfig } from '../../utils/constants';
 // import ViewDetailsOneTime from './ViewOnetimeModal';
 
 export const OneTimeItem =() =>{
@@ -10,8 +11,8 @@ export const OneTimeItem =() =>{
 
     <div className="flex flex-col gap-5 p-4 border md:flex-row border-neutral-300 rounded-2xl">
         <div className="shrink-0">
-            <div className="relative">
-                <Img src="/images/banner/projects/1.jpg" alt="" className="object-cover h-full min-h-[108px] w-full md:w-[162px] rounded-xl" />
+            <div className="relative w-full sm:h-[6.75rem] h-[8.625rem] sm:w-[10.125rem] overflow-hidden rounded-xl">
+                <Img src="/images/banner/projects/1.jpg" alt="" className="object-cover w-full h-full" />
             </div>
         </div>
         <div className="flex flex-col justify-between grow">
@@ -26,7 +27,7 @@ export const OneTimeItem =() =>{
                     </div>
                     <div className="flex flex-col gap-1">
                         <div className="text-xs text-neutral-600">Donation Amount</div>
-                        <div className="font-bold">$200</div>
+                        <div className="font-bold">{currencyConfig.label}200</div>
                     </div>
                 </div>
                 <div className="flex gap-2">

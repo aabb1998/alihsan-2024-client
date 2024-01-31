@@ -29,7 +29,7 @@ const pathDispatchMap = {
   "/admin/posts": "media/post-updates/",
 };
 const mediaTitle = {
-  "/admin/videos": "On Ground Videos",
+  "/admin/videos": "On Ground Video",
   "/admin/posts": "Post Campaign Updates",
 };
 const mediaDeleteUrl = {
@@ -140,7 +140,7 @@ const Media = () => {
             isSearch
           />{" "}
           <div className="relative overflow-x-auto">
-            <table className="table-auto w-full text-start">
+            <table className="w-full table-auto text-start">
               <thead className="rounded bg-neutral-200">
                 <tr className="">
                   <th className="p-4 text-sm font-medium text-start font-Montserrat text-neutral-600">
@@ -172,7 +172,7 @@ const Media = () => {
                       </td>
                       <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700 ">
                         <div className="break-all line-clamp-2">
-                          {impactStory.description}
+                          {impactStory.descriptionText || impactStory.description}
                         </div>
                       </td>
 

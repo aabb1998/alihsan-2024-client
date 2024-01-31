@@ -3,7 +3,7 @@ import { Button } from "../../components";
 import Img from "../../components/Image";
 import { useNavigate } from "react-router-dom";
 
-export const Unauthorized = () => {
+const Unauthorized = () => {
   const navigate = useNavigate();
 
   return (
@@ -21,8 +21,7 @@ export const Unauthorized = () => {
 
             <h5 className="mb-2 text-heading-6">Unauthenticated</h5>
             <p className="text-md text-neutral-700 mb-7.5 text-center w-55">
-              Authorization required to
-              get the access.
+              Authorization required to get the access.
             </p>
             <Button
               variant={"primaryFull"}
@@ -35,3 +34,5 @@ export const Unauthorized = () => {
     </>
   );
 };
+
+export default Unauthorized;

@@ -104,6 +104,22 @@ export const SupportForm = () => {
     },
   });
 
+  const getCroppedImage = async (url, index) => {
+    const response = await fetch(url);
+    const file = await response.blob();
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const newImagePreviews = [...imagePreviews];
+        newImagePreviews[index] = reader.result;
+        setImagePreviews(newImagePreviews);
+        formik.setFieldValue(`images.${index}`, file);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleImageChange = (event, index) => {
     const file = event.currentTarget.files[0];
     if (file && file.type.startsWith("image/")) {
@@ -236,6 +252,8 @@ export const SupportForm = () => {
                       handleImageChange={(event) =>
                         handleImageChange(event, index)
                       }
+                      getCroppedImage={(e) => getCroppedImage(e, index)}
+
                     />
                   </>
                 ))}

@@ -26,7 +26,8 @@ export const getCountries = createAsyncThunk(
   "get/countries",
   async (thunkAPI) => {
     try {
-      const response = await api.get("country");
+      const response = await api.get("map-country");
+      // const response = await api.get("map-country");
       if (response.status === 200) {
         return response?.data?.payload;
       } else {
@@ -84,7 +85,11 @@ export const homeSlice = createSlice({
       state.mapCountries = action?.payload;
     });
     builder.addCase(getSettings.fulfilled, (state, action) => {
-      state.settings = action?.payload;
+      state.settings = {
+				...action.payload,
+				generalAmounts: action.payload.generalAmounts.split(','),
+				fedyahAmounts: action.payload.fedyahAmounts.split(','),
+			};
     });
     builder.addCase(addSubscriber.fulfilled, (state, action) => {
       state.subscriber = action?.payload;

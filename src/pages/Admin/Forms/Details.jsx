@@ -23,7 +23,7 @@ const titleMap = {
   "/admin/fundraisers/": "Fundraise With Us",
   "/admin/sponsors/": "Become a Sponsor",
   "/admin/volunteers/": "Volunteer With Us",
-  "/admin/contacts/": "Contacts Us",
+  "/admin/contacts/": "Contact Us",
   "/admin/technical-support/": "Technical Support",
   "/admin/complaints/": "Complaints",
 };

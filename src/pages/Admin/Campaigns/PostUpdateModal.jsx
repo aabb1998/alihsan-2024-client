@@ -141,7 +141,7 @@ export default function PostUpdateModal() {
                       <div className="relative flex flex-col text-area">
                           <label htmlFor="description" className="text-sm font-medium sm:text-md text-neutral-1000">Content</label>
                         <div className="relative">
-                          <textarea  rows={5}  className="w-full bg-white !min-h-40 form-control" id="description" placeholder="Write your post content" onChange={setState} value={state.values.text} name="text">
+                          <textarea  rows={5}  className="w-full bg-white !min-h-40 form-control !text-neutral-1000" id="description" placeholder="Write your post content" onChange={setState} value={state.values.text} name="text">
                           </textarea>
                           <p className='absolute font-medium bg-white text-button-md text-neutral-800 bottom-2 right-2'>{state.values.text.length}/500</p>
                         </div>

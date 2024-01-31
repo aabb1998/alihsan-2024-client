@@ -29,6 +29,7 @@ import {
 } from "../../features/basket/basketSlice";
 import { Transition } from "@headlessui/react";
 import Img from "../Image";
+import { currencyConfig } from "../../utils/constants";
 
 export const HeaderTop = ({ modalOptions, setModalOptions, onSearch, searchState, onSearchEnter }) => {
   const [toggle, setToggle] = useState(false);
@@ -184,7 +185,7 @@ export const HeaderTop = ({ modalOptions, setModalOptions, onSearch, searchState
                   <div className="p-2 text-button-md text-neutral-600">Loading...</div>
                   : ''}
                 {searchState.results?.map(result => (
-                  <div className="flex gap-3 p-3 cursor-pointer" key={result.id} onClick={() => { navigate('/project/' + result.id); setModalOptions(null); console.log(result) }}>
+                  <div className="flex gap-3 p-3 cursor-pointer" key={result.id} onClick={() => { navigate('/project/' + result.slug); setModalOptions(null); console.log(result) }}>
                     <div className="w-8 h-16 overflow-hidden rounded-lg min-w-fit">
                       <Img src={result.coverImage} className="object-cover w-full h-full" alt="campaign" />
                     </div>
@@ -352,7 +353,7 @@ const BasketItem = ({
           {!isCommonORZaqat ? (
             <div className="flex items-center justify-between">
               {!isAdeeqah && (
-                <div className="relative flex flex-row w-auto h-8 bg-transparent rounded-lg">
+                <div className="relative flex flex-row w-auto h-10 bg-transparent rounded-lg">
                   <button
                     onClick={() => handleQuantityChange(index, "sub")}
                     data-action="decrement"
@@ -422,7 +423,7 @@ const BasketItem = ({
                   className="p-0 text-center w-14 min-w-[3.5rem] h-8 rounded-l-none  border-neutral-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   aria-label="amount"
                   type="text"
-                  placeholder="$100"
+                  placeholder={`${currencyConfig.label}100`}
                   value={total}
                   min={0}
                   onInput={(event) => handleInputChange(index, event)}
@@ -440,7 +441,7 @@ const BasketItem = ({
                   className="p-0 text-center w-14 min-w-[3.5rem] h-8 rounded-l-none  border-neutral-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   aria-label="amount"
                   type="number"
-                  placeholder="$100"
+                  placeholder={`${currencyConfig.label}100`}
                   value={total}
                   readOnly={toggle}
                 />
@@ -450,17 +451,17 @@ const BasketItem = ({
           <div className="flex">
             <div className="font-bold text-md sm:text-heading-7">
               {isCommonORZaqat ? (
-                "$" + total?.toLocaleString()
+                currencyConfig.label + total?.toLocaleString()
               ) : isAdeeqah ? (
                 <>
-                  {"$" + total?.toLocaleString()}
+                  {currencyConfig.label + total?.toLocaleString()}
                 </>
               ) : (
                 <>
                   <span className="font-medium text-md font-Montserrat text-neutral-500">
                     {quantity + " x "}
                   </span>
-                  {"$" + price?.toLocaleString()}
+                  {currencyConfig.label + price?.toLocaleString()}
                 </>
               )}
             </div>
@@ -496,7 +497,7 @@ const BasketTotal = ({ items, handleClick }) => {
           <div className="flex justify-between text-md sm:text-heading-7">
             <div className="font-medium sm:font-bold">Subtotal</div>
             <div className="font-medium sm:font-bold">
-              ${totalPoints?.toLocaleString()}
+              {currencyConfig.label}{totalPoints?.toLocaleString()}
             </div>
           </div>
           <div className="h-px my-3 sm:my-5 bg-neutral-300"></div>
@@ -508,7 +509,7 @@ const BasketTotal = ({ items, handleClick }) => {
           <div className="flex justify-between text-md sm:text-heading-6">
             <div className="font-bold">Total</div>
             <div className="font-bold">
-              ${parseFloat(totalPoints) + parseFloat(processingAmount)}
+              {currencyConfig.label}{parseFloat(totalPoints) + parseFloat(processingAmount)}
             </div>
           </div>
         </div>

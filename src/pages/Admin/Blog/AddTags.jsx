@@ -56,7 +56,7 @@ const AddTags = ({ onClose }) => {
                 <div className="relative w-full gap-4 text-left transition-all transform sm:max-w-modal-sm">
                   <div className="flex px-4 pt-4 pb-7.5 sm:pt-10 sm:pb-10 sm:px-10 bg-white rounded-t-3xl sm:rounded-3xl">
                     <div className="flex flex-col flex-grow w-100">
-                      <div className="flex justify-between mb-4">
+                      <div className="flex justify-between mb-5 sm:mb-8">
                         <div className="font-bold tracking-tighter text-neutral-1000 text-md sm:text-heading-7">
                           Add Tag
                         </div>
@@ -108,13 +108,13 @@ const AddTags = ({ onClose }) => {
                         <Button
                           variant={"dark"}
                           className="flex-grow"
-                          label={"No, keep it"}
+                          label={"Cancel"}
                           onClick={onClose}
                         />
                         <Button
                           variant={"primary"}
                           className="flex-grow"
-                          label={"Yes, delete"}
+                          label={"Save"}
                         />
                       </div>
                     </div>

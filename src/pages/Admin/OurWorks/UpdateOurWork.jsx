@@ -108,6 +108,20 @@ export const UpdateOurWork = () => {
     }
   };
 
+  const getCroppedImage = async (url) => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const file = blob;
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreviews(reader.result);
+        formik.setFieldValue(`image`, file);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   useEffect(() => {
     if (id) {
       dispatch(getOurWork(id));
@@ -156,7 +170,7 @@ export const UpdateOurWork = () => {
         <div className="mt-5 md:mt-7.5">
           <div className="flex flex-col mb-6 form-group">
             <label htmlFor="title" className="">
-              Name
+              Name<span className="text-red-300">*</span>
             </label>
             <input
               type="text"
@@ -176,7 +190,7 @@ export const UpdateOurWork = () => {
           </div>
           <div className="flex flex-col mb-6 form-group">
             <label htmlFor="title" className="">
-              Title
+              Title<span className="text-red-300">*</span>
             </label>
             <input
               type="text"
@@ -197,7 +211,7 @@ export const UpdateOurWork = () => {
 
           <div className="relative flex flex-col mb-6 text-area">
             <label htmlFor="content" className="">
-              Description
+              Description<span className="text-red-300">*</span>
             </label>
             <TextArea
               handleChange={handleInputChange}
@@ -214,13 +228,15 @@ export const UpdateOurWork = () => {
           </div>
           <div className="form-group">
             <label htmlFor="content" className="">
-              Image
+              Image<span className="text-red-300">*</span>
             </label>
             <ImageUpload
               imagePreviews={imagePreviews}
               name={"images"}
               handleImageDelete={(event) => handleImageDelete(event)}
               handleImageChange={(event) => handleImageChange(event)}
+              getCroppedImage={(e) => getCroppedImage(e)}
+
             />
             {formik.touched.image && Boolean(formik.errors.image) && (
               <FormikValidationError

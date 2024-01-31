@@ -11,6 +11,8 @@ import { useFormik } from 'formik';
 import ReactFlagsSelect from "react-flags-select";
 import TextArea from '../../components/TextArea';
 import { FormikValidationError } from '../Common/FormikValidationError';
+import { checkAdminPermission } from '../../utils/helper';
+import { currencyConfig } from '../../utils/constants';
 
 const listItems = [
     {
@@ -86,6 +88,7 @@ export const WaterDonation = ({ campaign, handleClose, isModal }) => {
     }
 
     const handleWaterDonation = async (values, { resetForm }) => {
+        
         const checkout = JSON.parse(localStorage.getItem("checkout") || "[]");
         const isInCheckoutList = checkout.find(
             (obj) => obj.campaignId === values.campaignId
@@ -94,7 +97,9 @@ export const WaterDonation = ({ campaign, handleClose, isModal }) => {
             ...values,
             total: parseInt(values.amount, 10),
             isRecurring: false,
+            Campaign: campaign,
         };
+        checkAdminPermission(newValues)
         const action = isInCheckoutList ? updateBasketItem : addBasketItem;
         const updatedCheckout = isInCheckoutList
             ? [
@@ -235,7 +240,7 @@ export const WaterDonation = ({ campaign, handleClose, isModal }) => {
                     </div>
                     <div className="flex justify-between text-heading-6 mb-5 md:mb-7.5">
                         <div>Cost</div>
-                        <div>${selectedItem?.cost || 0}</div>
+                        <div>{currencyConfig.label}{selectedItem?.cost || 0}</div>
                     </div>
                 </div> : <></>}
                 <div className="flex flex-col gap-8 mt-5 md:mt-7.5">

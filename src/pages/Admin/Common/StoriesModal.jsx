@@ -98,7 +98,7 @@ export const StoriesModal = ({ onClose, item }) => {
                     className="flex items-start gap-3"
                   >
                     <div>
-                      <div className="flex flex-col gap-4 sm:gap-5 max-h-[calc(100vh-20rem)] overflow-auto">
+                      <div className="flex flex-col gap-4 sm:gap-5 max-h-[calc(100vh-20rem)] overflow-auto pr-2">
                         <div className="flex flex-col form-group">
                           <div
                             for="dropzone-file"
@@ -117,7 +117,7 @@ export const StoriesModal = ({ onClose, item }) => {
                             <div className="flex items-center justify-center w-full h-full ">
                 <label for="dropzone-file" className="!mb-0 cursor-pointer absolute right-5 bottom-5">
                   <div className="flex flex-col items-center justify-center px-5 py-3 rounded-lg bg-primary-100 text-primary-300 text-button-lg">
-                    Change Cover
+                    Add Cover
                   </div>
                   <input id="dropzone-file" type="file" className="hidden"  />
                 </label>
@@ -125,7 +125,7 @@ export const StoriesModal = ({ onClose, item }) => {
                           </div>
                         </div>
                       </div>
-                      <div className="flex flex-col gap-4 sm:gap-5 max-h-[calc(100vh-20rem)] overflow-auto">
+                      <div className="flex flex-col gap-4 sm:gap-5 max-h-[calc(100vh-20rem)] overflow-auto pr-2">
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
                           <div className="form-group">
                             <label htmlFor="campaignId" className="block">

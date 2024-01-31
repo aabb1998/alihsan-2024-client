@@ -134,7 +134,7 @@ const UpdateModal = ({ onClose, confirmDelete, item }) => {
                     <form onSubmit={formik.handleSubmit}>
                       <div className="mb-6 form-group">
                         <label htmlFor="company name" className="block">
-                          Year
+                          Year<span className="text-red-300">*</span>
                         </label>
                         <Dropdown
                           className={"!w-full"}
@@ -153,7 +153,7 @@ const UpdateModal = ({ onClose, confirmDelete, item }) => {
                       </div>
                       <div className="mb-6 form-group">
                         <label htmlFor="document" className="block">
-                          Document
+                          Document<span className="text-red-300">*</span>
                         </label>
                         {isVisible ? (
                           <div className="flex items-center justify-between w-full  gap-2 py-1.5 px-3 rounded bg-accent-300 mt-2 mb-6 ">

@@ -399,20 +399,19 @@ export const FacebookIcon = ({ iconSize = 20 }) => {
   );
 };
 
-export const TwitterIcon = ({ iconSize = 20 }) => {
+export const TwitterIcon = ({ iconSize = 18 }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={iconSize}
       height={iconSize}
       fill="none"
-      viewBox="0 0 24 24"
+      viewBox="0 0 39 38"
     >
-      {" "}
       <path
         fill="currentcolor"
-        d="M8.842 21c-2.427 0-4.688-.706-6.592-1.923 1.616.104 4.469-.146 6.243-1.838-2.67-.123-3.873-2.17-4.03-3.045.227.088 1.308.193 1.919-.052-3.07-.77-3.541-3.464-3.436-4.286.575.402 1.552.542 1.936.507-2.86-2.047-1.832-5.126-1.326-5.79 2.053 2.843 5.13 4.44 8.936 4.53a4.398 4.398 0 01-.11-.98 4.367 4.367 0 014.362-4.373c1.258 0 2.392.535 3.188 1.39.84-.197 2.106-.659 2.725-1.058-.312 1.12-1.283 2.054-1.87 2.4.005.012-.005-.012 0 0 .516-.078 1.912-.346 2.463-.72-.273.629-1.302 1.675-2.147 2.26C21.26 14.953 15.957 21 8.842 21z"
-      ></path>{" "}
+        d="M.92 0l14.662 21.375L1.23 38h3.18l12.576-14.578 10 14.578H39L23.682 15.67 37.199 0h-3.17L22.275 13.617 12.934 0H.92zm3.797 2h7.164l23.322 34H28.04L4.717 2z"
+      ></path>
     </svg>
   );
 };
@@ -797,9 +796,10 @@ export const EditIcon = ({ iconSize = 20, onClick }) => {
   );
 };
 
-export const Edit3Icon = ({ iconSize = 20 }) => {
+export const Edit3Icon = ({ iconSize = 20, onClick }) => {
   return (
     <svg
+      onClick={onClick}
       xmlns="http://www.w3.org/2000/svg"
       width={iconSize}
       height={iconSize}
@@ -1308,7 +1308,7 @@ export const MoreVerticalIcon = ({ iconSize = 20 }) => {
   );
 };
 
-export const DownloadIcon = ({ iconSize = 20 }) => {
+export const DownloadIcon = ({ iconSize = 20, onClick }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -1316,6 +1316,7 @@ export const DownloadIcon = ({ iconSize = 20 }) => {
       height={iconSize}
       fill="none"
       viewBox="0 0 24 24"
+      onClick={onClick}
     >
       {" "}
       <path
@@ -1994,90 +1995,169 @@ export const SortIcon = ({ iconSize = 20 }) => {
 export const FeatherIcon = ({ iconSize = 20 }) => {
   return (
     <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={iconSize}
-    height={iconSize}
-    fill="none"
-    viewBox="0 0 24 24"
-  >
-    <path
-      stroke="currentcolor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="1.5"
-      d="M20.24 12.24a6.003 6.003 0 00-8.49-8.49L5 10.5V19h8.5l6.74-6.76zM16 8L2 22M17.5 15H9"
-    ></path>
-  </svg>
+      xmlns="http://www.w3.org/2000/svg"
+      width={iconSize}
+      height={iconSize}
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke="currentcolor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M20.24 12.24a6.003 6.003 0 00-8.49-8.49L5 10.5V19h8.5l6.74-6.76zM16 8L2 22M17.5 15H9"
+      ></path>
+    </svg>
   );
 };
 export const FilmIcon = ({ iconSize = 20 }) => {
   return (
     <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={iconSize}
-    height={iconSize}
-    fill="none"
-    viewBox="0 0 24 24"
-  >
-    <path
-      stroke="currentcolor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="1.5"
-      d="M19.82 2H4.18A2.18 2.18 0 002 4.18v15.64A2.18 2.18 0 004.18 22h15.64A2.18 2.18 0 0022 19.82V4.18A2.18 2.18 0 0019.82 2zM7 2v20M17 2v20M2 12h20M2 7h5M2 17h5M17 17h5M17 7h5"
-    ></path>
-  </svg>
+      xmlns="http://www.w3.org/2000/svg"
+      width={iconSize}
+      height={iconSize}
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke="currentcolor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M19.82 2H4.18A2.18 2.18 0 002 4.18v15.64A2.18 2.18 0 004.18 22h15.64A2.18 2.18 0 0022 19.82V4.18A2.18 2.18 0 0019.82 2zM7 2v20M17 2v20M2 12h20M2 7h5M2 17h5M17 17h5M17 7h5"
+      ></path>
+    </svg>
   );
 };
 export const FileIcon = ({ iconSize = 20 }) => {
   return (
     <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={iconSize}
-    height={iconSize}
-    fill="none"
-    viewBox="0 0 24 24"
-  >
-    <path
-     stroke="currentcolor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="1.5"
-      d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9l-7-7z"
-    ></path>
-    <path
-      stroke="currentcolor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="1.5"
-      d="M13 2v7h7"
-    ></path>
-  </svg>
+      xmlns="http://www.w3.org/2000/svg"
+      width={iconSize}
+      height={iconSize}
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke="currentcolor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9l-7-7z"
+      ></path>
+      <path
+        stroke="currentcolor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M13 2v7h7"
+      ></path>
+    </svg>
   );
 };
 export const BriefCaseIcon = ({ iconSize = 20 }) => {
   return (
     <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={iconSize}
-    height={iconSize}
-    fill="none"
-    viewBox="0 0 24 24"
-  >
-    <path
-      stroke="currentcolor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="1.5"
-      d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"
-    ></path>
-    <path
-       stroke="currentcolor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="1.5"
-      d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"
-    ></path>
-  </svg>
+      xmlns="http://www.w3.org/2000/svg"
+      width={iconSize}
+      height={iconSize}
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke="currentcolor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"
+      ></path>
+      <path
+        stroke="currentcolor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"
+      ></path>
+    </svg>
+  );
+};
+export const SettingsIcon = ({ iconSize = 20 }) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={iconSize}
+      height={iconSize}
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <g
+        stroke="currentcolor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        clipPath="url(#clip0_10_2176)"
+      >
+        <path d="M12 15a3 3 0 100-6 3 3 0 000 6z"></path>
+        <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a1.998 1.998 0 010 2.83 1.998 1.998 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a1.998 1.998 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 013.417 1.415 2 2 0 01-.587 1.415l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1v0z"></path>
+      </g>
+      <defs>
+        <clipPath id="clip0_10_2176">
+          <path fill="currentcolor" d="M0 0H24V24H0z"></path>
+        </clipPath>
+      </defs>
+    </svg>
+  );
+};
+export const MappinIcon = ({ iconSize = 20 }) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={iconSize}
+      height={iconSize}
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke="currentcolor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 1118 0z"
+      ></path>
+      <path
+        stroke="currentcolor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M12 13a3 3 0 100-6 3 3 0 000 6z"
+      ></path>
+    </svg>
+  );
+};
+export const TagIcon = ({ iconSize = 20 }) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={iconSize}
+      height={iconSize}
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <g clipPath="url(#clip0_10_1189)">
+        <path
+          stroke="currentcolor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.5"
+          d="M7 7h.01m13.58 6.41l-7.17 7.17a1.998 1.998 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"
+        ></path>
+      </g>
+      <defs>
+        <clipPath id="clip0_10_1189">
+          <path fill="currentcolor" d="M0 0H24V24H0z"></path>
+        </clipPath>
+      </defs>
+    </svg>
   );
 };

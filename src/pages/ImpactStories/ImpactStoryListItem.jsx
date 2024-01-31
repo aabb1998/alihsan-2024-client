@@ -5,25 +5,28 @@ import Img from "../../components/Image";
 
 export const ImpactStoryListItem = ({ item }) => {
   return (
-    <div className="col-span-1 p-3 border border-neutral-300 rounded-2xl">
-      <div className="w-full h-48 mb-4 overflow-hidden rounded-lg">
-        <Img
-          src={`${item?.coverImage || "/images/banner/impact-stories/2.jpg"}`} className="object-cover w-full h-full"
-          alt={`${item?.title}`}
-        />
+    <Link
+      to={`/impact-story/${item?.slug}`} className="flex flex-col">
+      <div className="h-full col-span-1 p-3 duration-700 ease-in-out border border-neutral-300 rounded-2xl hover:scale-95">
+        <div className="w-full h-48 mb-4 overflow-hidden rounded-lg">
+          <Img
+            src={`${item?.coverImage || "/images/banner/impact-stories/2.jpg"}`} className="object-cover w-full h-full"
+            alt={`${item?.title}`}
+          />
+        </div>
+        <p className="mb-3 text-heading-7 sm:text-heading-6 text-neutral-800 line-clamp-2">
+          {item?.title}
+        </p>
+        <p className="mb-5 text-sm text-neutral-600 line-clamp-2">
+          {item?.descriptionText || item?.description}
+        </p>
+        <Link
+          to={`/impact-story/${item?.slug}`}
+          className="btn btn-secondary !text-button-lg w-fit !px-5 !py-1.5"
+        >
+          View <ArrowRightIcon />{" "}
+        </Link>
       </div>
-      <p className="mb-3 text-heading-7 sm:text-heading-6 text-neutral-800 line-clamp-2">
-        {item?.title}
-      </p>
-      <p className="mb-5 text-sm text-neutral-600 line-clamp-2">
-        {item?.description}
-      </p>
-      <Link
-        to={`/impact-story/${item?.id}`}
-        className="btn btn-secondary !text-button-lg w-fit !px-5 !py-1.5"
-      >
-        View <ArrowRightIcon />{" "}
-      </Link>
-    </div>
+    </Link>
   );
 };

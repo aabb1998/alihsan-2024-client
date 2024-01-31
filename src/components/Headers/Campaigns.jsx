@@ -71,9 +71,9 @@ export const Campaigns = ({ handleClick }) => {
 
             <div className="flex gap-7.5" key={index} >
               {row.map((project) => (
-                <div className="w-4/12" key={project.id} onClick={handleClick}>
+                <div className="w-4/12" key={project.slug} onClick={handleClick}>
                   <div className="mb-4 overflow-hidden rounded-lg">
-                    <Link to={"/project/" + project.id} className="block max-w-[18.5rem] h-[8.5rem] overflow-hidden rounded-2xl">
+                    <Link to={"/project/" + project.slug} className="block max-w-[18.5rem] h-[8.5rem] overflow-hidden rounded-2xl">
                       <img
                         src={project.coverImage}
                         className="object-cover w-full h-full transition duration-500 hover:scale-110"
@@ -81,7 +81,7 @@ export const Campaigns = ({ handleClick }) => {
                       />
                     </Link>
                   </div>
-                  <Link to={"/project/" + project.id}>
+                  <Link to={"/project/" + project.slug}>
                     <h6 className="heading-7 mb-1.5 line-clamp-1">
                       {project.name}
                     </h6>

@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import {
   ChevronDownIcon,
   CloseIcon,
@@ -8,6 +8,7 @@ import {
 import Button from "../Button";
 import { Disclosure, Transition } from "@headlessui/react";
 import { Dropdown } from "../Dropdown";
+import PropTypes from "prop-types";
 
 const Filter = ({
   handleFilterChange,
@@ -41,7 +42,7 @@ const Filter = ({
       />
 
       <div className="flex-col items-start hidden md:flex">
-        <div className="flex items-center gap-2 md:gap-4">
+        <div className="flex items-center gap-2">
           {filtersList.length > 0 && (
             <label htmlFor="SortyBy" className="text-sm font-bold !mb-0">
               Filter By:
@@ -84,16 +85,17 @@ const Filter = ({
           )}
         </div>
       </div>
+      <div>{children}</div>
       {isSearch && (
         <div className="justify-end hidden md:flex">
           <div className="form-group">
             <label className="relative block !mb-0">
               <span className="sr-only">Search</span>
-              <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-neutral-500">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-500">
                 <SearchIcon />
               </span>
               <input
-                className="block w-full !py-2.5 !pr-3 bg-white border rounded-md form-control !pl-11 md:w-[200px] lg:w-[300px]"
+                className="block w-full !py-2.5 !pr-3 bg-white border rounded-md form-control !pl-9 md:w-[12.5rem] lg:w-[14rem] line-clamp-1"
                 placeholder="Search"
                 type="text"
                 name="search"
@@ -105,7 +107,6 @@ const Filter = ({
           </div>
         </div>
       )}
-      {children}
       <Transition
         as={Fragment}
         appear={true}
@@ -291,4 +292,19 @@ const Filter = ({
   );
 };
 
-export default Filter;
+Filter.propTypes = {
+  handleFilterChange: PropTypes.func.isRequired,
+  handleFilterReset: PropTypes.func.isRequired,
+  filters: PropTypes.object.isRequired,
+  filtersList: PropTypes.array.isRequired,
+  isSearch: PropTypes.bool,
+  sortList: PropTypes.array,
+  children: PropTypes.node,
+};
+
+Filter.defaultProps = {
+  isSearch: false,
+  sortList: [],
+  children: null,
+};
+export default React.memo(Filter);

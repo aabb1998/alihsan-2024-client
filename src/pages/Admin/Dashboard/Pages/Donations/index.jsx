@@ -6,7 +6,6 @@ import {
   SearchIcon,
 } from "../../../../../theme/svg-icons";
 // import ActionButtonBgWithIcon from "../../Common/ActionButtonBgWithIcon";
-import { AddDonationModalComponent } from "../Campaign/Common/AddDonationModal";
 import { Pagination } from "../../../../../features/projects/Pagination";
 import { Button } from "../../../../../components";
 import Img from "../../../../../components/Image";
@@ -38,12 +37,7 @@ export const Donations = () => {
               </span>{" "}
               <span className="hidden sm:flex">Add Donation</span>{" "}
             </button>
-            {isOpen && (
-              <AddDonationModalComponent
-                isOpen={isOpen}
-                onClose={() => setIsOpen(false)}
-              />
-            )}
+           
           </div>
           {/* card area */}
           <div className="flex my-2 sm:my-5 md:my-7.5 gap-2 md:gap-7.5 flex-wrap">
@@ -151,6 +145,7 @@ export const Donations = () => {
 
                             </div>
             </div> */}
+            <div className="grid">
             <div className="relative overflow-x-auto">
               <table class="table-auto w-full text-start">
                 <thead className="rounded bg-neutral-200">
@@ -416,6 +411,8 @@ export const Donations = () => {
                 <Pagination />
               </div>
             </div>
+            </div>
+
           </div>
         </div>
       </div>

@@ -22,17 +22,19 @@ import { FedyahDonation } from "./FedyahDonation";
 import { QurbanDonation } from "./QurbanDonation";
 import { WaterDonation } from "./WaterDonation";
 import PageHead from "../../components/PageHead";
+import { NoDataFound } from "../../components/NoDataFound";
+import { ProjectListItem } from "../projects/ProjectListItem";
 
 const ProjectDetail = () => {
-  const { id } = useParams();
-  const { project, loading } = useSelector((state) => state.project);
+  const { slug } = useParams();
+  const { project, loading, error } = useSelector((state) => state.project);
   const props = project;
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("tab1");
 
   useEffect(() => {
-    dispatch(getProject(id));
-  }, [id]);
+    dispatch(getProject(slug));
+  }, [slug]);
 
   const handleClick = (e) => {
     setActiveTab(e);
@@ -41,13 +43,18 @@ const ProjectDetail = () => {
   useEffect(() => {
     dispatch(getQurbanGroups());
   }, [dispatch]);
+  if (error) return <NoDataFound title={"No Data Found"} />;
 
   return (
     <div>
       {/* Project Details */}
       <PageHead title={"Project Details"} />
 
-      <main className="pb-7.5 sm:py-7.5 md:py-15">
+      <main
+        className={`pb-7.5 sm:py-7.5 md:py-15 ${
+          project?.campaign?.isRamadanCampaign ? "ramadan-details-page" : ""
+        }`}
+      >
         {loading ? (
           <Loader />
         ) : (
@@ -64,6 +71,7 @@ const ProjectDetail = () => {
                     {project?.campaign?.name}
                   </h1>
                   <div className="block mb-6 md:hidden">
+                    {console.log(project?.campaign)}
                     {/* <ChooseDonationFedyah /> */}
                     {project?.campaign?.checkoutType === "COMMON" && (
                       <CommonDonation campaign={project?.campaign} />
@@ -101,13 +109,33 @@ const ProjectDetail = () => {
                     <UpdateTab posts={project?.campaign?.Posts} />
                   )}
 
-                  <ShareProject id={id} />
+                  <ShareProject id={slug} />
                   {/* Updates Tab */}
                   {project?.campaign?.Organizer && (
                     <OrganiserComponent
                       organizer={project?.campaign?.Organizer}
                     />
                   )}
+                  <section aria-label="Updates" className="mt-10">
+                    <div className="container">
+                    <h2 className="mb-4">Related Campaigns</h2>
+
+                      <div className="grid gap-x-5 gap-y-7.5 sm:grid-cols-2 md:grid-cols-4">
+                        {project?.campaignsRelated?.length ? (
+                          <>
+                            {project?.campaignsRelated?.map((campaign) => (
+                              <ProjectListItem
+                                project={campaign}
+                                key={campaign.id}
+                              />
+                            ))}
+                          </>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    </div>
+                  </section>
                 </div>
                 <div className="grid grid-cols-12 col-span-12 gap-5 gap-y-10 sm:gap-6 md:gap-10 md:flex md:flex-col md:col-span-5">
                   <div className="hidden col-span-12 sm:col-span-12 md:block">
@@ -134,12 +162,16 @@ const ProjectDetail = () => {
                       <ZaqatDonation campaign={project?.campaign} />
                     )}
                   </div>
-                  <div className="col-span-12 sm:col-span-6">
-                    <TopDonations {...props} />
-                  </div>
-                  <div className="col-span-12 sm:col-span-6">
-                    <LiveDonations {...props} />
-                  </div>
+                  {project?.campaign?.checkoutType !== "ZAQAT" && (
+                    <>
+                      <div className="col-span-12 sm:col-span-6">
+                        <TopDonations {...props} />
+                      </div>
+                      <div className="col-span-12 sm:col-span-6">
+                        <LiveDonations {...props} />
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -150,4 +182,4 @@ const ProjectDetail = () => {
   );
 };
 
-export default React.memo(ProjectDetail)
+export default React.memo(ProjectDetail);

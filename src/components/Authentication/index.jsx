@@ -17,7 +17,7 @@ const Authentication = ({ children, allowedUserTypes }) => {
       return <Navigate to="/unauthorized" />;
     }
   } else {
-    return <Navigate to="/login" />;
+    return <Navigate to="/admin/login" />;
   }
 };
 

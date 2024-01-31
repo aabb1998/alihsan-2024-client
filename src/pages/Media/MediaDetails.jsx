@@ -6,17 +6,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { getMediaDetails } from "../../features/media/mediaSlice";
 import Loader from "../../components/Loader";
 import PageHead from "../../components/PageHead";
+import { NoDataFound } from "../../components/NoDataFound";
 
 export const MediaDetails = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { mediaPost, relatedPost, loading } = useSelector(
+  const { mediaPost, relatedPost, loading ,error} = useSelector(
     (state) => state.medias
   );
 
-  const getMediaPostCampaignDetails = async (id) => {
-    await dispatch(getMediaDetails(id));
+  const getMediaPostCampaignDetails = async (slug) => {
+    await dispatch(getMediaDetails(slug));
     window.scrollTo({
       top: 0,
       behavior: "smooth",
@@ -24,9 +25,10 @@ export const MediaDetails = () => {
   };
 
   useEffect(() => {
-    getMediaPostCampaignDetails(id);
+    getMediaPostCampaignDetails(slug);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [slug]);
+  if (error) return <NoDataFound title={"No Data Found"} />;
 
   return (
     <div>
@@ -50,12 +52,12 @@ export const MediaDetails = () => {
               </div>
             </div>
             <div className="container">
-              <div className="flex items-center justify-between mb-3 sm:mb-5">
+              <div className="flex items-center justify-between gap-5 mb-3 sm:mb-5">
                 <div>
                   <p className="text-sm font-medium text-neutral-600">
                     {mediaPost?.createdDate}
                   </p>
-                  <h1 className=" text-heading-6 sm:text-heading-2">
+                  <h1 className="break-words text-heading-6 sm:text-heading-2 line-clamp-2">
                     {mediaPost?.title}
                   </h1>
                 </div>
@@ -67,9 +69,7 @@ export const MediaDetails = () => {
                   />
                 </div>
               </div>
-              <p className="mb-5 text-sm font-medium text-neutral-800">
-                {mediaPost?.description}
-              </p>
+              <p dangerouslySetInnerHTML={{__html: mediaPost?.description}} className="mb-5 text-sm font-medium break-words text-neutral-800"></p>
               <div className="mt-5 sm:mt-14">
                 <div className="flex items-center justify-between gap-2 mb-10 sm:mb-6">
                   <h4 className="text-heading-6 text-neutral-1000 line-clamp-1">

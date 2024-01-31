@@ -7,7 +7,7 @@ import { Constitution } from "../../features/financialReports/Constitutions";
 import { getFinantialReports } from "../../features/financialReports/financialReports";
 import PageHead from "../../components/PageHead";
 
-export const FinancialReports = () => {
+const FinancialReports = () => {
   const dispatch = useDispatch();
   const [tab, setTab] = useState("financial");
 
@@ -42,7 +42,7 @@ export const FinancialReports = () => {
                     </button>
                   )}
                 </Tab>
-                <Tab as={Fragment} onClick={() => setTab("constitution")}>
+                {/* <Tab as={Fragment} onClick={() => setTab("constitution")}>
                   {({ selected }) => (
                     <button
                       className={
@@ -55,7 +55,7 @@ export const FinancialReports = () => {
                       Constitution
                     </button>
                   )}
-                </Tab>
+                </Tab> */}
               </Tab.List>
               <Tab.Panels>
                 <Tab.Panel>
@@ -72,3 +72,6 @@ export const FinancialReports = () => {
     </div>
   );
 };
+
+
+export default FinancialReports

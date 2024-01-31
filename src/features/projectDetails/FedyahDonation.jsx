@@ -5,10 +5,12 @@ import { useFormik } from 'formik'
 import { HelpCircleIcon, MinusIcon, PlusIcon } from '../../theme/svg-icons';
 import { Tooltip } from 'react-tooltip';
 import { FedyahTabs } from './FedyahTabs';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { SnackMessages } from '../../components/Toast';
 import PropTypes from "prop-types";
 import { addBasket, addBasketItem, toggleBasket, updateBasketItem } from '../basket/basketSlice';
+import { checkAdminPermission, useFedyahPricers } from '../../utils/helper';
+import { currencyConfig } from '../../utils/constants';
 
 const RadioButtonItems = [
     {
@@ -16,10 +18,10 @@ const RadioButtonItems = [
         title: "Palliative Care/Chronic Illness/Elderly",
         description: {
             title: "Palliative care/Chronic Illness/Elderly:",
-            para1: "If you are in palliative care, have a chronic illness or are elderly, and fasting is extremely difficult and detrimental to your health, you are exempt from Ramadan fasting. You must offer Fidyah as an expiation, which is to provide one meal to a poor person for each day missed. To calculate the total Fidyah amount, simply multiply the missed days by the cost of one meal, which is $12."
+            para1: "If you are in palliative care, have a chronic illness or are elderly, and fasting is extremely difficult and detrimental to your health, you are exempt from Ramadan fasting. You must offer Fidyah as an expiation, which is to provide one meal to a poor person for each day missed. To calculate the total Fidyah amount, simply multiply the missed days by the cost of one meal, which is {{FEED1}}."
         },
         calculateAmount: true,
-        initialAmount: 12,
+        initialAmount: 'feedPrice',
         initialAmountTitle: "Cost for One Day",
         quantity: 1,
         itemTitle: "Total Day Cost",
@@ -37,7 +39,7 @@ const RadioButtonItems = [
         costforOneDay: false,
         costPerPerson: false,
         counter: false,
-        amount: [10, 20, 30, 50],
+        amount: true,//[10, 20, 30, 50],
         hasTabs: false,
         generalDonation: false,
     },
@@ -47,7 +49,7 @@ const RadioButtonItems = [
         description: {
             title: "Intimacy With Spouse During Ramadan:",
             para1: "Expiation applies if you break your fast by having intercourse with your spouse during the day, you must make up the day as well as-in this order:",
-            list: ["Free a slave. If you cannot do so,", "Fast two consecutive months. If that is not possible,", "Feed sixty poor person at a cost of $12 per person."],
+            list: ["Free a slave. If you cannot do so,", "Fast two consecutive months. If that is not possible,", "Feed sixty poor person at a cost of {{FEED1}} per person."],
             para2: "This applies to each day it occurs."
         },
         perPerson: false,
@@ -57,7 +59,7 @@ const RadioButtonItems = [
             {
                 tabName: "Fasting",
                 content1: "Fasting for 2 consecutive months + day broken",
-                amount: [10, 20, 30, 50],
+                amount: true,//[10, 20, 30, 50],
                 generalDonation: true,
                 activeTab: true
             },
@@ -66,7 +68,7 @@ const RadioButtonItems = [
                 head: "Disclaimer:",
                 content1: "Only select this option if you are unable to fast.",
                 calculateAmount: true,
-                initialAmount: 12,
+                initialAmount: 'feedPrice',
                 initialAmountTitle: "Per Person",
                 quantity: 60,
                 itemTitle: "Feed 60 Poor Person",
@@ -82,7 +84,7 @@ const RadioButtonItems = [
             para1: "If you couldn't fast during Ramadan due to a valid reason such as illness or travel, you must make up for the number of days you did not fast after Ramadan. No expiation is required."
         },
         content1: "Make up for each day missed after Ramadan at the earliest convenience",
-        amount: [10, 20, 30, 50],
+        amount: true,//[10, 20, 30, 50],
         generalDonation: true,
     },
     {
@@ -92,15 +94,15 @@ const RadioButtonItems = [
             title: "Pregnant Woman and Breastfeeding Mothers:",
             para1: "Scholars have different rulings concerning the pregnant woman and breastfeeding mothers if they do not fast Ramadan. These are the various opinions:",
             subTitle1: "Make Up the Fasts : That they must make up the fasts only.",
-            para2: "This is the view of Imam Abu Haneefah (may Allah have mercy on him). Among the Sahaabah, it was the view of ‘Ali ibn Abi Taalib (may Allah be pleased with him). No expiation - $10, 20 , 30 , 50 - optional general donation"
+            para2: "This is the view of Imam Abu Haneefah (may Allah have mercy on him). Among the Sahaabah, it was the view of ‘Ali ibn Abi Taalib (may Allah be pleased with him). No expiation - {{fedyahAmounts}} - optional general donation"
         },
         hasTabs: true,
         tabs: [
             {
                 tabName: "Fasting",
                 head: "Make Up the Fasts : That they make up the fasts only.",
-                content1: "This is the view of Imam Abu Haneefah (may Allah have mercy on him). Among the Sahaabah, it was the view of ‘Ali ibn Abi Taalib (may Allah be pleased with him). No expiation - $10, 20 , 30 , 50 - optional general donation",
-                amount: [10, 20, 30, 50],
+                content1: "This is the view of Imam Abu Haneefah (may Allah have mercy on him). Among the Sahaabah, it was the view of ‘Ali ibn Abi Taalib (may Allah be pleased with him). No expiation - {{fedyahAmounts}} - optional general donation",
+                amount: true,//[10, 20, 30, 50],
                 generalDonation: true,
                 activeTab: true
             },
@@ -109,7 +111,7 @@ const RadioButtonItems = [
                 head: "Make Up the Fasts and Feed the Needy :",
                 content1: "This is the view of Imam Abu Haneefah (may Allah have mercy on him). Among the Sahaabah, it was the view of ‘Ali ibn Abi Taalib (may Allah be pleased with him).",
                 calculateAmount: true,
-                initialAmount: 12,
+                initialAmount: 'feedPrice',
                 quantity: 1,
                 itemTitle: "Cost Per Days",
                 initialAmountTitle: "Cost Per Person",
@@ -123,7 +125,7 @@ const RadioButtonItems = [
                 content1: "That they must feed one poor person per day missed only, and do not have to make up the fasts.",
                 content2: "Among the Sahaabah, this was the view of ‘Abd-Allah ibn ‘Abbaas (may Allah be pleased with him). Ibn Qudaamah also narrated this in al-Mughni (3/37) from Ibn ‘Umar (may Allah be pleased with him).",
                 calculateAmount: true,
-                initialAmount: 12,
+                initialAmount: 'feedPrice',
                 quantity: 1,
                 itemTitle: "Cost Per Days",
                 initialAmountTitle: "Cost Per Person",
@@ -141,7 +143,7 @@ const RadioButtonItems = [
             para1: "Kaffarat al Yamin is a form of expiation for breaking a deliberate oath as mentioned in the Quran. [ Al-Maidah 5:89] Seek guidance from a knowledgeable scholar to ensure proper compliance. These are the three options."
         },
         calculateAmount: true,
-        initialAmount: 12,
+        initialAmount: 'feedPrice',
         quantity: 10,
         itemTitle: "Feed 10 Poor Person",
         initialAmountTitle: "Per Person",
@@ -155,7 +157,7 @@ const RadioButtonItems = [
             para1: "Kaffarat al Yamin is a form of expiation for breaking a deliberate oath as mentioned in the Quran. [ Al-Maidah 5:89] Seek guidance from a knowledgeable scholar to ensure proper compliance. These are the three options."
         },
         calculateAmount: true,
-        initialAmount: 40,
+        initialAmount: 'clothePrice',
         quantity: 10,
         itemTitle: "Clothe 10 Poor People",
         initialAmountTitle: "Per Person",
@@ -174,17 +176,17 @@ const RadioButtonItems = [
         title: "Vows Made In Desperation/Anger",
         description: {
             title: "Vows Made In Desperation/Anger:",
-            para1: "This means when someone makes an oath to emphasize, they'll do or not do something, but they don't really intend to make a vow . For example, in anger, someone might say, If I ever do this, I have to go for Hajj, fast for a month, or give a $500 in charity. But they didn't mean to do those things; they just wanted to stress they wouldn't do that action. You have two choices:",
+            para1: "This means when someone makes an oath to emphasize, they'll do or not do something, but they don't really intend to make a vow . For example, in anger, someone might say, If I ever do this, I have to go for Hajj, fast for a month, or give a {{currency}}500 in charity. But they didn't mean to do those things; they just wanted to stress they wouldn't do that action. You have two choices:",
             subTitle1: "Fulfill the vow",
             subTitle2: "Offer kaffarat yamin( as the vow was essentially an oath) :",
-            list: ["Feed ten poor people at a cost of $12 per person", "Clothe 10 poor people at a cost of $40 per person", "Fast 3 days:  It is not allowed to resort to fasting if you can perform one of the above"]
+            list: ["Feed ten poor people at a cost of {{feedPrice}} per person", "Clothe 10 poor people at a cost of {{clothePrice}} per person", "Fast 3 days:  It is not allowed to resort to fasting if you can perform one of the above"]
         },
         hasTabs: true,
         tabs: [
             {
                 tabName: "Fullfill Vow",
                 content1: "Fullfill Vow",
-                amount: [10, 20, 30, 50],
+                amount: true,//[10, 20, 30, 50],
                 generalDonation: true,
                 activeTab: true
             },
@@ -192,7 +194,7 @@ const RadioButtonItems = [
                 tabName: "Feed",
                 content1: "Kaffarah - feed 10 poor people.",
                 calculateAmount: true,
-                initialAmount: 12,
+                initialAmount: 'feedPrice',
                 quantity: 10,
                 itemTitle: "Feed 10 Poor People",
                 initialAmountTitle: "Per Person",
@@ -203,7 +205,7 @@ const RadioButtonItems = [
                 tabName: "Clothe",
                 content1: "Kaffarah - clothe 10 poor.",
                 calculateAmount: true,
-                initialAmount: 40,
+                initialAmount: 'clothePrice',
                 quantity: 10,
                 itemTitle: "Clothe 10 Poor People",
                 initialAmountTitle: "Per Person",
@@ -218,7 +220,7 @@ const RadioButtonItems = [
         description: {
             title: "Non-Specific Vows:",
             para1: "In some instances, someone may make a vow without specifying its purpose. For example, they might say, I vow that if Allah grants me this job, without providing any specific details. In such cases, you must offer kaffarat yamin .",
-            list: ["Feed ten poor people at a cost of $12 per person", "Clothe 10 poor people at a cost of $40 per person", "Fast 3 days:  It is not allowed to resort to fasting if you can perform one of the above"]
+            list: ["Feed ten poor people at a cost of {{feedPrice}} per person", "Clothe 10 poor people at a cost of {{clothePrice}} per person", "Fast 3 days:  It is not allowed to resort to fasting if you can perform one of the above"]
         },
         hasTabs: true,
         tabs: [
@@ -226,7 +228,7 @@ const RadioButtonItems = [
                 tabName: "Feed",
                 content1: "Kaffarah - feed 10 poor people.",
                 calculateAmount: true,
-                initialAmount: 12,
+                initialAmount: 'feedPrice',
                 quantity: 10,
                 itemTitle: "Feed 10 Poor People",
                 initialAmountTitle: "Per Person",
@@ -238,7 +240,7 @@ const RadioButtonItems = [
                 tabName: "Clothe",
                 content1: "Kaffarah - clothe 10 poor.",
                 calculateAmount: true,
-                initialAmount: 40,
+                initialAmount: 'clothePrice',
                 quantity: 10,
                 itemTitle: "Clothe 10 Poor People",
                 initialAmountTitle: "Per Person",
@@ -253,7 +255,7 @@ const RadioButtonItems = [
         description: {
             title: "Vows Involving Things You Don’t Own:",
             para1: "When a person makes a vow related to something they don't possess, they are required to offer kaffarah. For instance, if someone offers a home to stay in that they don’t have access to, or to give a car that you don’t own to someone. They must offer kaffarat yamen",
-            list: ["Feed ten poor people at a cost of $12 per person", "Clothe 10 poor people at a cost of $40 per person", "Fast 3 days:  It is not allowed to resort to fasting if you can perform one of the above"]
+            list: ["Feed ten poor people at a cost of {{feedPrice}} per person", "Clothe 10 poor people at a cost of {{clothePrice}} per person", "Fast 3 days:  It is not allowed to resort to fasting if you can perform one of the above"]
         },
         hasTabs: true,
         tabs: [
@@ -261,7 +263,7 @@ const RadioButtonItems = [
                 tabName: "Feed",
                 content1: "Kaffarah - feed 10 poor people.",
                 calculateAmount: true,
-                initialAmount: 12,
+                initialAmount: 'feedPrice',
                 quantity: 10,
                 itemTitle: "Feed 10 Poor People",
                 initialAmountTitle: "Per Person",
@@ -273,7 +275,7 @@ const RadioButtonItems = [
                 tabName: "Clothe",
                 content1: "Kaffarah - clothe 10 poor.",
                 calculateAmount: true,
-                initialAmount: 40,
+                initialAmount: 'clothePrice',
                 quantity: 10,
                 itemTitle: "Clothe 10 Poor People",
                 initialAmountTitle: "Per Person",
@@ -295,6 +297,9 @@ export const FedyahDonation = ({ campaign, handleClose, isModal }) => {
     const [disabelButton, setDisabelButton] = useState(false)
     const [selectedRadio, setSelectedRadio] = useState(0)
     const [quantity, setQuantity] = useState(1)
+		const [fedyahInitialAmount, fedyahAmountText] = useFedyahPricers()
+
+		const prices = useSelector(state => state.settings.settings);
 
     const clearSubItem = () => setSubItem({})
 
@@ -322,7 +327,7 @@ export const FedyahDonation = ({ campaign, handleClose, isModal }) => {
         const index = filteredData?.indexOf(selectedItem)
         setSelectedRadio(index)
         setSubItem(selectedItem)
-        formik.setFieldValue("amount", selectedItem?.initialAmount)
+        formik.setFieldValue("amount", fedyahInitialAmount(selectedItem?.initialAmount))
         formik.setFieldValue("quantity", selectedItem?.quantity)
         selectedItem?.feedType && formik.setFieldValue("type", selectedItem?.feedType)
     }
@@ -350,7 +355,10 @@ export const FedyahDonation = ({ campaign, handleClose, isModal }) => {
             ...values,
             total: values.quantity > 0 ? parseInt(values.amount * values.quantity, 10) : parseInt(values.amount, 10),
             isRecurring: false,
+            Campaign: campaign,
         };
+        checkAdminPermission(newValues)
+
         const action = isInCheckoutList ? updateBasketItem : addBasketItem;
         const updatedCheckout = isInCheckoutList
             ? [
@@ -386,14 +394,14 @@ export const FedyahDonation = ({ campaign, handleClose, isModal }) => {
         const selectedTabItem = subItem?.tabs?.find(tab => tab.tabName === value)
         setSelectedTab(selectedTabItem)
         setQuantity(1)
-        formik.setFieldValue("amount", selectedTabItem?.initialAmount)
+        formik.setFieldValue("amount", fedyahInitialAmount(selectedTabItem?.initialAmount))
         formik.setFieldValue("quantity", selectedTabItem?.quantity)
         selectedTabItem?.feedType && formik.setFieldValue("type", selectedTabItem?.feedType)
     }
 
     const handleQuantityChange = (e, type) => {
         e.preventDefault()
-        formik.setFieldValue("amount", selectedTab?.initialAmount || subItem?.initialAmount)
+        formik.setFieldValue("amount", fedyahInitialAmount(selectedTab?.initialAmount || subItem?.initialAmount))
         if (type === "add") {
             setQuantity(quantity + 1)
             formik.setFieldValue("quantity", quantity + 1)
@@ -406,7 +414,7 @@ export const FedyahDonation = ({ campaign, handleClose, isModal }) => {
     const formik = useFormik({
         initialValues: {
             campaignId: campaign?.id,
-            amount: subItem?.initialAmount || selectedTab?.initialAmount,
+            amount: fedyahInitialAmount(subItem?.initialAmount || selectedTab?.initialAmount),
             name: campaign?.name,
             coverImage: campaign?.coverImage,
             checkoutType: "FEDYAH",
@@ -421,7 +429,7 @@ export const FedyahDonation = ({ campaign, handleClose, isModal }) => {
     useEffect(() => {
         if (filteredData?.length && Object.keys(subItem).length === 0) {
             setSubItem(filteredData[0])
-            formik.setFieldValue("amount", filteredData[0]?.initialAmount)
+            formik.setFieldValue("amount", fedyahInitialAmount(filteredData[0]?.initialAmount))
             formik.setFieldValue("quantity", filteredData[0]?.quantity)
             filteredData[0]?.feedType && formik.setFieldValue("type", filteredData[0]?.feedType)
         }
@@ -431,7 +439,7 @@ export const FedyahDonation = ({ campaign, handleClose, isModal }) => {
     useEffect(() => {
         if (subItem?.tabs?.length) {
             setSelectedTab(subItem?.tabs[0])
-            formik.setFieldValue("amount", subItem?.tabs[0]?.initialAmount)
+            formik.setFieldValue("amount", fedyahInitialAmount(subItem?.tabs[0]?.initialAmount))
             formik.setFieldValue("quantity", subItem?.tabs[0]?.quantity)
             subItem?.tabs[0]?.feedType && formik.setFieldValue("type", subItem?.tabs[0]?.feedType)
         }
@@ -487,10 +495,10 @@ export const FedyahDonation = ({ campaign, handleClose, isModal }) => {
                                             {item?.description?.subTitle2 && <><h4 className="text-xs font-medium text-neutral-600">2 {item?.description?.subTitle2}</h4></>}
                                             {item?.description?.list &&
                                                 <ul className='ms-5'>{item?.description?.list?.map((list) =>
-                                                    <li className="text-xs font-medium list-disc text-neutral-600">{list}</li>
+                                                    <li className="text-xs font-medium list-disc text-neutral-600">{fedyahAmountText(list)}</li>
                                                 )}
                                                 </ul>}
-                                            {item?.description?.para2 && <p className="text-xs font-medium text-neutral-600">{item?.description?.para2}</p>}
+                                            {item?.description?.para2 && <p className="text-xs font-medium text-neutral-600">{fedyahAmountText(item?.description?.para2)}</p>}
                                         </div>
                                     </Tooltip>
                                 </div>
@@ -500,7 +508,7 @@ export const FedyahDonation = ({ campaign, handleClose, isModal }) => {
                     </div> : <></>
                 }
 
-                {subItem?.content1 && <p className='px-4 py-3 mb-5 md:mb-7.5 font-bold text-sm text-neutral-800 rounded-lg bg-neutral-200'>{subItem?.content1}</p>}
+                {subItem?.content1 && <p className='px-4 py-3 mb-5 md:mb-7.5 font-bold text-sm text-neutral-800 rounded-lg bg-neutral-200'>{fedyahAmountText(subItem?.content1)}</p>}
                 {subItem?.hasTabs && <FedyahTabs tabs={subItem?.tabs} onChangeTabs={handleChangeTabs} selectedTab={selectedTab} setDisabelButton={setDisabelButton}
                     disabelButton={disabelButton} handleQuantityChange={handleQuantityChange} quantity={quantity} handleAmount={handleAmount} formik={formik} />}
                 {subItem?.calculateAmount && <div className="my-7.5">
@@ -508,7 +516,7 @@ export const FedyahDonation = ({ campaign, handleClose, isModal }) => {
                         <div className='flex items-baseline justify-between mb-7.5'>
                             <div>
                                 <h4 className='mb-2 text-sm !font-medium text-neutral-1000'>{subItem?.initialAmountTitle}</h4>
-                                <div className="font-bold text-heading-4">${subItem?.initialAmount}</div>
+                                <div className="font-bold text-heading-4">{currencyConfig.label}{fedyahInitialAmount(subItem?.initialAmount)}</div>
                             </div>
 
                             {subItem?.counter && <div className="flex flex-col">
@@ -557,7 +565,7 @@ export const FedyahDonation = ({ campaign, handleClose, isModal }) => {
                             <div className='flex items-center justify-between gap-5 grow'>
                                 <div className="grow">{subItem?.counter ? quantity : subItem?.quantity}x</div>
                                 <div className="text-right grow">
-                                    ${subItem?.initialAmount?.toLocaleString()}
+                                    {currencyConfig.label}{fedyahInitialAmount(subItem?.initialAmount).toLocaleString()}
                                 </div>
                             </div>
 
@@ -570,7 +578,7 @@ export const FedyahDonation = ({ campaign, handleClose, isModal }) => {
                             <div className="h-px my-5 bg-neutral-300"></div>
                             <div className="flex justify-between text-heading-7">
                                 <div>Subtotal</div>
-                                <div>${((subItem?.counter ? quantity : subItem?.quantity) * (subItem?.initialAmount))?.toLocaleString()}</div>
+                                <div>{currencyConfig.label}{((subItem?.counter ? quantity : subItem?.quantity) * fedyahInitialAmount(subItem?.initialAmount))?.toLocaleString()}</div>
                             </div>
                         </>
                     ) : (
@@ -591,17 +599,17 @@ export const FedyahDonation = ({ campaign, handleClose, isModal }) => {
                     </label></div>}
                 {subItem?.amount &&
                     <div className='grid grid-cols-4 gap-4 mb-5 md:mb-7.5' >
-                        {subItem?.amount?.map((amount, index) => (
+                        {prices.fedyahAmounts?.map((amount, index) => (
                             <div key={index} className='' >
                                 <Button
                                     type="button"
                                     onClick={handleAmount}
                                     value={amount}
-                                    label={`$${amount}`}
+                                    label={`${currencyConfig.label}${amount}`}
                                     disabled={subItem?.generalDonation ? !disabelButton : false}
                                     name="amount"
                                     variant={"secondaryOutlineFull"}
-                                    className={amount === Number(formik.values.amount) ? "bg-primary-300 !text-white" : ""}
+                                    className={amount === formik.values.amount+'' ? "button-focus" : ""}
                                 />
                             </div>
                         ))}
@@ -612,7 +620,7 @@ export const FedyahDonation = ({ campaign, handleClose, isModal }) => {
                     <div>
                         <Button
                             type="submit"
-                            label={"Donate"}
+                            label="Donate"
                             className="btn btn-primary filled"
                             disabled={subItem?.title === "Fast 3 Days"}
                         />

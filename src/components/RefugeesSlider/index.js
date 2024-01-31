@@ -48,7 +48,7 @@ const settings = {
       },
     },
     {
-      breakpoint: 600,
+      breakpoint: 968,
       settings: {
         slidesToShow: 3,
         slidesToScroll: 3,
@@ -56,11 +56,19 @@ const settings = {
       },
     },
     {
-      breakpoint: 480,
+      breakpoint: 640,
       settings: {
         slidesToShow: 2,
         slidesToScroll: 2,
         initialSlide: 2,
+      },
+    },
+    {
+      breakpoint: 425,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        initialSlide: 1,
       },
     },
   ],
@@ -164,7 +172,7 @@ const StorySliderComponent = ({ ourWorks }) => {
 const StoryCard = ({ item, onClick }) => {
   return (
     <div className="flex flex-col flex-none gap-5 snap-center carousel-item">
-      <div className="overflow-hidden w-55 h-80 rounded-30">
+      <div className="w-full overflow-hidden sm:w-55 h-80 rounded-30">
         <Img
           src={item?.image}
           alt={`${item?.name} - ${item?.title}`}

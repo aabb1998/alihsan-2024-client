@@ -22,8 +22,17 @@ import adminFormSlice from "../features/adminForms/adminFormSlice";
 import adminMediaSlice from "../features/adminMedia/adminMediaSlice";
 import adminNewsletterSubscribers from "../features/adminNewsletterSubscribers/adminNewsletterSubscribersSlice";
 import adminFinancialReportSlice from "../features/adminFinacialReport/adminFinacialReportSlice";
-import adminOurWorksSlice from "../features/adminOurWorks/adminOurWorksSlice"
+import adminOurWorksSlice from "../features/adminOurWorks/adminOurWorksSlice";
 import adminCampaignsReducer from "../features/adminCampaigns";
+import adminDonationReducer from "../features/adminDonations/adminDonationSlice";
+import adminTagsReducer from "../features/adminTag/adminTagSlice";
+import adminHomeContentSlice from "../features/adminHomeContent/adminHomeContentSlice"
+import adminCountrySlice from "../features/adminCountry/adminCountrySlice"
+import adminSettingsReducer from "../features/adminSettings";
+import adminUsersReducer from '../features/adminUsers';
+import adminCustomersReducer from '../features/adminCustomers';
+import adminCampaignCategoriesReducer from '../features/adminCampaignCategories';
+// adminDonationSlice
 
 export const store = configureStore({
   reducer: {
@@ -49,7 +58,16 @@ export const store = configureStore({
     adminMedia: adminMediaSlice,
     adminNewsletterSubscribers: adminNewsletterSubscribers,
     adminFinancialReport: adminFinancialReportSlice,
-    adminOurWorks:adminOurWorksSlice,
-		adminCampaigns: adminCampaignsReducer,
+    adminOurWorks: adminOurWorksSlice,
+    adminCampaigns: adminCampaignsReducer,
+    adminDonations: adminDonationReducer,
+    adminTags: adminTagsReducer,
+    settings: homeReducer,
+    homeContent:adminHomeContentSlice,
+    adminCountries:adminCountrySlice,
+    adminSettings: adminSettingsReducer,
+		adminUsers: adminUsersReducer,
+		adminCustomers: adminCustomersReducer,
+		adminCampaignCategories: adminCampaignCategoriesReducer,
   },
 });

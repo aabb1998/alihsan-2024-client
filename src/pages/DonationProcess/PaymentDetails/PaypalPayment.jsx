@@ -2,7 +2,7 @@ import { Button } from "../../../components";
 import { AlertCircle } from "../../../theme/svg-icons";
 import PropTypes from "prop-types";
 
-export const PaypalPayment = ({ state, handlePaypalSubmit }) => {
+export const PaypalPayment = ({ state, handlePaypalSubmit ,isLoading}) => {
   return (
     <form id="PaymentDetails" aria-label="Signup Form">
       <div className="grid grid-cols-1 mb-6 sm:grid-cols-2">
@@ -19,8 +19,9 @@ export const PaypalPayment = ({ state, handlePaypalSubmit }) => {
       </div>
       <Button
         variant="primaryFull"
-        label="Pay now"
+        label="Pay Now"
         type="button"
+        disabled={isLoading}
         onClick={handlePaypalSubmit}
       />
       {state.error && state.error?.type !== "validation_error" && (

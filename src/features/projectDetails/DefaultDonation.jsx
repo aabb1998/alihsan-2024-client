@@ -2,7 +2,7 @@ import React from "react";
 import Button from "../../components/Button";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toggleBasket } from "../basket/basketSlice";
 import {
   addBasketItem,
@@ -14,6 +14,8 @@ import { FormikValidationError } from "../Common/FormikValidationError";
 import { SnackMessages } from "../../components/Toast";
 import { ReccuringOptions } from "./ReccuringOptions";
 import PropTypes from "prop-types";
+import { checkAdminPermission } from "../../utils/helper";
+import { currencyConfig } from "../../utils/constants";
 
 const { showSuccessMessage } = SnackMessages();
 const paymentTypes = [
@@ -21,19 +23,15 @@ const paymentTypes = [
   { value: "true", label: "Recurring" },
 ];
 const donationAmounts = [
-  { value: "100", label: "$100" },
-  { value: "500", label: "$500" },
-  { value: "800", label: "$800" },
+  { value: "100", label: currencyConfig.label+"100" },
+  { value: "500", label: currencyConfig.label+"500" },
+  { value: "800", label: currencyConfig.label+"800" },
   { value: "Other", label: "Other" },
-];
-const recurringPeriods = [
-  { value: "7", label: "Weekly" },
-  { value: "30", label: "Monthly" },
-  { value: "365", label: "Yearly" },
 ];
 
 export const DefaultDonation = ({ campaign, handleClose, isModal }) => {
   const dispatch = useDispatch();
+	const generalAmounts = useSelector(state => state.settings.settings.generalAmounts)
 
   const handleDonation = async (values, { resetForm }) => {
     const checkout = JSON.parse(localStorage.getItem("checkout") || "[]");
@@ -47,7 +45,9 @@ export const DefaultDonation = ({ campaign, handleClose, isModal }) => {
       total: parseInt(values.amount, 10),
       periodDays: parseInt(values.periodDays, 10),
       isRecurring: Boolean(values.isRecurring),
+      Campaign: campaign,
     };
+    checkAdminPermission(newValues)
 
     const action = isInCheckoutList ? updateBasketItem : addBasketItem;
     const updatedCheckout = isInCheckoutList
@@ -153,9 +153,9 @@ export const DefaultDonation = ({ campaign, handleClose, isModal }) => {
           </div>
           {formik?.values.isRecurring === "true" && (
             <ReccuringOptions
-              recurringPeriods={recurringPeriods}
               handleChange={handleChange}
               periodDays={formik?.values.periodDays}
+              isRamadanCampaign={campaign?.isRamadanCampaign}
             />
           )}
 
@@ -167,19 +167,19 @@ export const DefaultDonation = ({ campaign, handleClose, isModal }) => {
             }`}
           >
             <legend className="sr-only">Select an amount to donate</legend>
-            {donationAmounts.map((option) => (
+            {generalAmounts.map((option) => (
               <div key={option.value} className="col-span-1">
                 <Button
                   type="button"
                   onClick={handleAmount}
-                  value={option.value}
-                  label={option.label}
+                  value={option}
+                  label={option}
                   name="amount"
                   variant={"secondaryOutlineFull"}
                   className={
-                    option.value === formik.values.amount ||
-                    (formik.values.custom && option.value === "Other")
-                      ? "bg-primary-300 !text-white"
+                    option === formik.values.amount ||
+                    (formik.values.custom && option === "Other")
+                      ? "button-focus"
                       : ""
                   }
                 />

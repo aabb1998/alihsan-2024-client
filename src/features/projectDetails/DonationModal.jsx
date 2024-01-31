@@ -5,6 +5,7 @@ import { Pagination } from "../../components/Pagination/index";
 import { NoDataFound } from "../../components/NoDataFound";
 import { Dropdown } from "../../components/Dropdown";
 import Img from "../../components/Image";
+import { currencyConfig } from "../../utils/constants";
 
 export const DonationModal = ({
   setIsOpen,
@@ -61,7 +62,7 @@ export const DonationModal = ({
                         <div className="form-group">
                           <label className="relative block !mb-0">
                             <span className="sr-only">Search</span>
-                            <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-neutral-500">
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-500">
                               <SearchIcon />
                             </span>
                             <input
@@ -157,7 +158,7 @@ export const DonationModal = ({
                                   </div>
                                 </div>
                                 <div className="text-button-lg text-primary-600">
-                                  ${donation?.total?.toLocaleString()}
+                                  {currencyConfig.label}{donation?.total?.toLocaleString()}
                                 </div>
                               </div>
                             ))

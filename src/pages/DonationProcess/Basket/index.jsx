@@ -102,7 +102,7 @@ export const BasketComponent = () => {
             <a href="/">
               <img
                 src="/images/assets/logo.svg"
-                className="w-auto h-6"
+                className="w-auto h-10 "
                 alt="Al-Ihsan Foundation"
               />
             </a>
@@ -244,7 +244,7 @@ export const BasketComponent = () => {
                 <a href="/">
                   <img
                     src="/images/assets/logo.svg"
-                    className="w-auto h-6 md:h-11"
+                    className="w-auto h-10 md:h-11"
                     alt="Al-Ihsan Foundation"
                   />
                 </a>

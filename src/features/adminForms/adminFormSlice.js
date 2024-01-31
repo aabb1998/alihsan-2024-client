@@ -142,6 +142,22 @@ export const updateFormStatus = createAsyncThunk(
   }
 );
 
+export const updateStatus = createAsyncThunk(
+  "get/statusUpdate",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await api.put(
+        payload?.url + payload?.data?.id,
+        payload?.data
+      );
+      let data = response?.data?.payload;
+      return data;
+    } catch (e) {
+      throw new Error(e.response?.data.message || "Something went wrong");
+    }
+  }
+);
+
 export const exportForm = createAsyncThunk(
   "export/form",
   async (payload, { rejectWithValue }) => {

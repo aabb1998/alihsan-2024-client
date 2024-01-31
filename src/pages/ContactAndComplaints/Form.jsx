@@ -10,6 +10,7 @@ import { PhoneField } from "../../components/PhoneField";
 import TextArea from "../../components/TextArea";
 import { CloseIcon } from "../../theme/svg-icons";
 import { getCountryLengths } from "../../utils/helper";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const validationSchema = yup.object().shape({
   firstName: yup.string().required("First Name is required").max(25),
@@ -30,14 +31,25 @@ export const Form = () => {
   const [referenceNo, setReferenceNo] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [countryCode, setCountryCode] = useState("");
-  const [isDisable, setDisable] = useState(false);
-
   const dispatch = useDispatch();
+  const [isDisable, setDisable] = useState(false);
+  const [recaptchaValue, setRecaptchaValue] = useState(null);
+
+  const handleCheckboxChange = (event) => {
+    const { name, checked } = event.target;
+    setChecked((prevChecked) => ({ ...prevChecked, [name]: checked }));
+  };
 
   const [isChecked, setChecked] = useState({
     accurate: false,
     information: false,
   });
+
+  const handleRecaptchaChange = (value) => {
+    // Store the ReCAPTCHA value in the state or use it for validation
+    setRecaptchaValue(value);
+  };
+
   const formik = useFormik({
     initialValues: {
       firstName: "",
@@ -49,7 +61,7 @@ export const Form = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values, { resetForm, setErrors }) => {
-      setDisableButton(true)
+      setDisableButton(true);
       const isValid = getCountryLengths(values.phone, countryCode);
       if (!isValid) {
         setErrors({ phone: "Invalid phone number" });
@@ -69,10 +81,10 @@ export const Form = () => {
             setReferenceNo(reference);
             resetForm();
             setChecked({ information: false, accurate: false });
-            setDisableButton(false)
+            setDisableButton(false);
           } else {
             showErrorMessage(response?.payload?.message);
-            setDisableButton(false)
+            setDisableButton(false);
           }
         } catch (error) {}
       }
@@ -83,15 +95,7 @@ export const Form = () => {
 
     formik.setFieldValue("phone", value);
   };
-  const handleCheckboxChange = (e) => {
-    const { name, checked } = e.target;
-    setChecked((draft) => {
-      return {
-        ...draft,
-        [name]: checked,
-      };
-    });
-  };
+
   const handleCopyClick = (text) => {
     navigator.clipboard.writeText("#" + text);
   };
@@ -111,8 +115,9 @@ export const Form = () => {
       <form onSubmit={formik.handleSubmit} autoComplete="off">
         <div className="grid grid-cols-1 md:grid-cols-2 md:gap-x-6">
           <div className="flex flex-col col-span-2 mb-6 md:col-span-1 form-group grow">
+            <div className="my-4"></div>
             <label htmlFor="Name" className="required">
-              First Name <span className="text-sm text-red-300">*</span>
+              First Name<span className="text-sm text-red-300">*</span>
             </label>
             <input
               type="text"
@@ -133,7 +138,7 @@ export const Form = () => {
           </div>
           <div className="flex flex-col col-span-2 mb-6 md:col-span-1 form-group grow">
             <label htmlFor="Name">
-              Last Name <span className="text-sm text-red-300">*</span>
+              Last Name<span className="text-sm text-red-300">*</span>
             </label>
             <input
               type="text"
@@ -154,7 +159,7 @@ export const Form = () => {
           </div>
           <div className="flex flex-col col-span-2 mb-6 md:col-span-1 form-group grow">
             <label htmlFor="Name">
-              Contact Number <span className="text-sm text-red-300">*</span>
+              Contact Number<span className="text-sm text-red-300">*</span>
             </label>
             <PhoneField
               name={"phone"}
@@ -170,7 +175,7 @@ export const Form = () => {
           </div>
           <div className="flex flex-col col-span-2 mb-6 md:col-span-1 form-group grow">
             <label htmlFor="Name" className="required">
-              Email Address <span className="text-sm text-red-300">*</span>
+              Email Address<span className="text-sm text-red-300">*</span>
             </label>
             <input
               type="text"
@@ -192,7 +197,7 @@ export const Form = () => {
 
           <div className="flex flex-col col-span-2 mb-6 md:col-span-1 form-group grow">
             <label htmlFor="ComplaintsCategories" className="required">
-              Complaints Categories{" "}
+              Complaints Categories{""}
               <span className="text-sm text-red-300">*</span>
             </label>
             <select
@@ -215,7 +220,7 @@ export const Form = () => {
           </div>
           <div className="flex flex-col col-span-2 form-group grow">
             <label htmlFor="Description">
-              Description of Your Complaint{" "}
+              Description of Your Complaint{""}
               <span className="text-sm text-red-300">*</span>
             </label>
             <TextArea
@@ -269,6 +274,11 @@ export const Form = () => {
             </label>
           </div>
         </div>
+        <ReCAPTCHA
+          sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
+          onChange={handleRecaptchaChange}
+        />
+
         <Button
           variant="primaryFull"
           type="submit"
