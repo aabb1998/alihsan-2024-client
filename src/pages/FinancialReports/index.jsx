@@ -42,7 +42,7 @@ export const FinancialReports = () => {
                     </button>
                   )}
                 </Tab>
-                <Tab as={Fragment} onClick={() => setTab("constitution")}>
+                {/* <Tab as={Fragment} onClick={() => setTab("constitution")}>
                   {({ selected }) => (
                     <button
                       className={
@@ -55,7 +55,7 @@ export const FinancialReports = () => {
                       Constitution
                     </button>
                   )}
-                </Tab>
+                </Tab> */}
               </Tab.List>
               <Tab.Panels>
                 <Tab.Panel>

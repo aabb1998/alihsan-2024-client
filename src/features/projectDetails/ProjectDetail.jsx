@@ -26,7 +26,7 @@ import { NoDataFound } from "../../components/NoDataFound";
 
 const ProjectDetail = () => {
   const { slug } = useParams();
-  const { project, loading,error } = useSelector((state) => state.project);
+  const { project, loading, error } = useSelector((state) => state.project);
   const props = project;
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("tab1");
@@ -70,6 +70,7 @@ const ProjectDetail = () => {
                     {project?.campaign?.name}
                   </h1>
                   <div className="block mb-6 md:hidden">
+                    {console.log(project?.campaign)}
                     {/* <ChooseDonationFedyah /> */}
                     {project?.campaign?.checkoutType === "COMMON" && (
                       <CommonDonation campaign={project?.campaign} />
@@ -140,12 +141,16 @@ const ProjectDetail = () => {
                       <ZaqatDonation campaign={project?.campaign} />
                     )}
                   </div>
-                  <div className="col-span-12 sm:col-span-6">
-                    <TopDonations {...props} />
-                  </div>
-                  <div className="col-span-12 sm:col-span-6">
-                    <LiveDonations {...props} />
-                  </div>
+                  {project?.campaign?.checkoutType !== "ZAQAT" && (
+                    <>
+                      <div className="col-span-12 sm:col-span-6">
+                        <TopDonations {...props} />
+                      </div>
+                      <div className="col-span-12 sm:col-span-6">
+                        <LiveDonations {...props} />
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

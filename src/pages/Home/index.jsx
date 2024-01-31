@@ -87,23 +87,23 @@ const HomeComponent = () => {
         Donate Now
       </button>
       <section
-        className="mt-7.5 md:mt-15 mx-4 md:mx-6 lg:mx-0 delay-[300ms] duration-[600ms] taos:translate-y-[200px] taos:opacity-0"
+        className=" mx-4 md:mx-6 lg:mx-0 delay-[300ms] duration-[600ms] taos:translate-y-[200px] taos:opacity-0"
         data-taos-offset="300"
         aria-label="Hero Banner"
       >
-        <div className="container relative rounded-2.5xl md:rounded-4xl h-[31.25rem] flex items-center justify-center">
+        <div className="container relative h-[31.25rem] flex items-center justify-center mt-10">
           <Img
-            src="/images/banner/hero-small.jpg"
+            src="https://firebasestorage.googleapis.com/v0/b/ramadan2023-703d7.appspot.com/o/Winter-banner.png?alt=media&token=a6df2b31-a064-4232-b613-2effcfd0bdc7"
             alt="Banner-image"
-            className="absolute inset-0 object-cover w-full h-full max-w-full sm:hidden z--10 rounded-2.5xl md:rounded-4xl"
+            className="absolute inset-0 object-cover w-full h-full max-w-full sm:hidden z--10 "
           />
           <Img
-            src="/images/banner/hero.jpg"
+            src="https://firebasestorage.googleapis.com/v0/b/ramadan2023-703d7.appspot.com/o/Winter-banner.png?alt=media&token=a6df2b31-a064-4232-b613-2effcfd0bdc7"
             alt="Banner-images"
-            className="absolute inset-0 hidden object-cover w-full h-full max-w-full sm:block z--10 rounded-2.5xl md:rounded-4xl"
+            className="absolute inset-0 hidden object-cover w-full h-full max-w-full sm:block z--10"
           />
           <div className="flex flex-col items-center justify-center text-center isolate">
-            <div className="mb-7.5">
+            {/* <div className="mb-7.5">
               <h1 className="max-w-[54.75rem] text-primary-100 text-[1.75rem] leading-8 md:leading-[4rem] md:text-[3.5rem] font-bold">
                 Take action in our mission to change and rescue lives.
               </h1>
@@ -113,9 +113,22 @@ const HomeComponent = () => {
                   lives and we achieve it by always being on the ground.
                 </span>
               </p>
-            </div>
-            <div className="flex justify-center gap-4">
-              <Button label="Donate now" onClick={() => quickDonation()} leftIcon={<span className="relative flex"> <span className="absolute inline-flex w-full h-full transition-all ease-in-out delay-75 bg-red-300 rounded-full animate-ping bg-sky-400 opacity-90"></span> <div className="text-red-300 rounded-full "> <HeartFilledIcon /> </div> </span>} />
+            </div> */}
+            <div className="flex justify-center gap-4 mt-96">
+              <Button
+                label="Donate now"
+                onClick={() => quickDonation()}
+                leftIcon={
+                  <span className="relative flex">
+                    {" "}
+                    <span className="absolute inline-flex w-full h-full transition-all ease-in-out delay-75 bg-red-300 rounded-full animate-ping bg-sky-400 opacity-90"></span>{" "}
+                    <div className="text-red-300 rounded-full ">
+                      {" "}
+                      <HeartFilledIcon />{" "}
+                    </div>{" "}
+                  </span>
+                }
+              />
               <Button variant="secondary" label="Learn more" />
             </div>
           </div>
@@ -158,7 +171,9 @@ const HomeComponent = () => {
                   <div className="font-Tajawal text-heading-2 break-words sm:text-[5rem] font-bold tracking-tighter text-primary-300 leading-none">
                     {e.number}
                   </div>
-                  <div className="text-sm font-medium break-words sm:text-md text-neutral-900">{e.name}</div>
+                  <div className="text-sm font-medium break-words sm:text-md text-neutral-900">
+                    {e.name}
+                  </div>
                 </div>
               ))}
             </div>
@@ -239,10 +254,7 @@ const HomeComponent = () => {
       <Carousal data={homeDataState.blogs} />
 
       {/* Volunteer */}
-      <section
-        className="my-10 md:my-[5.5rem]"
-        aria-label="Become a volunteer"
-      >
+      <section className="my-10 md:my-[5.5rem]" aria-label="Become a volunteer">
         <div className="w-full mx-auto relative sm:h-[25.5rem] h-[13.75rem] flex items-center justify-center">
           <Img
             src="/images/banner/volunteer.jpg"
