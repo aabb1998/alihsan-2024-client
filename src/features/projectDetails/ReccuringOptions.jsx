@@ -31,7 +31,7 @@ export const ReccuringOptions = ({
                   variant={"secondaryOutlineFull"}
                   className={
                     option.value === periodDays
-                      ? "bg-primary-300 !text-white"
+                      ? "button-focus"
                       : ""
                   }
                 />
@@ -48,7 +48,7 @@ export const ReccuringOptions = ({
                   variant={"secondaryOutlineFull"}
                   className={
                     option.value === periodDays
-                      ? "bg-primary-300 !text-white"
+                      ? "button-focus"
                       : ""
                   }
                 />

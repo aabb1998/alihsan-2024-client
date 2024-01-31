@@ -6,7 +6,7 @@ import Loader from "../../../../components/Loader";
 import { ChevronsUpIcon, DownloadIcon } from "../../../../theme/svg-icons";
 import { generateInvoice } from "../../../../features/myDonation/myDonationSlice";
 import { Pagination } from "../../../../components/Pagination";
-import { adminItemPerPage } from "../../../../utils/constants";
+import { adminItemPerPage, currencyConfig } from "../../../../utils/constants";
 
 const initialState = {
   total: "",
@@ -47,10 +47,10 @@ const PaymentDetails = ({ data }) => {
             <thead className="rounded bg-neutral-200">
               <tr className="">
                 <th className="p-4 text-sm font-medium text-start font-Montserrat text-neutral-600">
-                  PaymentID
+                  Payment ID
                 </th>
                 <th className="p-4 text-sm font-medium text-start font-Montserrat text-neutral-600">
-                  Campaign name
+                  Campaign  Name
                 </th>
                 <th className="p-4 text-sm font-medium text-start font-Montserrat text-neutral-600 ">
                   <div className="flex gap-1.5 items-center">
@@ -105,15 +105,18 @@ const PaymentDetails = ({ data }) => {
                       </div>
                     </td>
                     <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
-                      ${item?.total}
+                      {currencyConfig.label}{item?.total}
                     </td>
                     <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
                       {item?.updatedAt}
                     </td>
                     <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
+                      <span className="cursor-pointer">
                       <DownloadIcon
                         onClick={() => handleDownloadInvoice(item)}
                       />
+                      </span>
+
                     </td>
                   </tr>
                 ))

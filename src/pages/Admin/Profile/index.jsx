@@ -86,30 +86,8 @@ export const Profile = () => {
     <>
       <div className="py-6 px-3 sm:!px-5 md:!px-7.5 sm:py-7.5 md:py-10 w-full h-[calc(100vh-4.5rem)] overflow-auto">
         <form onSubmit={formik.handleSubmit} id="SignupForm" autoComplete="off">
-          <div className="flex flex-wrap gap-4 items-center justify-between w-full pb-3.5">
-            <h5 className="text-heading-7 md:text-heading-5">Profile</h5>
-            <div className="flex flex-wrap items-center gap-2 lg:gap-3">
-              <Button
-                className="flex-grow btn btn-outline-secondary text-button-md md:text-button-lg"
-                variant="flex-grow btn btn-outline-secondary text-button-md md:text-button-lg"
-                type="button"
-                onClick={() => navigate('/admin/dashboard')}
-                label={"Cancel"}
-              />
-              <Button
-                className="flex-grow btn btn-danger text-button-md md:text-button-lg"
-                variant="flex-grow btn btn-danger text-button-md md:text-button-lg"
-                type="button"
-                onClick={() => setDeleteModal(true)}
-                label={"Delete Account"}
-              />
-              <Button
-                className="flex-grow btn btn-primary text-button-md md:text-button-lg"
-                variant=""
-                type="submit"
-                label={"Save Changes"}
-              />
-            </div>
+          <div className="border-b mb-5 md:mb-7.5 border-b-neutral-300">
+            <h5 className="text-heading-6 md:text-heading-5 pb-3.5">Profile</h5>
           </div>
           <div className="mt-5 md:mt-7.5 flex flex-col gap-5 sm:gap-7.5">
             <div className="w-full flex flex-col gap-5 sm:max-w-[37.5rem]">
@@ -187,6 +165,33 @@ export const Profile = () => {
                     formikError={formik.errors.email}
                   />
                 )}
+              </div>
+              <div className="flex flex-col items-center justify-between gap-6 md:flex-row md:gap-4 sm:flex-row">
+                <div className="flex gap-3">
+                    <Button
+                    className="flex-grow btn btn-outline-secondary text-button-md md:text-button-lg"
+                    variant="flex-grow btn btn-outline-secondary text-button-md md:text-button-lg"
+                    type="button"
+                    onClick={() => navigate('/admin/dashboard')}
+                    label={"Cancel"}
+                  />
+                    <Button
+                      className="btn btn-primary filled"
+                      variant=""
+                      type="submit"
+                      label={"Save Changes"}
+                    />
+                  
+                </div>
+                <div className="">
+                    <Button
+                      className="font-bold text-red-300 md:mx-0"
+                      variant=""
+                      type="button"
+                      onClick={() => setDeleteModal(true)}
+                      label={"Delete Account"}
+                    />
+                </div>
               </div>
             </div>
           </div>

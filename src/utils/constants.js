@@ -326,7 +326,7 @@ export const followUs = [
   {
     url: "https://twitter.com/Alihsan_AU",
     label: "Navigate to twitter",
-    icon: <TwitterIcon />,
+    icon: <div className="w-4 h-4 flex items-center justify-center text-white bg-[#C0BEB9] rounded"><TwitterIcon iconSize={10} /></div> ,
   },
   {
     url: "https://www.linkedin.com/company/alihsanfoundation/about/",
@@ -701,3 +701,7 @@ export const ProjectStatuses = [
     textColorClass: "text-white",
   },
 ];
+
+export const currencyConfig = {
+	label: process.env.REACT_APP_CURRENCY_LABEL || '$',
+}

@@ -68,7 +68,7 @@ const HeaderMain = ({ isSidebar, setSidebar }) => {
   }, []);
 
   return (
-    <div className="z-30 bg-neutral-200">
+    <div className=" bg-neutral-200">
       <div
         className={`hidden${
           headerModal?.isOpen ? " md:block" : ""
@@ -93,7 +93,7 @@ const HeaderMain = ({ isSidebar, setSidebar }) => {
           show={headerModal?.isOpen}
         />
       </div>
-      <div className="container flex items-center justify-between !py-6 md:!py-3 relative z-1">
+      <div className="container flex items-center justify-between !py-6 md:!py-3 relative">
         <div className="flex items-center gap-4">
           <div className="flex items-center md:hidden">
             <button

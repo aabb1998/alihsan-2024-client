@@ -5,9 +5,10 @@ import { HelpCircleIcon } from "../../../theme/svg-icons";
 import { Tooltip } from "react-tooltip";
 import { Button } from "../../../components";
 import { formatPrice } from "../../../utils/helper";
+import { currencyConfig } from "../../../utils/constants";
 
 export const DonationTotal = ({ onNext, disableAnonymous }) => {
-	const user = localStorage.getItem('loggedIn');
+  const user = localStorage.getItem("loggedIn");
   const { settings } = useSelector((state) => state.mapCountries);
   const processingFee = settings?.processingFee / 100 || 0;
 
@@ -23,7 +24,14 @@ export const DonationTotal = ({ onNext, disableAnonymous }) => {
   const hasZero = basketItems.some((item) => parseFloat(item.total) === 0);
 
   const processingAmount = ((totalPoints * processingFee) / 100).toFixed(2);
+  const isRamadanCampaign = basketItems.some(
+    (item) =>
+      item?.Campaign?.isRamadanCampaign === true && item?.isRecurring === true
+  );
 
+  const ramadanPaymentNote = isRamadanCampaign
+    ? "Please note that we now only authorize a temporary charge of 1 AUD on your card during checkout. This authorization hold will be refunded later. The actual amount will only be deducted from your card after 8:00 PM on the payment date. This temporary hold helps ensure a smooth payment process and safeguards the security of your transaction."
+    : "";
   return (
     <div className="p-4 border border-neutral-300 rounded-2xl">
       <h6 className="mb-5 text-heading-7 md:text-heading-6 md:mb-7">
@@ -31,19 +39,19 @@ export const DonationTotal = ({ onNext, disableAnonymous }) => {
       </h6>
       <div className="flex justify-between mb-5 md:mb-7.5 text:md md:text-lg">
         <div>Subtotal</div>
-        <div className="text-right">${formatPrice(totalPoints)}</div>
+        <div className="text-right">{currencyConfig.label}{formatPrice(totalPoints)}</div>
       </div>
       <div className="flex justify-between text:md md:text-lg">
         <div>Processing Fee</div>
         <div className="text-right">
-          ${formatPrice(totalPoints ? processingAmount : 0)}
+          {currencyConfig.label}{formatPrice(totalPoints ? processingAmount : 0)}
         </div>
       </div>
       <div className="h-px my-5 bg-neutral-300"></div>
       <div className="flex justify-between font-bold heading-6">
-        <div>Total {user ? 'logegd in' : 'null'}</div>
+        <div>Total</div>
         <div className="text-right">
-          $
+          {currencyConfig.label}
           {totalPoints
             ? formatPrice(
                 parseFloat(totalPoints) + parseFloat(processingAmount)
@@ -57,7 +65,9 @@ export const DonationTotal = ({ onNext, disableAnonymous }) => {
             type="checkbox"
             id="Anonymous"
             className="custom-checkbox"
-            onChange={(e) => user ? dispatch(setIsAnonymous(e.target.checked)) : null}
+            onChange={(e) =>
+              user ? dispatch(setIsAnonymous(e.target.checked)) : null
+            }
             checked={isAnonymous || !user}
             disabled={disableAnonymous || !user}
           />
@@ -68,6 +78,7 @@ export const DonationTotal = ({ onNext, disableAnonymous }) => {
             Anonymous Checkout
           </label>
         </div>
+
         <div
           className="cursor-pointer text-neutral-700 hover:text-primary-300"
           data-tooltip-id="my-tooltip"
@@ -76,7 +87,7 @@ export const DonationTotal = ({ onNext, disableAnonymous }) => {
           <HelpCircleIcon iconSize={16} />
           <Tooltip
             id="my-tooltip"
-            className="tooltip opacity-100"
+            className="opacity-100 tooltip"
             style={{ backgroundColor: "#fff", padding: "1rem" }}
           >
             <div>
@@ -91,6 +102,9 @@ export const DonationTotal = ({ onNext, disableAnonymous }) => {
             </div>
           </Tooltip>
         </div>
+      </div>
+      <div className="p-4 mb-6 rounded-xl bg-primary-100">
+        <small className="mb-4 text-red-300">{ramadanPaymentNote}</small>
       </div>
       {onNext ? (
         <Button

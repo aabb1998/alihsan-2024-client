@@ -56,6 +56,7 @@ export const UpdateStory = () => {
       campaignId: impactStory?.campaignId ?? "",
       title: impactStory?.title ?? "",
       description: impactStory?.description ?? "",
+      descriptionText: impactStory?.descriptionText ?? impactStory?.description ?? "",
       images: Array.from({ length: 4 }).fill(undefined),
       coverImage: null,
     },
@@ -67,6 +68,7 @@ export const UpdateStory = () => {
       formData.append("title", values.title);
       formData.append("slug", values.slug);
       formData.append("description", values.description);
+      formData.append("descriptionText", values.descriptionText);
       values.images?.forEach((file, index) => {
         if (file) {
           formData.append(`images`, file, `image_${index + 1}.png`);
@@ -97,6 +99,10 @@ export const UpdateStory = () => {
       } catch (error) {}
     },
   });
+	const handleDescriptionChange = e => {
+		formik.setFieldValue('description', e.target.value.html)
+		formik.setFieldValue('descriptionText', e.target.value.text)
+	}
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     formik.setFieldValue(name, value);
@@ -286,7 +292,7 @@ export const UpdateStory = () => {
         </div>
         <div className="flex flex-col mb-6 form-group">
           <label htmlFor="title" className="">
-            Campaign
+            Campaign<span className="text-red-300">*</span>
           </label>
           <Dropdown
             className={"!w-full"}
@@ -308,7 +314,7 @@ export const UpdateStory = () => {
         </div>
         <div className="flex flex-col mb-6 form-group">
           <label htmlFor="title" className="">
-            Title
+            Title<span className="text-red-300">*</span>
           </label>
           <input
             type="text"
@@ -328,7 +334,7 @@ export const UpdateStory = () => {
         </div>
         <div className="flex flex-col mb-6 form-group">
           <label htmlFor="blog-slug" className="">
-            Slug
+            Slug<span className="text-red-300">*</span>
           </label>
           <input
             type="text"
@@ -349,7 +355,7 @@ export const UpdateStory = () => {
 
         <div className="relative flex flex-col mb-6 text-area">
           <label htmlFor="description" className="">
-            Description
+            Description<span className="text-red-300">*</span>
           </label>
           {/* <TextArea
             handleChange={handleInputChange}
@@ -358,7 +364,7 @@ export const UpdateStory = () => {
           /> */}
 					<QuillEditor
 						value={formik.values.description}
-						onChange={handleInputChange}
+						onChange={handleDescriptionChange}
 						name="description"
 					/>
           {formik.touched.description && Boolean(formik.errors.description) && (

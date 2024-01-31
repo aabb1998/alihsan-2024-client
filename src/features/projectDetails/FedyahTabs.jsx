@@ -1,9 +1,13 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { Button } from '../../components'
 import { MinusIcon, PlusIcon } from '../../theme/svg-icons'
+import { currencyConfig } from '../../utils/constants'
+import { useFedyahPricers } from '../../utils/helper'
 
 export const FedyahTabs = ({ tabs, onChangeTabs, selectedTab, disabelButton, setDisabelButton, handleQuantityChange, quantity, handleAmount, formik }) => {
-
+	const prices = useSelector(state => state.settings.settings)
+	const [fedyahInitialAmount, fedyahAmountText] = useFedyahPricers();
   return (
     <div className="flex flex-col gap-5 md:gap-7.5">
       <div className="flex flex-wrap gap-3 p-2 mb-3 rounded-lg bg-accent-100 md:mb-4">
@@ -25,7 +29,7 @@ export const FedyahTabs = ({ tabs, onChangeTabs, selectedTab, disabelButton, set
           <h2 className='mb-2 font-bold'>{selectedTab?.head}</h2>
           {selectedTab?.content1 &&
             <p className='font-medium text-button-md text-neutral-800'>
-              {selectedTab?.content1}</p>
+              {fedyahAmountText(selectedTab?.content1)}</p>
           }
           {selectedTab?.content2 &&
             <p className='font-medium text-button-md text-neutral-800'>{selectedTab?.content2}</p>
@@ -52,18 +56,18 @@ export const FedyahTabs = ({ tabs, onChangeTabs, selectedTab, disabelButton, set
 
           </div>
           <div className="grid grid-cols-4 gap-4 mb-5 md:mb-7.5">
-            {selectedTab?.generalDonation && selectedTab?.amount?.map((amount, index) => (
+            {selectedTab?.generalDonation && prices.fedyahAmounts?.map((amount, index) => (
 
               <div key={index} >
                 <Button
                   type="button"
                   onClick={handleAmount}
                   value={amount}
-                  label={`$${amount}`}
+                  label={`${currencyConfig.label}${amount}`}
                   name="amount"
                   disabled={selectedTab?.generalDonation ? !disabelButton : false}
                   variant={"secondaryOutlineFull"}
-                  className={amount === Number(formik.values.amount) ? "bg-primary-300 !text-white" : ""}
+                  className={amount === formik.values.amount+'' ? "button-focus" : ""}
                 />
               </div>
 
@@ -77,7 +81,7 @@ export const FedyahTabs = ({ tabs, onChangeTabs, selectedTab, disabelButton, set
           <div className='flex items-baseline justify-between mb-7.5'>
             <div >
               <h4 className='mb-2 text-sm !font-medium text-neutral-1000'>{selectedTab?.initialAmountTitle}</h4>
-              <div className="font-bold text-heading-4">${selectedTab?.initialAmount}</div>
+              <div className="font-bold text-heading-4">{currencyConfig.label}{fedyahInitialAmount(selectedTab?.initialAmount)}</div>
             </div>
 
             <div className="">
@@ -125,7 +129,7 @@ export const FedyahTabs = ({ tabs, onChangeTabs, selectedTab, disabelButton, set
             <div className='flex items-center justify-between gap-5 grow'>
               <div className="grow">{selectedTab?.counter ? quantity : selectedTab?.quantity}x</div>
               <div className="text-right grow">
-                ${selectedTab?.initialAmount?.toLocaleString()}
+                {currencyConfig.label}{fedyahInitialAmount(selectedTab?.initialAmount).toLocaleString()}
               </div>
             </div>
 
@@ -138,7 +142,7 @@ export const FedyahTabs = ({ tabs, onChangeTabs, selectedTab, disabelButton, set
             <div className="h-px my-5 bg-neutral-300"></div>
             <div className="flex justify-between text-heading-7">
               <div>Subtotal</div>
-              <div>${((selectedTab?.counter ? quantity : selectedTab?.quantity) * (selectedTab?.initialAmount))?.toLocaleString()}</div>
+              <div>{currencyConfig.label}{((selectedTab?.counter ? quantity : selectedTab?.quantity) * fedyahInitialAmount(selectedTab?.initialAmount))?.toLocaleString()}</div>
             </div>
           </>
         ) : (

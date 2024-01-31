@@ -11,11 +11,11 @@ const CheckoutDetails = ({ data }) => {
   useEffect(() => {
     dispatch(getMediaVideo(id));
   }, []);
-  
+
   const rowsData = [
     { label: "Campaign Name", value: data?.Campaign?.name },
     { label: "Order Number", value: data?.orderId },
-    { label: "Campaign Checkout type", value: data?.Campaign?.checkoutType },
+    { label: "Campaign Checkout Type", value: data?.Campaign?.checkoutType },
     { label: "Campaign Description", value: data?.Campaign?.description },
     { label: "Donation Amount", value: data?.total },
     { label: "Donation Frequency", value: getRecurringLabel(data?.periodDays) },

@@ -23,7 +23,7 @@ export const ProjectListItem = ({ project }) => {
           </h3>
           <Link to={`/project/${project?.slug}`}>
             <p className="text-sm font-normal line-clamp-2 sm:min-h-[2.5rem]">
-              {project?.description}
+              {project?.descriptionText || project?.description}
             </p>
           </Link>
         </div>

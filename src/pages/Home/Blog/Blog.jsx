@@ -47,7 +47,10 @@ export const Blog = (props) => {
                                                         <CalendarIcon iconSize={16} /> <span className="text-sm font-medium">{blog.publishedAt}</span>
                                                     </div>
                                                     <h4 className="mb-4 text-heading-7 text-neutral-800 sm:text-heading-6 line-clamp-1">{blog.title}</h4>
-                                                    <p className="mb-5 text-sm line-clamp-3 text-neutral-600">{blog.content}</p>
+                                                    <p
+																											dangerouslySetInnerHTML={{__html: blog.content}}
+																											className="mb-5 text-sm line-clamp-3 text-neutral-600"
+																										/>
                                                     <a href="#" className="font-bold text-button-lg text-primary-300">Read More</a>
                                                 </div>
                                             </div>

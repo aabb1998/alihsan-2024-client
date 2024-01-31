@@ -170,7 +170,7 @@ export const UpdateFeatureCampaign = ({ onClose, data }) => {
                               />
                             )}
                         </div>
-                        <div className="form-group">
+                        <div className="mb-6 form-group">
                           <label htmlFor="tag name" className="block">
                             Feature Campaign 04
                           </label>

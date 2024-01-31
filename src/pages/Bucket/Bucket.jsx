@@ -19,10 +19,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { NoDataFound } from "../../components/NoDataFound";
 import { formatPrice } from "../../utils/helper";
+import PageHead from "../../components/PageHead";
+import { currencyConfig } from "../../utils/constants";
 
 const Basket = () => {
   const { basketItems } = useSelector((state) => state.basketItem);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   useEffect(() => {
@@ -30,7 +31,6 @@ const Basket = () => {
       top: 0,
       behavior: "smooth",
     });
-    document.title = "Al-Ihsan Foundation - Basket";
   }, []);
 
   const handleRemoveBasketItems = async (item) => {
@@ -188,7 +188,7 @@ const Basket = () => {
                       </div>
                     )}
                     <div className="text-xs font-bold md:font-medium md:hidden">
-                      {"$" + total?.toLocaleString()}
+                      {currencyConfig.label + total?.toLocaleString()}
                     </div>
                   </div>
                   {/*  */}
@@ -214,7 +214,7 @@ const Basket = () => {
                 </div>
               </>
             ) : (
-              "$" + total?.toLocaleString()
+              currencyConfig.label + total?.toLocaleString()
             )}
             {/* ${(item?.amount ?? item?.total)?.toLocaleString()} */}
           </td>
@@ -261,7 +261,7 @@ const Basket = () => {
             </div>
           </td>
           <td className="hidden px-2 py-4 text-center border-b md:p-4 md:table-cell border-neutral-300 text-button-lg">
-            {"$" + formatPrice(total)}
+            {currencyConfig.label + formatPrice(total)}
           </td>
         </tr>
       );
@@ -279,6 +279,8 @@ const Basket = () => {
 
   return (
     <div>
+      <PageHead title={"Basket"} />
+
       <div className="py-7.5 md:py-15">
         <section aria-label="Basket">
           <div className="container">

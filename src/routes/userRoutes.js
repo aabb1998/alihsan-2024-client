@@ -8,10 +8,6 @@ import { RecurringDonation } from "../pages/MyDonations/RecurringDonation";
 import { OneTimeDonations } from "../pages/MyDonations/OneTimeDonation";
 import { PaymentDetailsComponent } from "../pages/User/PaymentDetails";
 import { PaymentDetailsListingComponent } from "../pages/User/PaymentDetails/listing/listing";
-import { NoCampaignComponent } from "../pages/Admin/Dashboard/Pages/Campaign/NoCampaign";
-import { AddCampaignComponent } from "../pages/Admin/Dashboard/Pages/Campaign/AddCampaign";
-import { ListCampaignComponent } from "../pages/Admin/Dashboard/Pages/Campaign/ListCampaign";
-import { EditCampaignComponent } from "../pages/Admin/Dashboard/Pages/Campaign/EditCampaign";
 
 import { GetInTouchComponent } from "../pages/ContactAndComplaints/GetInTouch";
 import { Profile } from "../pages/Authentication/Profile";
@@ -20,11 +16,8 @@ import { OurPoliciesComponent } from "../pages/AboutUs/OurPolicies";
 import { WhoWeAreComponent } from "../pages/AboutUs/WhoWeAre";
 import { TermsAndConditionsComponent } from "../pages/TermsAndConditions";
 import { PrivacyPolicyComponent } from "../pages/PrivacyPolicy";
-import { AddDonationModalComponent } from "../pages/Admin/Dashboard/Pages/Campaign/Common/AddDonationModal";
-import { FinancialReports } from "../pages/FinancialReports";
 import { NewsDetailsComponent } from "../features/news/NewsDetails";
 import { Users } from "../pages/Admin/Dashboard/Pages/Users";
-import { UserInfoTable } from "../pages/Admin/Dashboard/Pages/Users/Common/UserInfoTable";
 import { QuickDonationProvider } from "../features/quickDonation";
 import { MediaDetails } from "../pages/Media/MediaDetails";
 import { VolunteerWithUs } from "../pages/Volunteer";
@@ -61,6 +54,8 @@ const VerifyUser = React.lazy(() =>
 const ResetPassword = React.lazy(() =>
   import("../pages/Authentication/ResetPassword")
 );
+
+const FinancialReports = React.lazy(() => import("../pages/FinancialReports"));
 const Login = React.lazy(() => import("../pages/Authentication/Login"));
 const Signup = React.lazy(() => import("../pages/Authentication/Signup"));
 const HomeComponent = React.lazy(() => import("../pages/Home"));
@@ -271,7 +266,6 @@ export const userRoutes = [
   // ADMIN PANEL
   {
     path: "admin/login",
-    // element: <AdminloginComponent />,
     element: isUserLoggedIn() ? (
       <Navigate to="/admin/dashboard" />
     ) : (
@@ -284,47 +278,6 @@ export const userRoutes = [
   },
 
   {
-    path: "admin/campaign/empty",
-    element: (
-      <LayoutComponent>
-        <NoCampaignComponent />
-      </LayoutComponent>
-    ),
-  },
-  {
-    path: "admin/campaign/add",
-    element: (
-      <LayoutComponent>
-        <AddCampaignComponent />
-      </LayoutComponent>
-    ),
-  },
-  {
-    path: "admin/campaign/list",
-    element: (
-      <LayoutComponent>
-        <ListCampaignComponent />
-      </LayoutComponent>
-    ),
-  },
-  {
-    path: "admin/campaign/edit",
-    element: (
-      <LayoutComponent>
-        <EditCampaignComponent />
-      </LayoutComponent>
-    ),
-  },
-  {
-    path: "admin/campaign/donations/add",
-    element: (
-      <LayoutComponent>
-        <AddDonationModalComponent />
-      </LayoutComponent>
-    ),
-  },
-
-  {
     path: "admin/users",
     element: (
       <LayoutComponent>
@@ -332,14 +285,7 @@ export const userRoutes = [
       </LayoutComponent>
     ),
   },
-  {
-    path: "admin/users/info",
-    element: (
-      <LayoutComponent>
-        <UserInfoTable />
-      </LayoutComponent>
-    ),
-  },
+
   {
     path: "admin/users/add",
     element: (

@@ -141,7 +141,7 @@ export const BannerEdit = ({ getAllSettings, onClose, data }) => {
                                     className="!mb-0 cursor-pointer absolute right-5 bottom-5"
                                   >
                                     <div className="flex flex-col items-center justify-center px-5 py-3 rounded-lg bg-primary-100 text-primary-300 text-button-lg">
-                                      Change Cover
+                                      Add Cover
                                     </div>
                                     <input
                                       id="dropzone-file"

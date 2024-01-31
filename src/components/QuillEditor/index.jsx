@@ -7,7 +7,10 @@ export default function QuillEditor ({ onChange, value, name }) {
 		<ReactQuill
 			theme="snow"
 			value={value}
-			onChange={(v,d,s,e) => onChange({type: 'change', target: { name, type: 'custom', value: e.getHTML() }})}
+			onChange={(v,d,s,e) => onChange && onChange({type: 'change', target: {
+				name, type: 'custom',
+				value: {text: e.getText(), html: v, length: Math.max(e.getLength()-1,0)}
+			}})}//onChange({type: 'change', target: { name, type: 'custom', value: e.getHTML() }})}
 		/>
 	)
 }

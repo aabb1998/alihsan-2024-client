@@ -42,7 +42,7 @@ export const addUser = createAsyncThunk(
 				role: 'ADMIN',
 				timezoneOffset: new Date().getTimezoneOffset(),
 			});
-			thunkApi.dispatch(getUsers());
+			thunkApi.dispatch(getUsers(thunkApi.getState().adminUsers.usersPage));
       return response.data;
     } catch (e) {
       throw new Error(e.response?.data?.message || "Something went wrong");
@@ -51,10 +51,13 @@ export const addUser = createAsyncThunk(
 );
 export const deleteUser = createAsyncThunk(
   "delete/admin-users",
-  async (id, thunkApi) => {
+  async ({id, unblock}, thunkApi) => {
     try {
-      const response = await api.delete("admins/"+id);
-			thunkApi.dispatch(getUsers());
+      const response = await api.post(
+				"admins/update-status/"+id, {},
+				{params: {status: unblock?'un-block':'block'}}
+			);
+			thunkApi.dispatch(getUsers(thunkApi.getState().adminUsers.usersPage));
       return response.data;
     } catch (e) {
       throw new Error(e.response?.data?.message || "Something went wrong");
@@ -65,7 +68,7 @@ export const resetUserPassword = createAsyncThunk(
   "reset/admin-user-password",
   async (id) => {
     try {
-      const response = await api.get("reset-password/"+id);
+      const response = await api.post("admins/reset-password/"+id);
       return response.data;
     } catch (e) {
       throw new Error(e.response?.data?.message || "Something went wrong");
@@ -77,7 +80,7 @@ export const editUser = createAsyncThunk(
   async ({id, payload}, thunkApi) => {
     try {
       const response = await api.put("admins/edit/"+id, payload);
-			thunkApi.dispatch(getUsers());
+			thunkApi.dispatch(getUsers(thunkApi.getState().adminUsers.usersPage));
       return response.data;
     } catch (e) {
       throw new Error(e.response?.data?.message || "Something went wrong");

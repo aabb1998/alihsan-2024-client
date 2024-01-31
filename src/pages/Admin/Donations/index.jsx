@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Pagination } from "../../../components/Pagination";
-import { ChevronUpIcon, ChevronsUpIcon } from "../../../theme/svg-icons";
+import {
+  ChevronUpIcon,
+  ChevronsUpIcon,
+  DownloadIcon,
+} from "../../../theme/svg-icons";
 import { useSelector, useDispatch } from "react-redux";
 import {
   getCustomers,
   getDonations,
 } from "../../../features/adminDonations/adminDonationSlice";
-import { adminItemPerPage, itemPerPage } from "../../../utils/constants";
+import { adminItemPerPage, currencyConfig, itemPerPage } from "../../../utils/constants";
 import { SnackMessages } from "../../../components/Toast";
 import Filter from "../../../components/Filter";
 import Loader from "../../../components/Loader";
@@ -21,6 +25,9 @@ import {
   PeriodFilters,
   StatusFilters,
 } from "../../../utils/donationFilters";
+import { Button } from "../../../components";
+import { downloadReport } from "../../../features/adminDashboard/adminDashboardSlice";
+import { PrimaryLoadingButton } from "../../../components/LoadingButtons";
 
 const initialState = {
   search: "",
@@ -32,7 +39,7 @@ const initialState = {
   order: "",
   startDate: "",
   endDate: "",
-  status: "COMPLETED",
+  status: "",
   guest: false,
 };
 
@@ -45,6 +52,8 @@ export default function Donations() {
   const { donations, isLoading, customersList } = useSelector(
     (state) => state?.adminDonations
   );
+  const { isDownloading } = useSelector((state) => state.adminDashboard);
+
   const { count, rows } = donations?.donationList || { rows: [], count: 0 };
 
   const filtersList = [
@@ -52,28 +61,28 @@ export default function Donations() {
       label: "Amount",
       name: "amount",
       value: "amount",
-      defaultSelect:'All amount',
+      defaultSelect: "All amount",
       options: AmountFilters,
     },
     {
       label: "Period",
       name: "period",
       value: "period",
-      defaultSelect:'All periods',
+      defaultSelect: "All periods",
       options: PeriodFilters,
     },
     {
       label: "Status",
       name: "status",
       value: "status",
-      defaultSelect:'All status',
+      defaultSelect: "All status",
       options: StatusFilters,
     },
     {
       label: "Customer",
       name: "userId",
       value: "userId",
-      defaultSelect:'All Customers',
+      defaultSelect: "All Customers",
 
       options:
         customersList?.map((i) => ({
@@ -154,6 +163,15 @@ export default function Donations() {
     );
   };
 
+  const handleDownloadReport = async () => {
+    const response = await dispatch(downloadReport(filters));
+    if (response?.payload) {
+      showSuccessMessage(response?.payload?.message);
+    } else {
+      showErrorMessage(response?.error?.message);
+    }
+  };
+
   useEffect(() => {
     getData(filters);
   }, [filters]);
@@ -172,6 +190,21 @@ export default function Donations() {
       )}
       <div className="flex items-center justify-between w-full border-b border-neutral-300 pb-3.5">
         <h5 className="text-button-lg md:text-heading-5">Donations</h5>
+        {isDownloading ? (
+          <PrimaryLoadingButton additionalButtonClasses="" />
+        ) : (
+          <Button
+            className=" btn btn-primary text-button-md md:text-button-lg"
+            type="submit"
+            leftIcon={
+              <span className="sm:hidden">
+                <DownloadIcon />
+              </span>
+            }
+            label={<span className="hidden sm:flex">Download Report</span>}
+            onClick={handleDownloadReport}
+          />
+        )}
       </div>
       <div className="flex my-2 sm:my-5 md:my-7.5 gap-2 md:gap-7.5 flex-wrap">
         <InfoTile
@@ -182,7 +215,7 @@ export default function Donations() {
 
         <InfoTile
           title={"Total Donation Amount"}
-          value={`$${formatPrice(donations?.totalOrderAmount || 0)}`}
+          value={`${currencyConfig.label}${formatPrice(donations?.totalOrderAmount || 0)}`}
         />
       </div>
 
@@ -205,7 +238,9 @@ export default function Donations() {
             <label
               htmlFor="isGuest"
               className="font-bold text-button-md text-neutral-800"
-            >Is Guest</label>
+            >
+              Is Guest
+            </label>
           </div>
         </Filter>
         <div className="grid">
@@ -288,7 +323,7 @@ export default function Donations() {
                         </div>
                       </td>
                       <td className="p-4 min-w-[10rem] text-sm font-medium font-Montserrat text-neutral-700">
-                        ${donation.total}
+                        {currencyConfig.label}{donation.total}
                       </td>
                       <td className="p-4 min-w-[10rem] text-sm font-medium font-Montserrat text-neutral-700">
                         {donation.donatedAt}

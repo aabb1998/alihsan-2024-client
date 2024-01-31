@@ -5,6 +5,7 @@ import { Pagination } from "../../components/Pagination/index";
 import { NoDataFound } from "../../components/NoDataFound";
 import { Dropdown } from "../../components/Dropdown";
 import Img from "../../components/Image";
+import { currencyConfig } from "../../utils/constants";
 
 export const DonationModal = ({
   setIsOpen,
@@ -157,7 +158,7 @@ export const DonationModal = ({
                                   </div>
                                 </div>
                                 <div className="text-button-lg text-primary-600">
-                                  ${donation?.total?.toLocaleString()}
+                                  {currencyConfig.label}{donation?.total?.toLocaleString()}
                                 </div>
                               </div>
                             ))

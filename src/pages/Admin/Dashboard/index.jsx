@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import TableActionbtn from "../../Admin/Dashboard/Common/TableActionbtn";
-import { Pagination } from "../../../components/Pagination";
 import {
   DownloadIcon,
   ChevronUpIcon,
-  ChevronsUpIcon,
   ChevronDownIcon,
 } from "../../../theme/svg-icons";
 import { Dropdown } from "../../../components/Dropdown";
-import Img from "../../../components/Image";
 import {
   downloadReport,
   getDashboardData,
@@ -28,8 +24,8 @@ import { Button } from "../../../components";
 import { PrimaryLoadingButton } from "../../../components/LoadingButtons";
 import { SnackMessages } from "../../../components/Toast";
 import { Tooltip } from "react-tooltip";
+import { currencyConfig } from "../../../utils/constants";
 
-const options = [{ label: "Campaign 1", value: "a" }];
 export const itemPerPage = 10;
 const initialState = {
   limit: itemPerPage,
@@ -228,7 +224,7 @@ const AdminsDashboard = () => {
             </div>
             <div className="py-5 px-4 md:py-7.5 md:px-6 border border-neutral-300 rounded-2xl w-full flex-1 bg-neutral-200 hover:bg-primary-200 cursor-pointer">
               <NotableTile
-                total={"$" + dashboardData?.totalSales}
+                total={currencyConfig.label + dashboardData?.totalSales}
                 percentage={dashboardData?.totalSalesPercentage}
                 title="Total Sale Amounts"
                 value={dashboardData?.totalRealSales}
@@ -274,7 +270,7 @@ const AdminsDashboard = () => {
                     Income Overview
                   </p>
                   <h5 className="break-words text-button-lg md:text-heading-7">
-                    ${formatPrice(totalAmount)}
+                    {currencyConfig.label}{formatPrice(totalAmount)}
                   </h5>
                 </div>
                 <Dropdown

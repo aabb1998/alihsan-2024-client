@@ -10,7 +10,9 @@ export const Project = (props) => {
             <img src={project.coverImage} className="rounded-xl" alt={project.name} />
             <div>
                 <h3 className="mb-3 text-heading-7 sm:heading-6 line-clamp-1">{project.name}</h3>
-                <p className="text-sm font-normal line-clamp-2">{project.description}</p>
+                <p
+									dangerouslySetInnerHTML={{__html: project.description}}
+									className="text-sm font-normal line-clamp-2" />
             </div>
             <button className="btn btn-primary filled">Donate now</button>
         </div>

@@ -12,6 +12,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { getCountryLengths } from "../../utils/helper";
 import { useState } from "react";
+import { currencyConfig } from "../../utils/constants";
 
 const { showSuccessMessage, showErrorMessage } = SnackMessages();
 
@@ -141,7 +142,7 @@ export const ApplyNow = () => {
                 name="amount"
                 value={formik.values.amount}
                 onChange={formik.handleChange}
-                placeholder="$100"
+                placeholder={currencyConfig.label+"100"}
               />
               {formik.touched.amount && Boolean(formik.errors.amount) && (
                 <FormikValidationError

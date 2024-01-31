@@ -71,13 +71,16 @@ const AddTags = ({ onClose, data }) => {
                     <div className="flex flex-col flex-grow w-100">
                       <div className="flex justify-between mb-5 sm:mb-8">
                         <div className="font-bold tracking-tighter text-neutral-1000 text-md sm:text-heading-7">
-                          {data ? "Update" : "Add" + " Tag"}
+                          {data ? "Update Tag" : "Add" + " Tag"}
                         </div>
                         <button className="transition-colors ease-in-out text-neutral-1000 opacity-90 hover:text-neutral-800">
                           <CloseIcon iconSize={24} onClick={onClose} />
                         </button>
                       </div>
-                      <div className="mb-6">
+                      <div className="mb-6 form-group">
+                      <label htmlFor="Tag Name" className="">
+                          Tag Name<span className="text-red-300">*</span>
+                        </label>
                         <input
                           type="text"
                           name="text"
@@ -94,7 +97,10 @@ const AddTags = ({ onClose, data }) => {
                           />
                         )}
                       </div>
-                      <div className="mb-6">
+                      <div className="mb-6 form-group">
+                      <label htmlFor="Color" className="">
+                          Color<span className="text-red-300">*</span>
+                        </label>
                         <select
                           className="w-full text-sm !text-neutral-800 form-control"
                           id="color"

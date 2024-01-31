@@ -7,20 +7,15 @@ import {
     SearchIcon,
 } from "../../../../../theme/svg-icons";
 // import ActionButtonBgWithIcon from "../../Common/ActionButtonBgWithIcon";
-import { AddDonationModalComponent } from "../Campaign/Common/AddDonationModal";
 import { Pagination } from "../../../../../features/projects/Pagination";
-import { Button } from "../../../../../components";
 import Img from "../../../../../components/Image";
-import Filter from "../../../../../components/Filter";
 import { AddNewGroup } from "./Common";
 import ActionButtonBgWithIcon from "../../../Common/ActionButtonBgWithIcon";
 
-const dates = ["Monday", "THis Month", "This Year"];
 const options = ["This Week", "THis Month", "This Year"];
 export const HomepageSettings = () => {
     const [selected, setSelected] = useState(options[0]);
     const [isOpen, setIsOpen] = useState(false);
-    const handleChange = () => { };
     return (
         <>
             <div className="py-6 px-3 sm:!px-5 md:!px-7.5 sm:py-7.5 md:py-10 w-full h-[calc(100vh-4.5rem)] overflow-auto">

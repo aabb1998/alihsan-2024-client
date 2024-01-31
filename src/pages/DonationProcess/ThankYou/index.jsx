@@ -56,6 +56,7 @@ const ThankYouComponent = () => {
   useEffect(() => {
     localStorage.removeItem("checkout");
     localStorage.removeItem("personalInfo");
+    dispatch(getBasketItems())
     if (!profile.email && !profile.isFetching && !profile.isError)
       dispatch(getProfile());
   }, [profile]);

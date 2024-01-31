@@ -20,6 +20,7 @@ import MoreMenuButton from "../../../components/MoreMenuButton";
 import { loadCampaignDonations } from '../../../features/adminCampaigns'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import { currencyConfig } from "../../../utils/constants";
 
 export default function CampaignDonations() {
   const params = useParams();
@@ -96,7 +97,7 @@ export default function CampaignDonations() {
               Total Donation Amount
             </h6>
             <div className="flex items-center justify-between">
-              <h2 className="text-heading-5 md:text-heading-2">${campaignDetails.totals.totalOrderAmount || 0}</h2>
+              <h2 className="text-heading-5 md:text-heading-2">{currencyConfig.label}{campaignDetails.totals.totalOrderAmount || 0}</h2>
             </div>
           </div>
         </div>
@@ -167,7 +168,7 @@ export default function CampaignDonations() {
                       </div>
                     </td>
                     <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
-                      ${donation.total}
+                      {currencyConfig.label}{donation.total}
                     </td>
                     <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
                       {donation.donatedAt}
@@ -219,10 +220,10 @@ export default function CampaignDonations() {
 
 const AmountFilters = [
   {label: "All", value: ""},
-  {label: "$0 - $50", value: "0-50"},
-  {label: "$50 - $100", value: "50-100"},
-  {label: "$100 - $200", value: "100-200"},
-  {label: "> $200", value: "200-"},
+  {label: `${currencyConfig.label}0 - ${currencyConfig.label}50`, value: "0-50"},
+  {label: `${currencyConfig.label}50 - ${currencyConfig.label}100`, value: "50-100"},
+  {label: `${currencyConfig.label}100 - ${currencyConfig.label}200`, value: "100-200"},
+  {label: `> ${currencyConfig.label}200`, value: "200-"},
 ]
 const PeriodFilters = [
   {label: "All", value: ""},

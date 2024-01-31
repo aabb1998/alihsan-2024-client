@@ -85,9 +85,9 @@ export const Footer = () => {
           </div>
           <div>
             <h5 className="text-base mb-4.5">Follow Us</h5>
-            <ul className="flex gap-1 text-[#C0BEB9] mb-6">
+            <ul className="flex items-center gap-1 text-[#C0BEB9] mb-6">
               {followUs?.map((e) => (
-                <li key={e.url}>
+                <li key={e.url}  className="flex items-center">
                   <Link to={e.url} target="_blank">
                     <span className="sr-only">{e.label}</span>
                     {e.icon}

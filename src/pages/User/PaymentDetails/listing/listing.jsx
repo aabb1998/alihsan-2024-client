@@ -197,9 +197,7 @@ export const PaymentDetailsListingComponent = () => {
                       <th className="hidden p-4 font-medium text-center sm:table-cell">
                         Invoice
                       </th>
-                      <th className="p-4 font-medium text-center sm:hidden rounded-r-md">
-                        Action
-                      </th>
+                      <th className="p-4 font-medium">Action</th>
                     </tr>
                   </thead>
                   <tbody>{rows}</tbody>

@@ -23,10 +23,11 @@ import { QurbanDonation } from "./QurbanDonation";
 import { WaterDonation } from "./WaterDonation";
 import PageHead from "../../components/PageHead";
 import { NoDataFound } from "../../components/NoDataFound";
+import { ProjectListItem } from "../projects/ProjectListItem";
 
 const ProjectDetail = () => {
   const { slug } = useParams();
-  const { project, loading,error } = useSelector((state) => state.project);
+  const { project, loading, error } = useSelector((state) => state.project);
   const props = project;
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("tab1");
@@ -114,6 +115,26 @@ const ProjectDetail = () => {
                       organizer={project?.campaign?.Organizer}
                     />
                   )}
+                  <section aria-label="Updates" className="mt-10">
+                    <div className="container">
+                    <h2 className="mb-4">Related Campaigns</h2>
+
+                      <div className="grid gap-x-5 gap-y-7.5 sm:grid-cols-2 md:grid-cols-4">
+                        {project?.campaignsRelated?.length ? (
+                          <>
+                            {project?.campaignsRelated?.map((campaign) => (
+                              <ProjectListItem
+                                project={campaign}
+                                key={campaign.id}
+                              />
+                            ))}
+                          </>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    </div>
+                  </section>
                 </div>
                 <div className="grid grid-cols-12 col-span-12 gap-5 gap-y-10 sm:gap-6 md:gap-10 md:flex md:flex-col md:col-span-5">
                   <div className="hidden col-span-12 sm:col-span-12 md:block">

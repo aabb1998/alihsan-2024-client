@@ -23,7 +23,6 @@ export default function Users() {
 	const edit = id => {
 		dispatch(getUserDetails(id));
 	}
-	const t = () => new Promise(res => setTimeout(res, 2000));
 	const resetPass = id => {
 		setResetting(r => ({ ...r, [id]: true }))
 		dispatch(resetUserPassword(id)).then(res => {
@@ -35,7 +34,7 @@ export default function Users() {
 		});
 	}
 	const onDelete = () => {
-		dispatch(deleteUser(deleting)).then(res => {
+		dispatch(deleteUser({id: deleting[0], unblock: deleting[1]})).then(res => {
 			if (res.error)
 				showErrorMessage(res.error.message)
 			else
@@ -74,8 +73,9 @@ export default function Users() {
 								<tr className=''>
 									<th className='p-4 min-w-[10rem]  text-sm font-medium text-start font-Montserrat text-neutral-600'>Name</th>
 									<th className='p-4 min-w-[10rem]  text-sm font-medium text-start font-Montserrat text-neutral-600'>Email Address</th>
-									<th className='p-4 min-w-[10rem]  text-sm font-medium text-start font-Montserrat text-neutral-600'>Role</th>
-									<th className='p-4 min-w-[10rem]  text-sm font-medium text-start font-Montserrat text-neutral-600'>Last Day Active</th>
+									{/* <th className='p-4 min-w-[10rem]  text-sm font-medium text-start font-Montserrat text-neutral-600'>Role</th> */}
+									{/* <th className='p-4 min-w-[10rem]  text-sm font-medium text-start font-Montserrat text-neutral-600'>Last Day Active</th> */}
+									<th className='p-4 min-w-[10rem]  text-sm font-medium text-start font-Montserrat text-neutral-600'>Status</th>
 									<th className='p-4 text-sm font-medium text-start font-Montserrat text-neutral-600'>Action</th>
 								</tr>
 							</thead>
@@ -89,30 +89,20 @@ export default function Users() {
 											</div>
 										</td>
 										<td className='p-4 text-sm font-medium font-Montserrat text-neutral-700'>{i.email}</td>
-										<td className='p-4 text-sm font-medium font-Montserrat text-neutral-700'>
+										{/* <td className='p-4 text-sm font-medium font-Montserrat text-neutral-700'>
 											{i.role}
-										</td>
-										<td className='p-4 text-sm font-medium font-Montserrat text-neutral-700'>-</td>
+										</td> */}
+										{/* <td className='p-4 text-sm font-medium font-Montserrat text-neutral-700'>-</td> */}
+										<td className='p-4 text-sm font-medium font-Montserrat text-neutral-700'>{i.status==='Active'?'Active':i.status==='Blocked'?'Blocked':'Unknown'}</td>
 										<td className='p-4 text-sm font-medium font-Montserrat text-neutral-700'>
-											{/* <div className='flex gap-2 sm:gap-4'> */}
-												{/* <div className='p-2 rounded cursor-pointer text-primary-300 bg-primary-100' onClick={() => edit(i.id)}>
-													<Edit3Icon />
-												</div>
-												<div className={'p-2 rounded '+(!usersLoading && !resetting[i.id]?'text-primary-300 bg-yellow-100 cursor-pointer':'text-neutral-400 bg-neutral-100')} onClick={() => !usersLoading && !resetting[i.id] && resetPass(i.id)}>
-													<Edit3Icon />
-												</div>
-												<div className='p-2 text-red-300 bg-red-100 rounded cursor-pointer' onClick={() => setDeleting(i.id)}>
-													<TrashIcon />
-												</div> */}
-												{i.role!=='SUPERADMIN' && (
-													<ActionButtonBgWithIcon
-														handleEdit={() => edit(i.id)}
-														handleRemove={() => setDeleting(i.id)}
-														// handleResetPassword={() => !usersLoading && !resetting[i.id] && resetPass(i.id)}
-													/>
-												)}
-
-											{/* </div> */}
+											{i.role!=='SUPERADMIN' && (
+												<ActionButtonBgWithIcon
+													handleEdit={() => edit(i.id)}
+													handleBlock={i.status==='Active' && (() => setDeleting([i.id, false]))}
+													handleUnblock={i.status==='Blocked' && (() => setDeleting([i.id, true]))}
+													handleResetPassword={() => !usersLoading && !resetting[i.id] && resetPass(i.id)}
+												/>
+											)}
 										</td>
 									</tr>
 								))}
@@ -131,7 +121,8 @@ export default function Users() {
 				onClose={() => setAdding(false)}
 			/>
 			<DeleteModal
-				id={deleting}
+				id={deleting?deleting[0]:false}
+				isUnblocking={deleting?deleting[1]:false}
 				onClose={() => setDeleting(false)}
 				onDelete={onDelete}
 			/>

@@ -22,7 +22,9 @@ body {
 h1, h2, h3, h4, h5, h6 {
     @apply !font-bold tracking-tighter
 }
-
+.button-focus{
+    @apply bg-primary-300 text-white !important
+}
 
 /* h1 {
     letter-spacing: -0.07rem;
@@ -485,4 +487,9 @@ outline: none !important;
 /* ======= */
 .ramadan-details-page{
     @apply bg-ramadan-bg bg-no-repeat bg-center bg-[#F1F1F1] bg-auto w-full h-full;
+}
+
+/*  */
+input[type="file"] {    
+    @apply cursor-pointer
 }

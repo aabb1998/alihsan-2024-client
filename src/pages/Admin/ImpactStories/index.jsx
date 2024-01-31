@@ -178,7 +178,7 @@ const ImpactStories = () => {
                       </td>
                       <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700 ">
                         <div className="break-words line-clamp-2">
-                          {impactStory.description}
+                          {impactStory.descriptionText || impactStory.description}
                         </div>
                       </td>
 

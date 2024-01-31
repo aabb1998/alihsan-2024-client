@@ -58,7 +58,7 @@ export default function Campaigns() {
 										</div>
 										<div>
 											<h6 className='mb-3 line-clamp-1 text-heading-6 text-neutral-800'>{i.name}</h6>
-											<p className='overflow-hidden text-sm font-medium max-h-16 font-Montserrat text-neutral-600 line-clamp-3 sm:min-h-[3.75rem]'>{i.description}</p>
+											<p className='overflow-hidden text-sm font-medium max-h-16 font-Montserrat text-neutral-600 line-clamp-3 sm:min-h-[3.75rem]'>{i.descriptionText || i.description}</p>
 										</div>
 										<ProjectStatus status={i.status} />
 									</div>

@@ -13,6 +13,7 @@ import {
   StatusFilters,
 } from "../../../utils/donationFilters";
 import { getCustomers } from "../../../features/adminDonations/adminDonationSlice";
+import { currencyConfig } from "../../../utils/constants";
 export const itemPerPage = 10;
 const initialState = {
   limit: itemPerPage,
@@ -20,7 +21,7 @@ const initialState = {
   sort: "",
   order: "",
   search: "",
-  status: "Completed",
+  status: "",
 };
 
 export const Table = ({
@@ -251,7 +252,7 @@ function TableRow({ item }) {
         </div>
       </td>
       <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
-        ${item?.total}
+        {currencyConfig.label}{item?.total}
       </td>
       <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
         {item?.donatedAt}

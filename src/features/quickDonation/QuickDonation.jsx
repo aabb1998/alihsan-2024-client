@@ -24,29 +24,32 @@ const QuickDonation = ({ isOpen, onClose, project }) => {
     (state) => state.quickDonations
   );
   const checkout = qucikDonationProject?.campaign?.checkoutType;
-
-  useEffect(() => {
-    if (!isOpen) return;
-    if (project) {
-      // dispatch(getProject(project?.id));
-      dispatch(getQucikDonationProject(project?.slug));
-    } else {
-      // dispatch(getProject(220));
-      // dispatch(getQucikDonationProject(220))
-    }
-    dispatch(getQucikDonation());
-    return () => {
-      // dispatch(resetProject());
-    };
-  }, [isOpen]);
-
+  const [isActualOpen, setIsActualOpen] = useState(false);
+  const [isLoading, setLoading] = useState(false);
+  const [isOpaque, setIsOpaque] = useState(false);
   const handleChange = (e) => {
-    console.log(e);
     dispatch(getQucikDonationProject(e.slug));
   };
 
-  const [isActualOpen, setIsActualOpen] = useState(false);
-  const [isOpaque, setIsOpaque] = useState(false);
+  const getQuickDonation = async () => {
+    setLoading(true);
+    const quickDonationCampaigns = await dispatch(getQucikDonation());
+    const firstCampaign = quickDonationCampaigns?.payload[0];
+    console.log(quickDonationCampaigns?.payload[0]);
+    if (project) {
+      await dispatch(getQucikDonationProject(project?.slug));
+      setLoading(false);
+    } else {
+      await dispatch(getQucikDonationProject(firstCampaign?.slug));
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!isOpen) return;
+    getQuickDonation();
+  }, [isOpen]);
+
   useEffect(() => {
     if (isOpen) setIsActualOpen(true);
     else setIsOpaque(false);
@@ -63,11 +66,6 @@ const QuickDonation = ({ isOpen, onClose, project }) => {
         Transitions.QUICK_DONATION_DURATION
       );
   }, [isOpaque]);
-
-  useEffect(() => {
-    if (quickdonations?.length) {
-      dispatch(getQucikDonationProject(quickdonations[0]?.slug));    }
-  }, [quickdonations]);
 
   return (
     <Transition.Root show={isOpen} as={Fragment}>
@@ -94,9 +92,9 @@ const QuickDonation = ({ isOpen, onClose, project }) => {
                 leaveTo="opacity-0 scale-75"
               >
                 <div className="flex items-end justify-center min-h-full text-center sm:items-center sm:p-0 max-h-[80vh]">
-                  <div className="relative grid max-h-[30rem] min-h-[30rem] w-full  sm:grid-cols-2 gap-4 overflow-hidden text-left transition-all transform sm:max-w-[816px]">
+                  <div className="relative grid max-h-[35rem] min-h-[35rem] w-full  sm:grid-cols-2 gap-4 overflow-hidden text-left transition-all transform sm:max-w-[816px]">
                     <div className="hidden overflow-hidden bg-white sm:block rounded-t-3xl sm:rounded-3xl">
-                      {loading ? (
+                      {isLoading ? (
                         <ModalLoader />
                       ) : (
                         <div className="flex flex-col">
@@ -115,14 +113,26 @@ const QuickDonation = ({ isOpen, onClose, project }) => {
                               {qucikDonationProject?.campaign?.name ||
                                 `Sample Header Goes Here`}
                             </h2>
-                            <p className="text-lg font-medium text-neutral-600 line-clamp-6">
-                              {qucikDonationProject?.campaign?.description ||
-                                ` Al-Ihsan Foundation International Limited (formed in
-                  2014) is a non-profit public relief organisation
-                  dedicated to assisting all people and families in need.
-                  The Arabic word Al-Ihsan means “perfection” or
-                  “excellence.”`}{" "}
-                            </p>
+                            {qucikDonationProject?.campaign?.descriptionText ||
+                            qucikDonationProject?.campaign?.description ? (
+                              <p
+                                className="text-lg font-medium text-neutral-600 line-clamp-6"
+                                dangerouslySetInnerHTML={{
+                                  __html:
+                                    qucikDonationProject?.campaign
+                                      .descriptionText ||
+                                    qucikDonationProject?.campaign.description,
+                                }}
+                              />
+                            ) : (
+                              <p className="text-lg font-medium text-neutral-600 line-clamp-6">
+                                {` Al-Ihsan Foundation International Limited (formed in
+										2014) is a non-profit public relief organisation
+										dedicated to assisting all people and families in need.
+										The Arabic word Al-Ihsan means “perfection” or
+										“excellence.”`}{" "}
+                              </p>
+                            )}
                           </div>
                         </div>
                       )}
@@ -140,7 +150,7 @@ const QuickDonation = ({ isOpen, onClose, project }) => {
                             <CloseIcon iconSize={24} />
                           </button>
                         </div>
-                        <div className="flex flex-col h-full overflow-y-auto max-h-[23rem] pr-2">
+                        <div className="flex flex-col h-full overflow-y-auto max-h-[28rem] pr-2">
                           <div className="mb-4 sm:mb-5">
                             <label
                               htmlFor="SelectProject"

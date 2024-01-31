@@ -27,6 +27,7 @@ import {
 } from "../../features/basket/basketSlice";
 import { Transition } from "@headlessui/react";
 import Img from "../../components/Image/index";
+import { currencyConfig } from "../../utils/constants";
 
 const HeaderTop = ({
   modalOptions,
@@ -497,7 +498,7 @@ const BasketItem = ({
                   className="p-0 text-center w-14 min-w-[3.5rem] h-8 rounded-l-none  border-neutral-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   aria-label="amount"
                   type="text"
-                  placeholder="$100"
+                  placeholder={currencyConfig.label+"100"}
                   value={total}
                   min={0}
                   onInput={(event) => handleInputChange(index, event)}
@@ -515,7 +516,7 @@ const BasketItem = ({
                   className="p-0 text-center w-14 min-w-[3.5rem] h-8 rounded-l-none  border-neutral-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   aria-label="amount"
                   type="number"
-                  placeholder="$100"
+                  placeholder={currencyConfig.label+"100"}
                   value={total}
                   readOnly={toggle}
                 />
@@ -525,15 +526,15 @@ const BasketItem = ({
           <div className="flex">
             <div className="font-bold text-md sm:text-heading-7">
               {isCommonORZaqat ? (
-                "$" + total?.toLocaleString()
+                currencyConfig.label + total?.toLocaleString()
               ) : isAdeeqah ? (
-                <>{"$" + total?.toLocaleString()}</>
+                <>{currencyConfig.label + total?.toLocaleString()}</>
               ) : (
                 <>
                   <span className="font-medium text-md font-Montserrat text-neutral-500">
                     {quantity + " x "}
                   </span>
-                  {"$" + price?.toLocaleString()}
+                  {currencyConfig.label + price?.toLocaleString()}
                 </>
               )}
             </div>
@@ -569,19 +570,19 @@ const BasketTotal = ({ items, handleClick }) => {
           <div className="flex justify-between text-md sm:text-heading-7">
             <div className="font-medium sm:font-bold">Subtotal</div>
             <div className="font-medium sm:font-bold">
-              ${totalPoints?.toLocaleString()}
+              {currencyConfig.label}{totalPoints?.toLocaleString()}
             </div>
           </div>
           <div className="h-px my-3 sm:my-5 bg-neutral-300"></div>
           <div className="flex justify-between text-md sm:text-heading-7">
             <div className="font-medium sm:font-bold">Processing Fee</div>
-            <div className="font-medium sm:font-bold">${processingAmount}</div>
+            <div className="font-medium sm:font-bold">{currencyConfig.label}{processingAmount}</div>
           </div>
           <div className="h-px my-3 sm:my-5 bg-neutral-300"></div>
           <div className="flex justify-between text-md sm:text-heading-6">
             <div className="font-bold">Total</div>
             <div className="font-bold">
-              ${parseFloat(totalPoints) + parseFloat(processingAmount)}
+              {currencyConfig.label}{parseFloat(totalPoints) + parseFloat(processingAmount)}
             </div>
           </div>
         </div>

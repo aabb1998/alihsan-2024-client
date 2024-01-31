@@ -35,7 +35,6 @@ export const OurStory = (props) => {
         speed: 500,
         slidesToShow: 1,
         slidesToScroll: 1,
-        initialSlide: 1,
         nextArrow: <NextArrow />,
         prevArrow: <PrevArrow />,
     };
