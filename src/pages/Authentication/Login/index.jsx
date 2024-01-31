@@ -59,7 +59,7 @@ const Login = () => {
         // formik.values.email,
         // formik.values.password
         // );
-        
+
         const response = await dispatch(
           loginUser({
             email: formik.values.email,
@@ -103,9 +103,8 @@ const Login = () => {
             }
             await updateSelectedItems();
             navigate("/");
-          }else{
-            showErrorMessage('Invalid Credentials');
-
+          } else {
+            showErrorMessage("Invalid Credentials");
           }
         } else {
           showErrorMessage(response?.error?.message);
@@ -267,7 +266,7 @@ const Login = () => {
           </div>
 
           <SideImage
-            image="/images/banner/authentication/login.jpg"
+            image="https://alihsan.s3.ap-southeast-2.amazonaws.com/images/Sponsors/Frame+1000004271.png"
             altText="Login"
             heading="On-the Ground"
             content="We are dedicated to being on the front lines, offering direct assistance to people. We prioritize face-to-face interactions over CEOs confined to their offices."

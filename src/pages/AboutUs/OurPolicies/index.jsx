@@ -72,13 +72,13 @@ export const OurPoliciesComponent = () => {
   return (
     <div>
       {/* Updates */}
-      <PageHead title={'Our policies'}/>
+      <PageHead title={"Our policies"} />
       <div className="md:py-10">
         <section className="mb-8">
           <div className="banner-container">
             <div className="h-[160px] mb-5 overflow-hidden sm:h-64 md:h-[368px] md:mb-10 rounded-none sm:rounded-2xl md:rounded-4xl">
               <img
-                src="../images/banner/our-policies.png"
+                src="https://alihsan.s3.ap-southeast-2.amazonaws.com/images/PolicyPage/IMG_5754~photo-full+Large.jpeg"
                 alt=""
                 className="object-cover w-full h-full transition duration-500 hover:scale-110"
               />

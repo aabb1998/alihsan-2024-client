@@ -401,7 +401,7 @@ const Signup = () => {
             </div>
           </div>
           <SideImage
-            image="/images/banner/authentication/signup.jpg"
+            image="https://alihsan.s3.ap-southeast-2.amazonaws.com/images/Sponsors/Frame+1000004271.png"
             altText="Sign Up"
             heading="On-the Ground"
             content="We are dedicated to being on the front lines, offering direct assistance to people. We prioritize face-to-face interactions over CEOs confined to their offices."

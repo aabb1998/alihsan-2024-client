@@ -107,8 +107,8 @@ const HeaderTop = ({
         (action === "add"
           ? 1
           : action === "sub" && item.riceQuantity > 1
-            ? -1
-            : 0);
+          ? -1
+          : 0);
       const total =
         parseInt(item.ricePrice) * riceQuantity +
         parseInt(item.donationItemPrice);
@@ -294,8 +294,18 @@ const HeaderTop = ({
         className={`relative z-10 ${!isBasketOpen && ""}`}
         aria-label="Sidebar"
       >
-        <div className={`${isBasketOpen && 'fixed inset-0 h-screen  bg-opacity-30 overflow-hidden bg-neutral-1000'} `}>
-          <div className={`${isBasketOpen && 'fixed inset-0 z-10 h-screen w-screen overflow-hidden bg-neutral-1000/40'}`}>
+        <div
+          className={`${
+            isBasketOpen &&
+            "fixed inset-0 h-screen  bg-opacity-30 overflow-hidden bg-neutral-1000"
+          } `}
+        >
+          <div
+            className={`${
+              isBasketOpen &&
+              "fixed inset-0 z-10 h-screen w-screen overflow-hidden bg-neutral-1000/40"
+            }`}
+          >
             <Transition
               appear={true}
               show={isBasketOpen}
@@ -305,12 +315,12 @@ const HeaderTop = ({
               // leave="transition ease-in-out duration-300 transform"
               // leaveFrom="translate-x-0"
               // leaveTo="translate-x-full"
-              enter='transform transition ease-in-out duration-500 sm:duration-700'
-              enterFrom='translate-x-full'
-              enterTo='translate-x-0'
-              leave='transform transition ease-in-out duration-500 sm:duration-700'
-              leaveFrom='translate-x-0'
-              leaveTo='translate-x-full'
+              enter="transform transition ease-in-out duration-500 sm:duration-700"
+              enterFrom="translate-x-full"
+              enterTo="translate-x-0"
+              leave="transform transition ease-in-out duration-500 sm:duration-700"
+              leaveFrom="translate-x-0"
+              leaveTo="translate-x-full"
             >
               <div className="flex flex-col z-50 min-w-xs max-w-xs justify-between h-screen p-4 sm:p-5 bg-neutral-100 sm:w-[25.875rem] sm:min-w-[25.875rem] fixed right-0">
                 {/* title */}
@@ -374,7 +384,13 @@ const BasketItem = ({
   handleEdit,
 }) => {
   const checkoutType = item?.checkoutType || item?.Campaign?.checkoutType;
-  const isCommonORZaqat = ["ZAQAT", "COMMON", "WATER_CAMPAIGN", "KURBAN", item?.quantity === null ? "FEDYAH" : ""].includes(checkoutType);
+  const isCommonORZaqat = [
+    "ZAQAT",
+    "COMMON",
+    "WATER_CAMPAIGN",
+    "KURBAN",
+    item?.quantity === null ? "FEDYAH" : "",
+  ].includes(checkoutType);
   const isAdeeqah = checkoutType === "ADEEQAH_GENERAL_SACRIFICE";
   const quantity = isAdeeqah
     ? parseInt(item?.riceQuantity)
@@ -401,8 +417,8 @@ const BasketItem = ({
                   {parseInt(item.periodDays) === 7
                     ? "Weekly"
                     : parseInt(item.periodDays) === 30
-                      ? "Monthly"
-                      : `Yearly`}
+                    ? "Monthly"
+                    : `Yearly`}
                 </div>
               ) : null}
             </div>
@@ -498,7 +514,7 @@ const BasketItem = ({
                   className="p-0 text-center w-14 min-w-[3.5rem] h-8 rounded-l-none  border-neutral-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   aria-label="amount"
                   type="text"
-                  placeholder={currencyConfig.label+"100"}
+                  placeholder={currencyConfig.label + "100"}
                   value={total}
                   min={0}
                   onInput={(event) => handleInputChange(index, event)}
@@ -516,7 +532,7 @@ const BasketItem = ({
                   className="p-0 text-center w-14 min-w-[3.5rem] h-8 rounded-l-none  border-neutral-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   aria-label="amount"
                   type="number"
-                  placeholder={currencyConfig.label+"100"}
+                  placeholder={currencyConfig.label + "100"}
                   value={total}
                   readOnly={toggle}
                 />
@@ -570,19 +586,24 @@ const BasketTotal = ({ items, handleClick }) => {
           <div className="flex justify-between text-md sm:text-heading-7">
             <div className="font-medium sm:font-bold">Subtotal</div>
             <div className="font-medium sm:font-bold">
-              {currencyConfig.label}{totalPoints?.toLocaleString()}
+              {currencyConfig.label}
+              {totalPoints?.toLocaleString()}
             </div>
           </div>
           <div className="h-px my-3 sm:my-5 bg-neutral-300"></div>
           <div className="flex justify-between text-md sm:text-heading-7">
             <div className="font-medium sm:font-bold">Processing Fee</div>
-            <div className="font-medium sm:font-bold">{currencyConfig.label}{processingAmount}</div>
+            <div className="font-medium sm:font-bold">
+              {currencyConfig.label}
+              {processingAmount}
+            </div>
           </div>
           <div className="h-px my-3 sm:my-5 bg-neutral-300"></div>
           <div className="flex justify-between text-md sm:text-heading-6">
             <div className="font-bold">Total</div>
             <div className="font-bold">
-              {currencyConfig.label}{parseFloat(totalPoints) + parseFloat(processingAmount)}
+              {currencyConfig.label}
+              {parseFloat(totalPoints) + parseFloat(processingAmount)}
             </div>
           </div>
         </div>

@@ -25,12 +25,12 @@ export const WhoWeAreComponent = () => {
           <div className="banner-container">
             <div className="h-[160px] mb-5 overflow-hidden sm:h-64 md:h-[368px] md:mb-10 rounded-none sm:rounded-2xl md:rounded-4xl">
               <img
-                src="../images/banner/who-we-are-small.png"
+                src="https://alihsan.s3.ap-southeast-2.amazonaws.com/images/MegaMenuImages/1.png"
                 alt=""
                 className="object-cover w-full h-full transition duration-500 sm:hidden hover:scale-110"
               />
               <img
-                src="../images/banner/who-we-are.png"
+                src="https://alihsan.s3.ap-southeast-2.amazonaws.com/images/MegaMenuImages/1.png"
                 alt=""
                 className="object-cover w-full h-full transition duration-500 sm:block hover:scale-110"
               />
@@ -90,7 +90,7 @@ export const WhoWeAreComponent = () => {
               </div>
               <div className="flex flex-col justify-center text-start md:pl-10">
                 <h2 className="mb-3 sm:mb-5 text-heading-6 text-neutral-1000 sm:text-heading-3">
-                  Our Vision & Mission
+                  Our Vision
                 </h2>
                 <div className="text-sm font-medium text-neutral-800 sm:text-lg">
                   <p>
@@ -145,77 +145,9 @@ export const WhoWeAreComponent = () => {
             </div>
           </div>
         </section>
-        <section className="py-15">
-          <RefugeesSlider ourWorks={ourWorks}/>
-        </section>
-        <section className="py-7.5 sm:py-10 bg-accent-100">
-          <div className="container">
-            <h2 className="mb-5 text-neutral-1000 text-heading-6 sm:text-heading-3">
-              Objectives & Strategies
-            </h2>
-            <p className="text-sm font-medium text-neutral-800 sm:text-lg">
-              Al-Ihsan Foundation's objectives revolve around maintaining and
-              operating a permanent and active not-for-profit benevolent public
-              relief organisation. Our defining principles are:
-            </p>
-            <div className="w-full h-[12.5rem] sm:h-[47.5rem] overflow-hidden my-5 sm:my-10">
-              <img
-                src="/images/banner/objectives-and-strategies.jpg"
-                alt="Objectives & Strategies"
-                className="object-cover w-full h-full rounded-2xl sm:rounded-4xl"
-              />
-            </div>
-
-            <ul className="ml-6 font-bold list-disc text-button-md sm:text-heading-7 text-neutral-700">
-              <li>To provide local and international aid.</li>
-              <li>
-                To serve those in need regardless of race, religion, social
-                background, age, health, or political views.
-              </li>
-              <li>
-                To provide charity and any form of help that alleviates
-                suffering or deprivation, and promotes human dignity and
-                personal integrity in all their dimensions.
-              </li>
-              <li>
-                To work with and assist people in need whilst respecting their
-                dignity, sharing our hope, and encouraging them to take control
-                of their own future.
-              </li>
-              <li>
-                To promote informed discussion on the plight of those in need
-                and to advocate improved services and facilities for them; and.
-              </li>
-              <li>
-                Respond to the needs of those in the community who are
-                unfortunate or helpless and need general assistance.
-              </li>
-              <li>
-                To respond to humanitarian emergencies rapidly and provide aid
-                and care to those who need it.
-              </li>
-              <li>
-                To build and maintain orphanages and orphan programs throughout
-                the world.
-              </li>
-              <li>Build and maintain community and youth programs.</li>
-              <li>
-                To build and maintain special needs programs and facilities.
-              </li>
-              <li>
-                To relieve sickness, suffering, or distress especially for the
-                casualties of war.
-              </li>
-              <li>
-                To build and maintain educational facilities and programs.
-              </li>
-              <li>
-                To empower communities through education and self-sustainability
-                programs.
-              </li>
-            </ul>
-          </div>
-        </section>
+        {/* <section className="py-15">
+          <RefugeesSlider ourWorks={ourWorks} />
+        </section> */}
       </div>
     </div>
   );

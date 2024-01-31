@@ -52,31 +52,35 @@ export const MenuData = [
     menu: "aboutus",
     subMenu: [
       {
-        image: "/images/banner/nav/about-1.jpg",
+        image:
+          "https://alihsan.s3.ap-southeast-2.amazonaws.com/images/MegaMenuImages/1.png",
         title: "Who We Are",
         description:
-          "Al-Ihsan Foundation International Limited (formed in 2014) is a non-profit public relief organisation dedicated to assisting all people and families in need. The Arabic word Al-Ihsan means “perfection” or “excellence.”",
+          "Discover the story behind Alihsan Foundation. Learn about our mission, vision, values, and the team dedicated to making a difference in the lives of others.",
         to: "/about-us/who-we-are",
       },
       {
-        image: "/images/banner/nav/about-2.jpg",
+        image:
+          "https://alihsan.s3.ap-southeast-2.amazonaws.com/images/MegaMenuImages/2.png",
         title: "Financial Reports",
         description:
-          "Al-Ihsan Foundation International Limited (formed in 2014) is a non-profit public relief organisation dedicated to assisting all people and families in need. The Arabic word Al-Ihsan means “perfection” or “excellence.”",
+          "Explore Alihsan Foundation's financial reports for a detailed account of our financial stewardship, demonstrating our commitment to responsible and ethical financial management.",
         to: "/financial-reports",
       },
       {
-        image: "/images/banner/nav/about-1.jpg",
+        image:
+          "https://alihsan.s3.ap-southeast-2.amazonaws.com/images/MegaMenuImages/3.png",
         title: "Our Policies",
         description:
-          "Al-Ihsan Foundation International Limited (formed in 2014) is a non-profit public relief organisation dedicated to assisting all people and families in need. The Arabic word Al-Ihsan means “perfection” or “excellence.”",
+          "Learn about the policies governing Alihsan Foundation’s operations. Our commitment to transparency and accountability is reflected in our organisational policies.",
         to: "/about-us/our-policies",
       },
       {
-        image: " /images/banner/nav/about-2.jpg",
+        image:
+          "https://alihsan.s3.ap-southeast-2.amazonaws.com/images/MegaMenuImages/4.png",
         title: "Media",
         description:
-          "Al-Ihsan Foundation International Limited (formed in 2014) is a non-profit public relief organisation dedicated to assisting all people and families in need. The Arabic word Al-Ihsan means “perfection” or “excellence.”",
+          "Stay informed about Alihsan Foundation's latest news, events, and stories. Our media section provides updates and insights into the impact of our work.",
         to: "/media",
       },
     ],
@@ -89,29 +93,24 @@ export const MenuData = [
     subMenu: [
       {
         title: "Fundraise With Us",
-        image: "/images/banner/nav/get-involved-1.jpg",
-        description: `Al-Ihsan Foundation International Limited (formed in 2014) is a
-          non-profit public relief organisation dedicated to assisting all
-          people and families in need. The Arabic word Al-Ihsan means
-          “perfection” or “excellence.”`,
+        image:
+          "https://alihsan.s3.ap-southeast-2.amazonaws.com/images/MegaMenuImages/5.png",
+        description: `Help raise funds for Alihsan Foundation’s initiatives. Whether it’s through events or personal challenges, your fundraising efforts support our vital community work.`,
         to: "/fundraise-with-us",
       },
       {
         title: "Become A Sponsor",
-        image: "/images/banner/nav/get-involved-2.jpg",
-        description: `Al-Ihsan Foundation International Limited (formed in 2014) is a
-          non-profit public relief organisation dedicated to assisting all
-          people and families in need. The Arabic word Al-Ihsan means
-          “perfection” or “excellence.”`,
+        image:
+          "https://alihsan.s3.ap-southeast-2.amazonaws.com/images/MegaMenuImages/6.png",
+        description:
+          "Support Alihsan Foundation's mission by becoming a sponsor. Your sponsorship helps fund our programs, making a lasting impact in the communities we serve.",
         to: "/become-a-sponsor",
       },
       {
         title: "Volunteer With Us",
         image: "/images/banner/nav/get-involved-3.jpg",
-        description: `Al-Ihsan Foundation International Limited (formed in 2014) is a
-          non-profit public relief organisation dedicated to assisting all
-          people and families in need. The Arabic word Al-Ihsan means
-          “perfection” or “excellence.”`,
+        description:
+          "Join the Alihsan Foundation family as a volunteer. Make a difference in the community by contributing your time, skills, and passion to our various programs and events.",
         to: "/volunteer-with-us",
       },
     ],
@@ -123,28 +122,24 @@ export const MenuData = [
       {
         title: "Contact Us",
         image: "/images/banner/nav/contact-1.jpg",
-        description: `Al-Ihsan Foundation International Limited (formed in 2014) is a
-non-profit public relief organisation dedicated to assisting all
-people and families in need. The Arabic word Al-Ihsan means
-“perfection” or “excellence.”`,
+        description:
+          "Connect with Alihsan Foundation for inquiries, support, or feedback. Our dedicated team is here to assist you with any questions or information you may need.",
         to: "/contact-and-complaints/get-in-touch",
       },
       {
         title: "Technical Support",
-        image: "/images/banner/nav/contact-2.jpg",
-        description: `Al-Ihsan Foundation International Limited (formed in 2014) is a
-non-profit public relief organisation dedicated to assisting all
-people and families in need. The Arabic word Al-Ihsan means
-“perfection” or “excellence.”`,
+        image:
+          "https://alihsan.s3.ap-southeast-2.amazonaws.com/images/MegaMenuImages/7.png",
+        description:
+          "Experiencing technical issues on our website or with our services? Contact our Technical Support team for assistance in navigating and resolving any technical problems you encounter.",
         to: "/technical-support",
       },
       {
         title: "Complaints",
-        image: "/images/banner/nav/contact-3.jpg",
-        description: `Al-Ihsan Foundation International Limited (formed in 2014) is a
-non-profit public relief organisation dedicated to assisting all
-people and families in need. The Arabic word Al-Ihsan means
-“perfection” or “excellence.”`,
+        image:
+          "https://alihsan.s3.ap-southeast-2.amazonaws.com/images/MegaMenuImages/8.png",
+        description:
+          "Alihsan Foundation values your feedback. If you have any complaints or concerns about our services or activities, please reach out for a prompt and fair resolution.",
         to: "/contact-and-complaints/complaints",
       },
     ],
@@ -215,21 +210,58 @@ export const volunteerList = [
 ];
 
 export const sponsorList = [
-  { id: 1, logo: "1.svg" },
-  { id: 2, logo: "2.svg" },
-  { id: 3, logo: "3.svg" },
-  { id: 4, logo: "4.svg" },
-  { id: 5, logo: "5.svg" },
-  { id: 1, logo: "1.svg" },
-  { id: 2, logo: "2.svg" },
-  { id: 3, logo: "3.svg" },
-  { id: 4, logo: "4.svg" },
-  { id: 5, logo: "5.svg" },
-  { id: 1, logo: "1.svg" },
-  { id: 2, logo: "2.svg" },
-  { id: 3, logo: "3.svg" },
-  { id: 4, logo: "4.svg" },
-  { id: 5, logo: "5.svg" },
+  {
+    id: 1,
+    logo: "https://alihsan.s3.ap-southeast-2.amazonaws.com/images/Sponsors/1.svg",
+  },
+  {
+    id: 2,
+    logo: "https://alihsan.s3.ap-southeast-2.amazonaws.com/images/Sponsors/10.svg",
+  },
+  {
+    id: 3,
+    logo: "https://alihsan.s3.ap-southeast-2.amazonaws.com/images/Sponsors/11.svg",
+  },
+  {
+    id: 4,
+    logo: "https://alihsan.s3.ap-southeast-2.amazonaws.com/images/Sponsors/12.svg",
+  },
+  {
+    id: 5,
+    logo: "https://alihsan.s3.ap-southeast-2.amazonaws.com/images/Sponsors/13.svg",
+  },
+  {
+    id: 1,
+    logo: "https://alihsan.s3.ap-southeast-2.amazonaws.com/images/Sponsors/2.svg",
+  },
+  {
+    id: 2,
+    logo: "https://alihsan.s3.ap-southeast-2.amazonaws.com/images/Sponsors/3.svg",
+  },
+  {
+    id: 3,
+    logo: "https://alihsan.s3.ap-southeast-2.amazonaws.com/images/Sponsors/4.svg",
+  },
+  {
+    id: 4,
+    logo: "https://alihsan.s3.ap-southeast-2.amazonaws.com/images/Sponsors/5.svg",
+  },
+  {
+    id: 5,
+    logo: "https://alihsan.s3.ap-southeast-2.amazonaws.com/images/Sponsors/6.svg",
+  },
+  {
+    id: 1,
+    logo: "https://alihsan.s3.ap-southeast-2.amazonaws.com/images/Sponsors/7.svg",
+  },
+  {
+    id: 2,
+    logo: "https://alihsan.s3.ap-southeast-2.amazonaws.com/images/Sponsors/8.svg",
+  },
+  {
+    id: 3,
+    logo: "https://alihsan.s3.ap-southeast-2.amazonaws.com/images/Sponsors/9.svg",
+  },
 ];
 
 export const technicalRequirements = [
@@ -326,7 +358,11 @@ export const followUs = [
   {
     url: "https://twitter.com/Alihsan_AU",
     label: "Navigate to twitter",
-    icon: <div className="w-4 h-4 flex items-center justify-center text-white bg-[#C0BEB9] rounded"><TwitterIcon iconSize={10} /></div> ,
+    icon: (
+      <div className="w-4 h-4 flex items-center justify-center text-white bg-[#C0BEB9] rounded">
+        <TwitterIcon iconSize={10} />
+      </div>
+    ),
   },
   {
     url: "https://www.linkedin.com/company/alihsanfoundation/about/",
@@ -375,18 +411,23 @@ export const adminNavigationItems = [
     urls: ["/admin/campaigns", "/admin/campaign/"],
   },
   // { icon: <StatisticsIcon />, label: "Statistics", to: "/", urls: [] },
-  { icon: <UsersIcon />, label: "Admins", to: "/admin/admins", urls: ['/admin/admins'] },
+  {
+    icon: <UsersIcon />,
+    label: "Admins",
+    to: "/admin/admins",
+    urls: ["/admin/admins"],
+  },
   {
     icon: <DollarsignIcon />,
     label: "Donations",
     to: "/admin/donations",
-    urls: ["/admin/donations","/admin/donation/"],
+    urls: ["/admin/donations", "/admin/donation/"],
   },
   {
     icon: <CreditcardIcon />,
     label: "Subscriptions",
     to: "/admin/subscriptions",
-    urls: ["/admin/subscriptions","/admin/subscription/"],
+    urls: ["/admin/subscriptions", "/admin/subscription/"],
   },
   {
     icon: <NavigationmenuIcon />,
@@ -421,7 +462,12 @@ export const adminNavigationItems = [
       },
     ],
   },
-  { icon: <UserIcon />, label: "Customers", to: "/admin/customers", urls: ["/admin/customers"] },
+  {
+    icon: <UserIcon />,
+    label: "Customers",
+    to: "/admin/customers",
+    urls: ["/admin/customers"],
+  },
   {
     icon: <AirplayIcon />,
     label: "Blogs",
@@ -515,7 +561,6 @@ export const adminFormLists = {
     { label: "Amount", key: "amount" },
     { label: "Phone Number", key: "phone" },
     { label: "Status", key: "status" },
-
   ],
   "/admin/sponsors": [
     { label: "First Name", key: "firstName", isSortable: true },
@@ -523,7 +568,6 @@ export const adminFormLists = {
     { label: "Company Name", key: "companyName", isSortable: true },
     { label: "Phone Number", key: "phone", isSortable: true },
     { label: "Status", key: "status" },
-
   ],
   "/admin/volunteers": [
     { label: "First Name", key: "firstName", isSortable: true },
@@ -645,7 +689,6 @@ export const formDetailsValues = {
       isImage: true,
     },
     { label: "Solution", key: "adminReason" },
-
   ],
   "/admin/complaints/": [
     { label: "Reference Number", key: "referenceNumber" },
@@ -658,7 +701,6 @@ export const formDetailsValues = {
     { label: "Description", key: "description" },
     { label: "Created At", key: "CreatedAt" },
     { label: "Admin Reason", key: "adminReason" },
-
   ],
   "/admin/post/": [
     { label: "Title", key: "title" },
@@ -673,7 +715,6 @@ export const formDetailsValues = {
     { label: "Created Date", key: "createdDate" },
   ],
 };
-
 
 export const ProjectStatuses = [
   {
@@ -703,5 +744,5 @@ export const ProjectStatuses = [
 ];
 
 export const currencyConfig = {
-	label: process.env.REACT_APP_CURRENCY_LABEL || '$',
-}
+  label: process.env.REACT_APP_CURRENCY_LABEL || "$",
+};

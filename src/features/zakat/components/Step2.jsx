@@ -33,22 +33,21 @@ export default function Step2() {
           </div>{" "}
           <span
             className="cursor-pointer text-neutral-700 hover:text-primary-300"
-            data-tooltip-id="my-tooltip"
+            data-tooltip-id="cash-on-hand"
             data-tooltip-place="bottom-end"
           >
             <HelpCircleIcon iconSize={16} strokeWidth={2} />
             <Tooltip
-              id="my-tooltip"
+              id="cash-on-hand"
               className="opacity-100 tooltip"
               style={{ backgroundColor: "#fff", padding: "1rem" }}
             >
               <div>
                 <h2 className="mb-2 text-neutral-1000 text-button-md">
-                  Text Title Goes Here
+                  Cash on Hand
                 </h2>
                 <p className="text-xs font-medium text-neutral-600">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.{" "}
+                  Enter the total amount of physical cash you currently possess.
                 </p>
               </div>
             </Tooltip>
@@ -95,22 +94,22 @@ export default function Step2() {
           </div>{" "}
           <span
             className="cursor-pointer text-neutral-700 hover:text-primary-300"
-            data-tooltip-id="my-tooltip"
+            data-tooltip-id="balance-held-in-bank-accounts"
             data-tooltip-place="bottom-end"
           >
             <HelpCircleIcon iconSize={16} strokeWidth={2} />
             <Tooltip
-              id="my-tooltip"
+              id="balance-held-in-bank-accounts"
               className="opacity-100 tooltip"
               style={{ backgroundColor: "#fff", padding: "1rem" }}
             >
               <div>
                 <h2 className="mb-2 text-neutral-1000 text-button-md">
-                  Text Title Goes Here
+                  Balance Held in Bank Accounts
                 </h2>
                 <p className="text-xs font-medium text-neutral-600">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.{" "}
+                  Input the total sum in your bank accounts, including savings
+                  and checking.
                 </p>
               </div>
             </Tooltip>
@@ -221,37 +220,39 @@ export default function Step2() {
 }
 
 const MetalDisplay = ({ value, unit, type, onEdit, onDelete }) => {
-  const {  prices } = useSelector((state) => state.zakatCalculator);
+  const { prices } = useSelector((state) => state.zakatCalculator);
 
-  const usdToUnit = (amount) =>{
-    return  unit === "AUD" ? amount / prices.audToUsd : amount;
-   }
-  return value > 0 && (
-    <div
-      className={
-        "relative flex justify-between py-3 pr-3 mb-3 overflow-hidden border rounded-lg sm:py-4 pl-13 sm:pl-20 sm:pr-4 " +
-        (type === "silver"
-          ? "border-primary-300 bg-neutral-200"
-          : "border-accent-300 bg-accent-100")
-      }
-    >
-      <Img
-        src={`/images/illustration/zakat-${type}.svg`}
-        className="absolute top-0 left-0 w-11 h-11 sm:w-auto sm:h-auto"
-        alt="zakat silver"
-      />
-      <div className="text-button-md sm:text-heading-7">
-        Zakatable {type === "silver" ? "Silver" : "Gold"}:{" "}
-        {showMoney(usdToUnit(value))} {unit}
-      </div>
-      <div className="flex gap-3">
-        <div className="cursor-pointer">
-          <EditIcon onClick={onEdit} />
+  const usdToUnit = (amount) => {
+    return unit === "AUD" ? amount / prices.audToUsd : amount;
+  };
+  return (
+    value > 0 && (
+      <div
+        className={
+          "relative flex justify-between py-3 pr-3 mb-3 overflow-hidden border rounded-lg sm:py-4 pl-13 sm:pl-20 sm:pr-4 " +
+          (type === "silver"
+            ? "border-primary-300 bg-neutral-200"
+            : "border-accent-300 bg-accent-100")
+        }
+      >
+        <Img
+          src={`/images/illustration/zakat-${type}.svg`}
+          className="absolute top-0 left-0 w-11 h-11 sm:w-auto sm:h-auto"
+          alt="zakat silver"
+        />
+        <div className="text-button-md sm:text-heading-7">
+          Zakatable {type === "silver" ? "Silver" : "Gold"}:{" "}
+          {showMoney(usdToUnit(value))} {unit}
         </div>
-        <div className="cursor-pointer">
-          <TrashIcon onClick={onDelete} />
+        <div className="flex gap-3">
+          <div className="cursor-pointer">
+            <EditIcon onClick={onEdit} />
+          </div>
+          <div className="cursor-pointer">
+            <TrashIcon onClick={onDelete} />
+          </div>
         </div>
       </div>
-    </div>
+    )
   );
 };

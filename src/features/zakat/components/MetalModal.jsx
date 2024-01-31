@@ -232,23 +232,22 @@ export default function MetalModal({ visible, onRequestClose, metal }) {
                       </div>
                       <span
                         className="cursor-pointer text-neutral-700 hover:text-primary-300"
-                        data-tooltip-id="my-tooltip"
+                        data-tooltip-id="karat"
                         data-tooltip-place="bottom-end"
                       >
                         <HelpCircleIcon iconSize={16} strokeWidth={2} />
                         <Tooltip
-                          id="my-tooltip"
+                          id="karat"
                           className="opacity-100 tooltip"
                           style={{ backgroundColor: "#fff", padding: "1rem" }}
                         >
                           <div>
                             <h2 className="mb-2 text-neutral-1000 text-button-md">
-                              Text Title Goes Here
+                              What is a Karat:
                             </h2>
                             <p className="text-xs font-medium text-neutral-600">
-                              Lorem ipsum dolor sit amet, consectetur adipiscing
-                              elit, sed do eiusmod tempor incididunt ut labore
-                              et dolore magna aliqua.{" "}
+                              Specify the purity level of your gold or silver
+                              holdings, measured in karats.
                             </p>
                           </div>
                         </Tooltip>

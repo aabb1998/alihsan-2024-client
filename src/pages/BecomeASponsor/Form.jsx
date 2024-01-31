@@ -49,11 +49,10 @@ export const Form = () => {
     validationSchema: validationSchema,
     onSubmit: async (values, { resetForm, setErrors }) => {
       const isValid = getCountryLengths(values.phone, countryCode);
-      setDisable(true)
+      setDisable(true);
       if (!isValid) {
         setErrors({ phone: "Invalid phone number" });
         setDisable(false);
-
       } else {
         try {
           const response = await dispatch(addSponsor(formik.values));
@@ -61,11 +60,9 @@ export const Form = () => {
             showSuccessMessage(response?.payload?.message);
             resetForm();
             setDisable(false);
-
           } else {
             showErrorMessage(response?.payload?.message);
             setDisable(false);
-
           }
         } catch (error) {}
       }
@@ -80,7 +77,7 @@ export const Form = () => {
   return (
     <div className="container">
       <div className="py-7.5 px-4 sm:p-10 my-10 sm:mt-10 sm:mb-20 bg-neutral-200 rounded-2.5xl">
-        <h2 className="mb-5 text-heading-4">Apply Now</h2>
+        <h2 className="mb-5 text-heading-4">Enquire Now</h2>
         <form onSubmit={formik.handleSubmit} id="sponsor" autoComplete="off">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 last:bg-primary-300">
             <div className="flex flex-col mb-5 sm:mb-6 form-group grow">

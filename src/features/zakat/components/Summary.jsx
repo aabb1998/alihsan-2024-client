@@ -1,40 +1,42 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { showMoney } from "../utils/money";
 import { formatPrice } from "../../../utils/helper";
+import { zakatStep } from "../slice";
 
 function showDate(d) {
   return d.toLocaleTimeString() + " " + d.toLocaleDateString();
 }
 
 const Summary = () => {
+  const dispatch = useDispatch();
   const { amounts, prices } = useSelector((state) => state.zakatCalculator);
 
   const unit = amounts.unit;
-  const total = arrayData => arrayData.reduce((sum, { value }) => sum + value, 0);
-
+  const total = (arrayData) =>
+    arrayData.reduce((sum, { value }) => sum + value, 0);
 
   const wealth =
     amounts.cash +
     amounts.bank +
     total(amounts.silver) +
-    total( amounts.gold) +
+    total(amounts.gold) +
     amounts.investmentProfit +
     amounts.shareResale +
     amounts.merchandise +
     amounts.loan +
     amounts.other;
 
-  const usdToUnit = (amount) =>{
-   return  unit === "AUD" ? amount / prices.audToUsd : amount;
-  }
+  const usdToUnit = (amount) => {
+    return unit === "AUD" ? amount / prices.audToUsd : amount;
+  };
 
   const nisabSilver = 612.36 * prices.silverUsd;
   const nisabGold = 87.48 * prices.goldUsd;
 
   const zakatableAmount = (nisabSilver, wealth) => {
     return parseFloat(usdToUnit(nisabSilver)) < parseFloat(wealth)
-      ? (wealth / 40)
+      ? wealth / 40
       : 0;
   };
   return (
@@ -85,6 +87,9 @@ const Summary = () => {
             Silver Nisab: {showMoney(usdToUnit(nisabSilver))} {unit}
           </div>
         </div>
+        <span onClick={() => dispatch(zakatStep(-3))}>
+          Cash: ${amounts?.cash}
+        </span>
       </div>
       {/* {step === 5 && (
         <Button
