@@ -5,24 +5,17 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 import Button from "../../../components/Button";
 import { SnackMessages } from "../../../components/Toast";
-import {
-  addStory,
-  updateStory,
-} from "../../../features/adminStories/adminStoriesSlice";
 import { FormikValidationError } from "../../../features/Common/FormikValidationError";
 import { Dropdown } from "../../../components/Dropdown";
 import TextArea from "../../../components/TextArea";
 import { countriesList } from "../../../utils/countries";
-import {
-  addCountry,
-  addOrUpdate,
-} from "../../../features/adminCountry/adminCountrySlice";
+import { addOrUpdate } from "../../../features/adminCountry/adminCountrySlice";
 import ImageUpload from "../../../components/ImageUpload";
 
 const { showSuccessMessage, showErrorMessage } = SnackMessages();
 const validationSchema = yup.object({
-  countryName: yup.string().required("Country Name is required"),
-  description: yup.string().required("Description is required"),
+  countryName: yup.string().trim().required("Country Name is required"),
+  description: yup.string().trim().required("Description is required"),
   image: yup.string().required("Image is required"),
 });
 
@@ -45,11 +38,10 @@ const AddOrCreateModal = ({ onClose, item }) => {
         formData.append("countryCode", values.countryCode);
         formData.append("countryName", values.countryName);
         formData.append("description", values.description);
-        formData.append("image", values.image);
+        formData.append("image", values.image, `images.png`);
         const response = await dispatch(
           addOrUpdate({ data: formData, id: item?.id })
         );
-        console.log(response, "response");
         if (response?.payload?.success) {
           resetForm();
           onClose();
@@ -72,7 +64,7 @@ const AddOrCreateModal = ({ onClose, item }) => {
   };
 
   const handleChange = (e) => {
-    const country=countriesList.find((item) => item.code === e.value);
+    const country = countriesList.find((item) => item.code === e.value);
     formik.setFieldValue("countryName", country?.name);
     formik.setFieldValue("countryCode", e.value);
   };
@@ -81,7 +73,6 @@ const AddOrCreateModal = ({ onClose, item }) => {
     const { name, value } = e.target;
     formik.setFieldValue(name, value);
   };
-
 
   const getCroppedImage = async (url) => {
     const response = await fetch(url);
@@ -138,84 +129,78 @@ const AddOrCreateModal = ({ onClose, item }) => {
                       <CloseIcon iconSize={24} onClick={onClose} />
                     </button>
                   </div>
-                  <form
-                    onSubmit={formik.handleSubmit}
-                    className=""
-                  >
+                  <form onSubmit={formik.handleSubmit} className="">
                     <div className="flex flex-col gap-6">
                       <div className="flex flex-col gap-6 pr-2 overflow-auto max-h-96">
+                        <div className="form-group">
+                          <label htmlFor="campaignId" className="block">
+                            Country<span className="text-red-300">*</span>
+                          </label>
 
-                          <div className="form-group">
-                            <label htmlFor="campaignId" className="block">
-                              Country<span className="text-red-300">*</span>
-                            </label>
-
-                            <Dropdown
-                              value={formik.values.countryCode}
-                              onChange={handleChange}
-                              options={countriesList?.map((e) => ({
-                                label: e.name,
-                                value: e.code,
-                              }))}
-                              name="countryName"
-                              defaultSelect={"Select"}
-                              className={'!w-full'}
-                            />
-                            {formik.touched.countryName &&
-                              Boolean(formik.errors.countryName) && (
-                                <FormikValidationError
-                                  formikTouched={formik.touched.countryName}
-                                  formikError={formik.errors.countryName}
-                                />
-                              )}
-                          </div>
-
-
-                          <div className="form-group">
-                            <label htmlFor="description" className="block">
-                              Description{""}<span className="text-red-300">*</span>
-                            </label>
-                            <TextArea
-                              handleChange={handleInputChange}
-															maxLength={100}
-                              name="description"
-                              value={formik.values.description}
-                            />
-                            {formik.touched.description &&
-                              Boolean(formik.errors.description) && (
-                                <FormikValidationError
-                                  formikTouched={formik.touched.description}
-                                  formikError={formik.errors.description}
-                                />
-                              )}
-
+                          <Dropdown
+                            value={formik.values.countryCode}
+                            onChange={handleChange}
+                            options={countriesList?.map((e) => ({
+                              label: e.name,
+                              value: e.code,
+                            }))}
+                            name="countryName"
+                            defaultSelect={"Select"}
+                            className={"!w-full"}
+                          />
+                          {formik.touched.countryName &&
+                            Boolean(formik.errors.countryName) && (
+                              <FormikValidationError
+                                formikTouched={formik.touched.countryName}
+                                formikError={formik.errors.countryName}
+                              />
+                            )}
                         </div>
 
-                          <div className="form-group">
-                            <label htmlFor="description" className="block">
-                              Image{""}<span className="text-red-300">*</span>
-                            </label>
-                            <ImageUpload
-                              imagePreviews={imagePreviews}
-                              name={"images"}
-                              handleImageDelete={(event) =>
-                                handleImageDelete(event)
-                              }
-                              handleImageChange={(event) =>
-                                handleImageChange(event)
-                              }
-                              getCroppedImage={(e) => getCroppedImage(e)}
+                        <div className="form-group">
+                          <label htmlFor="description" className="block">
+                            Description{""}
+                            <span className="text-red-300">*</span>
+                          </label>
+                          <TextArea
+                            handleChange={handleInputChange}
+                            maxLength={100}
+                            name="description"
+                            value={formik.values.description}
+                          />
+                          {formik.touched.description &&
+                            Boolean(formik.errors.description) && (
+                              <FormikValidationError
+                                formikTouched={formik.touched.description}
+                                formikError={formik.errors.description}
+                              />
+                            )}
+                        </div>
 
-                            />
-                            {formik.touched.image &&
-                              Boolean(formik.errors.image) && (
-                                <FormikValidationError
-                                  formikTouched={formik.touched.image}
-                                  formikError={formik.errors.image}
-                                />
-                              )}
-                          </div>
-
+                        <div className="form-group">
+                          <label htmlFor="description" className="block">
+                            Image{""}
+                            <span className="text-red-300">*</span>
+                          </label>
+                          <ImageUpload
+                            imagePreviews={imagePreviews}
+                            name={"images"}
+                            handleImageDelete={(event) =>
+                              handleImageDelete(event)
+                            }
+                            handleImageChange={(event) =>
+                              handleImageChange(event)
+                            }
+                            getCroppedImage={(e) => getCroppedImage(e)}
+                          />
+                          {formik.touched.image &&
+                            Boolean(formik.errors.image) && (
+                              <FormikValidationError
+                                formikTouched={formik.touched.image}
+                                formikError={formik.errors.image}
+                              />
+                            )}
+                        </div>
                       </div>
 
                       <div className="flex justify-between gap-4 sm:gap-5">
@@ -229,8 +214,9 @@ const AddOrCreateModal = ({ onClose, item }) => {
                           variant={"primary"}
                           className="flex-grow"
                           // label={`${item ? "Submit" : "Add Country"}`}
-                          label={'Submit'}
+                          label={"Submit"}
                           type="submit"
+                          disabled={formik.isSubmitting}
                         />
                       </div>
                     </div>

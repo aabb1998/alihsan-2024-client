@@ -11,15 +11,14 @@ import Img from "../../components/Image";
 import { currencyConfig } from "../../utils/constants";
 const initialState = {
   id: "",
-  sort: "createdAt",
+  sort: "total",
   order: "desc",
   search: "",
   period: "alltime",
 };
 
 export const TopDonations = (props) => {
-  console.log(props,'props');
-  const { topDonations,campaign } = props;
+  const { topDonations, campaign } = props;
   const id = campaign?.id;
   const [period, setPeriod] = useState("allTime");
   const [isOpen, setIsOpen] = useState(false);
@@ -46,13 +45,13 @@ export const TopDonations = (props) => {
     setPeriod(e.target.value);
     setSelectedFilters({ ...selectedFilters, period: e.target.value, id: id });
     dispatch(
-      getTopDonation({ ...selectedFilters, period: e.target.value, id: id })
+      getTopDonation({ ...selectedFilters, period: e.target.value, id: id }),
     );
   };
   const handleSearch = (e) => {
     setSelectedFilters({ ...selectedFilters, search: e.target.value, id: id });
     dispatch(
-      getTopDonation({ ...selectedFilters, search: e.target.value, id: id })
+      getTopDonation({ ...selectedFilters, search: e.target.value, id: id }),
     );
   };
   const getDataPagination = (e) => {
@@ -62,7 +61,7 @@ export const TopDonations = (props) => {
     if (isOpen) dispatch(getTopDonation({ ...initialState, id: id }));
   }, [isOpen]);
   return (
-    <div className="border rounded-4xl border-neutral-300 px-4 py-6 md:p-7.5 bg-white">
+    <div className="border rounded-xl border-neutral-300 px-4 py-6 md:p-7.5 bg-white">
       <div className="flex items-center justify-between mb-7.5">
         <h5 className="text-button-lg md:text-heading-5">Top Donors</h5>
         <Link
@@ -79,7 +78,7 @@ export const TopDonations = (props) => {
             value="allTime"
             label="All Time"
             className={"tab-btn text-sm !px-0 capitalize"}
-            onClick={(e) => setPeriod(e.target.value)}
+            onClick={handlePeriod}
             variant={period === "allTime" ? `primaryFull` : `secondaryTextFull`}
           />
 
@@ -87,7 +86,7 @@ export const TopDonations = (props) => {
             value="weekly"
             label="Weekly"
             className={"tab-btn text-sm !px-0"}
-            onClick={(e) => setPeriod(e.target.value)}
+            onClick={handlePeriod}
             variant={period === "weekly" ? `primaryFull` : `secondaryTextFull`}
           />
 
@@ -95,33 +94,43 @@ export const TopDonations = (props) => {
             value="monthly"
             label="Monthly"
             className={"tab-btn text-sm !px-0"}
-            onClick={(e) => setPeriod(e.target.value)}
+            onClick={handlePeriod}
             variant={period === "monthly" ? `primaryFull` : `secondaryTextFull`}
           />
         </div>
         <div className="flex flex-col gap-3">
           {topDonations?.[period]?.length ? (
             topDonations?.[period]?.map((donation) => (
-              <div className="flex items-center justify-between my-1 md:my-1.5">
+              <div
+                className="flex items-center justify-between my-1 md:my-1.5"
+                key={donation.id}
+              >
                 <div className="flex items-center gap-3">
                   <div>
                     <Img
-                      className="object-cover rounded-full w-9 md:w-11 md:h-11"
-                      src={"/images/avatar/avatar-2.jpg"}
+                      className="object-cover w-6 md:w-6 md:h-6"
+                      src={"/images/avatar/charity.png"}
                       alt=""
                     />
                   </div>
                   <div>
-                    <div className="text-button-md md:text-heading-7 line-clamp-1 ">
-                      {donation?.firstName} {donation?.lastName}
+                    <div className="text-button-md md:text-button-md line-clamp-1 ">
+                      {donation?.firstName ? (
+                        <>
+                          {donation?.firstName} {donation?.lastName}
+                        </>
+                      ) : (
+                        <>Anonymous</>
+                      )}
                     </div>
                     <div className="text-xs md:text-sm text-neutral-500">
-                      Last Donation:{donation?.displayTime}
+                      {donation?.displayTime}
                     </div>
                   </div>
                 </div>
-                <div className="font-bold heading-5">
-                  {currencyConfig.label}{donation?.total?.toLocaleString()}
+                <div className="font-bold heading-7">
+                  {currencyConfig.label}
+                  {donation?.total?.toLocaleString()}
                 </div>
               </div>
             ))

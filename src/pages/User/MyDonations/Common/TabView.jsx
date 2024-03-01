@@ -23,7 +23,7 @@ function DonationsTab() {
                                 <option value="1">Type</option>
                             </select>
                             <button className="text-sm font-bold !mb-0">
-                                Clear Filter
+                                Clear
                             </button>
                         </div>
                         <div className='flex flex-row gap-1 sm:hidden'>
@@ -57,7 +57,7 @@ function DonationsTab() {
                                 <option value="1">Type</option>
                             </select>
                             <button className="text-sm font-bold !mb-0">
-                                Clear Filter
+                                Clear
                             </button>
                         </div>
                         <div className='flex flex-row gap-1 sm:hidden'>

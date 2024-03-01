@@ -18,14 +18,17 @@ import * as yup from "yup";
 const validationSchema = yup.object({
   firstName: yup
     .string("Enter your first name")
+    .trim()
     .required("First name is required")
     .max(40, "First name must be at most 40 characters"),
   lastName: yup
     .string("Enter your last name")
+    .trim()
     .required("Last name is required")
     .max(40, "Last name must be at most 40 characters"),
   displayName: yup
     .string("Enter your Username")
+    .trim()
     .required("Username is required")
     .max(40, "Username must be at most 40 characters"),
   email: yup
@@ -37,7 +40,7 @@ const validationSchema = yup.object({
 
 const { showSuccessMessage, showErrorMessage } = SnackMessages();
 const ProfileSection = () => {
-  const profile = useSelector((state) => state.profile);
+  const userProfile = useSelector((state) => state.profile.user);
   const [isLoading, setIsLoading] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
 
@@ -81,8 +84,8 @@ const ProfileSection = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (profile) formik.setValues(profile);
-  }, [profile]);
+    if (userProfile) formik.setValues(userProfile);
+  }, [userProfile]);
 
   return (
     <>
@@ -168,7 +171,7 @@ const ProfileSection = () => {
               className=""
               onClick={() => navigate("/")}
               label="Cancel"
-              variant={'secondaryOutline'}
+              variant={"secondaryOutline"}
             />
             {isLoading ? (
               <PrimaryLoadingButton additionalButtonClasses="w-full" />
@@ -186,8 +189,9 @@ const ProfileSection = () => {
               type="button"
               className="mx-auto font-bold text-red-300 md:mx-0"
               onClick={() => setDeleteModal(true)}
-              label={'Delete Account'}
-              variant={'none'}
+              label={"Delete Account"}
+              variant={"none"}
+              disabled={formik.isSubmitting}
             />
           </div>
         </div>

@@ -11,7 +11,7 @@ const ProjectDetails = () => {
   }, []);
   return (
     <>
-      <PageHead title={"Project details"} />
+      {/* <PageHead title={"Project details"} /> */}
       <ProjectDetail />
     </>
   );

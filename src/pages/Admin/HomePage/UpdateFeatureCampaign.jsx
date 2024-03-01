@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { CloseIcon } from "../../../theme/svg-icons";
 import { Button } from "../../../components";
 import * as yup from "yup";
@@ -12,27 +12,59 @@ import { updateFeaturedCampaign } from "../../../features/adminHomeContent/admin
 
 export const UpdateFeatureCampaign = ({ onClose, data }) => {
   const { showSuccessMessage, showErrorMessage } = SnackMessages();
+  const [campaignsOptions, setCampaignOptions] = useState([]);
 
   const validationSchema = yup.object({
     featuredCampaignOne: yup
       .string()
+      .trim()
       .required("Featured Campaign One is required"),
     featuredCampaignTwo: yup
       .string()
-      .required("Featured Campaign Two is required"),
+      .required("Featured Campaign Two is required")
+      .test(
+        "notEqual",
+        "You cannot select the same Featured Campaign for multiple options.",
+        function (value) {
+          return value !== this.parent.featuredCampaignOne;
+        }
+      ),
     featuredCampaignThree: yup
       .string()
-      .required("Featured Campaign Three is required"),
+      .required("Featured Campaign Three is required")
+      .test(
+        "notEqual",
+        "You cannot select the same Featured Campaign for multiple options.",
+        function (value) {
+          return (
+            value !== this.parent.featuredCampaignOne &&
+            value !== this.parent.featuredCampaignTwo
+          );
+        }
+      ),
     featuredCampaignFour: yup
       .string()
-      .required("Featured Campaign Four is required"),
+      .required("Featured Campaign Four is required")
+      .test(
+        "notEqual",
+        "You cannot select the same Featured Campaign for multiple options.",
+        function (value) {
+          return (
+            value !== this.parent.featuredCampaignOne &&
+            value !== this.parent.featuredCampaignTwo &&
+            value !== this.parent.featuredCampaignThree
+          );
+        }
+      ),
   });
+
   const dispatch = useDispatch();
   const { quickdonations } = useSelector((state) => state.quickDonations);
-  const campaignsOptions = quickdonations?.map((e) => ({
-    label: e.name,
-    value: e.id,
-  }));
+
+  // const campaignsOptions = quickdonations?.map((e) => ({
+  //   label: e.name,
+  //   value: e.id,
+  // }));
 
   const formik = useFormik({
     initialValues: {
@@ -51,7 +83,7 @@ export const UpdateFeatureCampaign = ({ onClose, data }) => {
           showErrorMessage(response?.payload?.message);
         }
       } catch (error) {}
-      onClose()
+      onClose();
     },
   });
   const handleFilterChange = (name, value) => {
@@ -75,6 +107,14 @@ export const UpdateFeatureCampaign = ({ onClose, data }) => {
       });
     }
   }, [data]);
+  useEffect(() => {
+    setCampaignOptions(
+      quickdonations?.map((e) => ({
+        label: e.name,
+        value: e.id,
+      }))
+    );
+  }, [quickdonations]);
 
   return (
     <>
@@ -107,7 +147,7 @@ export const UpdateFeatureCampaign = ({ onClose, data }) => {
                             }
                             options={campaignsOptions}
                             name={"featuredCampaignOne"}
-                            className={'!w-full'}
+                            className={"!w-full"}
                           />
 
                           {formik.touched.featuredCampaignOne &&
@@ -132,7 +172,7 @@ export const UpdateFeatureCampaign = ({ onClose, data }) => {
                             }
                             options={campaignsOptions}
                             name={"featuredCampaignTwo"}
-                            className={'!w-full'}
+                            className={"!w-full"}
                           />
                           {formik.touched.featuredCampaignTwo &&
                             Boolean(formik.errors.featuredCampaignTwo) && (
@@ -156,7 +196,7 @@ export const UpdateFeatureCampaign = ({ onClose, data }) => {
                             }
                             options={campaignsOptions}
                             name={"featuredCampaignThree"}
-                            className={'!w-full'}
+                            className={"!w-full"}
                           />
                           {formik.touched.featuredCampaignThree &&
                             Boolean(formik.errors.featuredCampaignThree) && (
@@ -182,7 +222,7 @@ export const UpdateFeatureCampaign = ({ onClose, data }) => {
                             }
                             options={campaignsOptions}
                             name={"featuredCampaignFour"}
-                            className={'!w-full'}
+                            className={"!w-full"}
                           />
                           {formik.touched.featuredCampaignFour &&
                             Boolean(formik.errors.featuredCampaignFour) && (
@@ -201,6 +241,8 @@ export const UpdateFeatureCampaign = ({ onClose, data }) => {
                         variant={"secondaryOutline"}
                         className="flex-grow"
                         label={"Cancel"}
+                        type={"button"}
+                        onClick={onClose}
                       />
                       <Button
                         variant={"primary"}

@@ -1,14 +1,18 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Edit3Icon } from "../../../theme/svg-icons";
 import BannerEdit from "./BannerEdit";
 import { useDispatch, useSelector } from "react-redux";
 import { getSettings } from "../../../features/home/homeSlice";
 import UpdateFeatureCampaign from "./UpdateFeatureCampaign";
+import { Button } from "../../../components";
 
 const HomePage = () => {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+
   const [isOpenUpdate, setOpenUpdate] = useState(false);
   const { settings } = useSelector((state) => state.settings);
 
@@ -38,12 +42,13 @@ const HomePage = () => {
                 Homepage Banner (AU)
               </p>
             </div>
-            <button
+            <Button
               className="btn bg-primary-100 !p-2 me-6"
-              onClick={() => setIsOpen(true)}
-            >
-              <Edit3Icon />
-            </button>
+              onClick={() => navigate("/admin/homepage-banner")}
+              variant={"none"}
+              leftIcon={<Edit3Icon />}
+            />
+
             {isOpenUpdate && (
               <UpdateFeatureCampaign
                 onClose={() => setOpenUpdate(false)}

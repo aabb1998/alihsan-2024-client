@@ -64,7 +64,6 @@ const slice = createSlice({
     },
     zakatMetalInput(state, action) {
       const arrayToUpdate = state.amounts[action.payload.name];
-      console.log(arrayToUpdate)
       const existingIndex = arrayToUpdate.findIndex(
         (item) => item.key === action.payload.key
       );

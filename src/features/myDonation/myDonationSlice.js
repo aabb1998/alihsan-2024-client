@@ -67,6 +67,19 @@ export const generateInvoice = createAsyncThunk(
     }
   }
 );
+export const generateCertificate = createAsyncThunk(
+  "myDonation/certificate",
+  async ({ donationId, type }) => {
+    try {
+      const res = await api.get("donations/generate-certificate/" + donationId);
+      handleDownload(res.data.payload);
+      return res.data.payload;
+    } catch (e) {
+      if (e.response?.data) throw new Error(e.response.data.message);
+      throw e;
+    }
+  }
+);
 
 export const cancelMyDonation = createAsyncThunk(
   "myDonation/cancel",
@@ -135,7 +148,7 @@ export const getMyDonations = createAsyncThunk(
           "?page=" +
           page +
           "&limit=" +
-          process.env.REACT_APP_PAGINATION_PER_PAGE +
+          import.meta.env.VITE_APP_PAGINATION_PER_PAGE +
           "&search=" +
           encodeURI(search) +
           "&sort=" +
@@ -166,7 +179,7 @@ export const myDonationSlice = createSlice({
       const key = action.meta.arg.type;
       state[key].rows = action.payload.rows;
       state[key].count = Math.ceil(
-        action.payload.count / process.env.REACT_APP_PAGINATION_PER_PAGE
+        action.payload.count / import.meta.env.VITE_APP_PAGINATION_PER_PAGE
       );
       state[key].page = action.meta.arg.page;
       state[key].error = "";

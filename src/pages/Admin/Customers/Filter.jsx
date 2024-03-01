@@ -40,7 +40,7 @@ export default function Filter({ filters, setFilters }) {
 						</select>
 					</div>
 
-					<Button className='hidden text-button-md text-neutral-1000 md:block' variant='' label={'Clear Filter'} onClick={(e) => { e.preventDefault(); setFilters() }} />
+					<Button className='hidden text-button-md text-neutral-1000 md:block' variant='' label={'Clear'} onClick={(e) => { e.preventDefault(); setFilters() }} />
 				</form>
 				<div className="hidden w-full md:block md:w-auto form-group md:min-w-72">
 					<label className="relative block">
@@ -56,7 +56,7 @@ export default function Filter({ filters, setFilters }) {
 				</div>
 			</div>
 
-			<div className={"fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75 md:hidden " + (sidebarOpen ? "" : "hidden")}>
+			<div className={"fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75 md:hidden z-1 " + (sidebarOpen ? "" : "hidden")}>
 				<div className="fixed inset-0 z-10 w-screen overflow-y-auto bg-neutral-1000/40">
 					<div className="flex items-end justify-center min-h-full text-center sm:items-center md:p-0">
 						<aside

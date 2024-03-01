@@ -17,11 +17,6 @@ import * as yup from "yup";
 import { updateCheckoutProfile } from "../../../features/paymentDetails/paymentDetailsSlice";
 const { showErrorMessage } = SnackMessages();
 
-const retrieveUserInfo = () => {
-  const isLoggedIn = localStorage.getItem("loggedIn");
-  return isLoggedIn ? JSON.parse(isLoggedIn) : { token: null, role: null };
-};
-
 const initialState = {
   firstName: "",
   lastName: "",
@@ -40,14 +35,17 @@ const initialState = {
 const validationSchema = yup.object({
   firstName: yup
     .string("Enter your first name")
+    .trim()
     .required("First name is required")
     .max(40, "First name must be at most 40 characters"),
   lastName: yup
     .string("Enter your last name")
+    .trim()
     .required("Last name is required")
     .max(40, "Last name must be at most 40 characters"),
   company: yup
     .string("Enter your Company Name")
+    .trim()
     .max(40, "Company name must be at most 40 characters"),
   email: yup
     .string("Enter your email")
@@ -74,6 +72,7 @@ const validationSchema = yup.object({
     .max(2, "Country should only be 2 characters"),
   state: yup
     .string("Enter your state")
+    .trim()
     .when("status", {
       is: true,
       then: () => yup.string().required("State is required"),
@@ -81,6 +80,7 @@ const validationSchema = yup.object({
     .max(40, "State name should be at most 40 characters"),
   city: yup
     .string("Enter your city")
+    .trim()
     .when("status", {
       is: true,
       then: () => yup.string().required("City is required"),
@@ -100,12 +100,13 @@ const validationSchema = yup.object({
 });
 
 const CheckoutComponent = () => {
-  const profile = useSelector((state) => state.profile);
+  const userProfile = useSelector((state) => state.profile.user);
   const { basketItems } = useSelector((state) => state.basketItem);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { role } = retrieveUserInfo();
+  const userData = useSelector(state => state.profile.auth);
+	const role = userData?.role
 
   const handlePhoneChange = (value) => {
     formik.setFieldValue("phone", value);
@@ -118,17 +119,16 @@ const CheckoutComponent = () => {
       try {
         setIsLoading(true);
         const updatedValues = {
-          ...formik.values,
+          ...values,
           basketItems: basketItems,
         };
         let response;
-        const isLoggedIn = localStorage.getItem("loggedIn");
-        const userDetails = JSON.parse(isLoggedIn);
-        if (!profile.email || userDetails?.role === "ADMIN") {
+        if (!userProfile?.email || userProfile.role === "ADMIN") {
           response = await dispatch(
             updateCheckoutProfile({
               ...updatedValues,
               paymentGateway: "stripe",
+              isAnonymous: true,
             })
           );
           handleResponse(response, () => {
@@ -283,6 +283,13 @@ const CheckoutComponent = () => {
                         onChange={formik.handleChange}
                         value={formik.values.company}
                       />
+                      {formik.touched.company &&
+                        Boolean(formik.errors.company) && (
+                          <FormikValidationError
+                            formikTouched={formik.touched.company}
+                            formikError={formik.errors.company}
+                          />
+                        )}
                     </div>
 
                     <div className="mb-6">
@@ -399,7 +406,7 @@ const CheckoutComponent = () => {
                       </div>
                       <div className="flex flex-col mb-6 form-group grow">
                         <label htmlFor="LastName">
-                          Zip Code{" "}
+                          Post Code{" "}
                           {formik.values.status && (
                             <span className="text-red-300">*</span>
                           )}
@@ -409,7 +416,7 @@ const CheckoutComponent = () => {
                           className="w-full form-control"
                           id="zip"
                           name="zip"
-                          placeholder="Zip Code"
+                          placeholder="Post Code"
                           onChange={formik.handleChange}
                           value={formik.values.zip}
                         />

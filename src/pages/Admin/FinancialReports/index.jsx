@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Pagination } from "../../../components/Pagination";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { PlusIcon } from "../../../theme/svg-icons";
+import { ChevronsUpIcon, PlusIcon } from "../../../theme/svg-icons";
 import DeleteConfirmation from "../Common/DeleteConfirmation";
 import { SnackMessages } from "../../../components/Toast";
 import Filter from "../../../components/Filter";
@@ -19,6 +19,7 @@ import { Button } from "../../../components";
 import { adminItemPerPage, financialYearList } from "../../../utils/constants";
 import ActionButtonBgWithIcon from "../Common/ActionButtonBgWithIcon";
 import { handleDownload } from "../../../utils/helper";
+import Loader from "../../../components/Loader";
 
 const initialState = {
   page: "1",
@@ -37,7 +38,9 @@ const pathDeleteDispatchMap = {
 };
 
 export const FinancialReports = () => {
-  const { reports } = useSelector((state) => state.adminFinancialReport);
+  const { reports, isLoading } = useSelector(
+    (state) => state.adminFinancialReport
+  );
   const { pathname } = useLocation();
 
   const { showSuccessMessage, showErrorMessage } = SnackMessages();
@@ -71,8 +74,6 @@ export const FinancialReports = () => {
     setIsOpen(true);
     setDeleteId(id);
   };
-
-
 
   const handleFilterChange = (name, value) => {
     setFilters({ ...filters, [name]: value });
@@ -133,19 +134,41 @@ export const FinancialReports = () => {
               },
             ]}
             sortList={[]}
-
           />{" "}
-
           <div className="grid">
-          <div className="relative overflow-x-auto">
+            <div className="relative overflow-x-auto">
               <table className="w-full table-auto text-start">
                 <thead className="rounded bg-neutral-200">
                   <tr className="">
                     <th className="p-4 min-w-[10rem] text-sm font-medium text-start font-Montserrat text-neutral-600">
-                      ID
+                      <div className="flex gap-1.5 items-center">
+                        ID
+                        <ChevronsUpIcon
+                          iconSize={14}
+                          onClick={() => {
+                            setFilters({
+                              ...filters,
+                              sort: "id",
+                              order: filters.order === "asc" ? "desc" : "asc",
+                            });
+                          }}
+                        />
+                      </div>
                     </th>
                     <th className="p-4 min-w-[10rem] text-sm font-medium text-start font-Montserrat text-neutral-600">
-                      Year
+                      <div className="flex gap-1.5 items-center">
+                        Year
+                        <ChevronsUpIcon
+                          iconSize={14}
+                          onClick={() => {
+                            setFilters({
+                              ...filters,
+                              sort: "year",
+                              order: filters.order === "asc" ? "desc" : "asc",
+                            });
+                          }}
+                        />
+                      </div>
                     </th>
                     <th className="p-4 min-w-[10rem] text-sm font-medium text-start font-Montserrat text-neutral-600">
                       URL
@@ -157,7 +180,7 @@ export const FinancialReports = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {reports?.rows?.length > 0 ? (
+                  {reports?.rows?.length > 0 &&
                     reports?.rows?.map((newsItem) => (
                       <tr
                         key={newsItem?.id}
@@ -186,29 +209,24 @@ export const FinancialReports = () => {
                           </div>
                         </td>
                       </tr>
-                    ))
-                  ) : (
-                    <tr className="border-b bg-neutral-100 border-neutral-300 hover:bg-primary-100">
-                      <td
-                        colSpan="7"
-                        className="p-4 text-sm font-medium font-Montserrat text-neutral-700"
-                      >
-                        No Data Found
-                      </td>
-                    </tr>
-                  )}
+                    ))}
                 </tbody>
               </table>
               <div className="mt-5">
-                <Pagination
-                  totalPages={Math.ceil(count / adminItemPerPage)}
-                  currentPage={filters.page}
-                  onPageChange={(page) => setFilters((f) => ({ ...f, page }))}
-                />
+                {isLoading ? (
+                  <Loader />
+                ) : reports?.rows?.length === 0 ? (
+                  <div className="">No Data Found.</div>
+                ) : (
+                  <Pagination
+                    totalPages={Math.ceil(count / adminItemPerPage)}
+                    currentPage={filters.page}
+                    onPageChange={(page) => setFilters((f) => ({ ...f, page }))}
+                  />
+                )}
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </>

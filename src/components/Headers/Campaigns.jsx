@@ -87,7 +87,7 @@ export const Campaigns = ({ handleClick }) => {
                     </h6>
                   </Link>
                   <p className="text-sm tracking-tight text-neutral-600 line-clamp-2">
-                    {project.description}
+                    {project.descriptionText || project.description}
                   </p>
                 </div>
               ))}

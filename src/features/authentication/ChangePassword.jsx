@@ -10,6 +10,7 @@ import { SnackMessages } from "../../components/Toast";
 import { useNavigate } from "react-router-dom";
 import { PrimaryLoadingButton } from "../../components/LoadingButtons";
 import { PasswordMeter } from "../../pages/Authentication/Signup/PasswordMeter";
+import { useLocation } from "react-router-dom";
 
 const validationSchema = yup.object().shape({
   oldPassword: yup.string().required("Current password is required"),
@@ -28,6 +29,7 @@ const { showSuccessMessage, showErrorMessage } = SnackMessages();
 const ChangePassword = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const profile = useSelector((state) => state.profile);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -100,7 +102,7 @@ const ChangePassword = () => {
 
   return (
     <div>
-      {profile?.authType === "email" && (
+      {profile.user?.authType === "email" && (
         <form
           onSubmit={formik.handleSubmit}
           id="ChangePasswordsForm"
@@ -192,15 +194,16 @@ const ChangePassword = () => {
               )}
           </div>
           <div className="flex flex-col-reverse gap-6 my-6 md:gap-6 md:my-8 sm:flex-row">
-            <button
+            <Button
+              onClick={() =>
+                navigate(
+                  pathname === "/profile" ? "/" : "/admin/dashboard"
+                )
+              }
+              variant="none"
+              label="Cancel"
               className="btn btn-outline-secondary"
-              onClick={() => navigate("/")}
-            >
-              Cancel
-            </button>
-            {/* <button type="submit" className="btn btn-primary">
-            Save
-          </button> */}
+            />
             {isLoading ? (
               <PrimaryLoadingButton additionalButtonClasses="" />
             ) : (

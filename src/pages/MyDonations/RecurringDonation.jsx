@@ -10,11 +10,11 @@ import { UserSidebar } from "../User/Common/UserSidebar";
 import { MyDonationTypes } from "../../utils/constants";
 import { Donations } from "./Donations";
 import { Button } from "../../components";
-import ViewDetailsRecurring from "../../../src/pages/User/MyDonations/Common/ViewOnetimeModal";
+import ProjectDetailsModal from "./ProjectDetailsModal";
 import PageHead from "../../components/PageHead";
 import PaymentDetailsModal from "./PaymentDetailsModal";
 
-export const RecurringDonation = () => {
+const RecurringDonation = () => {
   const [tab, setTab] = useState("active-sub");
   const [isPaymentModal, setPaymentModal] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -133,7 +133,7 @@ export const RecurringDonation = () => {
           </div>
         </div>
         {isOpen && (
-          <ViewDetailsRecurring
+          <ProjectDetailsModal
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
             mydonation={viewDonation}
@@ -193,3 +193,4 @@ export const RecurringDonation = () => {
     </div>
   );
 };
+export default RecurringDonation;

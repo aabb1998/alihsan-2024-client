@@ -112,7 +112,6 @@ const adminSettingsSlice = createSlice({
     builder
       .addCase(getQurban.fulfilled, (state, action) => {
         state.qurbanLoader = false;
-        console.log(action)
         state.qurbanValues = action.payload;
       })
       .addCase(getQurban.pending, (state, action) => {

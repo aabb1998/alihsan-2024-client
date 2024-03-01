@@ -22,7 +22,7 @@ export default function PaymentMethodsList() {
   const [confirmModal, setConfirmModal] = useState(false);
   const [deleteId, setDeleteId] = useState("");
   const { list, loading, error } = useSelector(
-    (state) => state.paymentDetails.paymentMethods
+    (state) => state.paymentDetails.paymentMethods,
   );
 
   const handleDelete = (id) => {
@@ -54,13 +54,28 @@ export default function PaymentMethodsList() {
         </label>
         <div className="flex items-center gap-6 mb-5 sm:mb-6">
           <div className="flex gap-2">
-            <input id="default-radio-1" type="radio" value="" name="" className="rounded-full" />
-            <label for="default-radio-1" className="text-button-md text-neutral-800" >
+            <input
+              id="default-radio-1"
+              type="radio"
+              value=""
+              name=""
+              className="rounded-full"
+            />
+            <label
+              for="default-radio-1"
+              className="text-button-md text-neutral-800"
+            >
               Card
             </label>
           </div>
           <div className="flex gap-2">
-            <input id="default-radio-1" type="radio" value="" name="" className="rounded-full" />
+            <input
+              id="default-radio-1"
+              type="radio"
+              value=""
+              name=""
+              className="rounded-full"
+            />
             <label
               for="default-radio-2"
               className="text-button-md text-neutral-800"
@@ -71,10 +86,15 @@ export default function PaymentMethodsList() {
         </div>
       </div>
       <div className="flex flex-col gap-4 mb-6">
-        <div for="dropzone-file" className="flex flex-col items-center justify-center flex-grow p-4 border-2 border-dashed cursor-pointer rounded-2xl border-neutral-300">
+        <div
+          for="dropzone-file"
+          className="flex flex-col items-center justify-center flex-grow p-4 border-2 border-dashed cursor-pointer rounded-2xl border-neutral-300"
+        >
           <div className="flex flex-col items-center justify-center gap-1 sm:gap-2 text-neutral-700">
             <CirclePlusIcon iconSize={20} />
-            <p className="text-center text-button-md sm:text-button-lg text-neutral-700 lg:whitespace-nowrap">Add payment method</p>
+            <p className="text-center text-button-md sm:text-button-lg text-neutral-700 lg:whitespace-nowrap">
+              Add payment method
+            </p>
           </div>
           <input id="dropzone-file" type="file" className="hidden" />
         </div>
@@ -85,11 +105,9 @@ export default function PaymentMethodsList() {
                 <Disclosure.Button className="flex items-center justify-between w-full gap-2">
                   <div className="flex items-center justify-between w-full">
                     <div className="flex items-center">
-
                       <div className="flex items-center justify-between col-span-3 gap-2 md:gap-7 lg:col-span-6 shrink-0">
                         <div className="flex items-center gap-3 md:gap-4">
-                          <input type="checkbox" name="" id=""
-                          />
+                          <input type="checkbox" name="" id="" />
                           <div className="shrink-0">
                             {card.brand === "mastercard" ? (
                               <MastercardIcon iconSize={46} />
@@ -113,8 +131,9 @@ export default function PaymentMethodsList() {
                           </span>
                         </div>
                         <div
-                          className={`w-6 h-6 transition-all duration-50 ease-in ${open ? "rotate-180 transform " : ""
-                            }`}
+                          className={`w-6 h-6 transition-all duration-50 ease-in ${
+                            open ? "rotate-180 transform " : ""
+                          }`}
                         >
                           <ChevronDownIcon iconSize={24} />
                         </div>
@@ -146,7 +165,8 @@ export default function PaymentMethodsList() {
                             :
                           </div>
                           <div className="col-auto text-right md:col-span-6 text-md text-neutral-600">
-                            {(card.expMonth + "").padStart(2, "0")}/{card.expYear}
+                            {(card.expMonth + "").padStart(2, "0")}/
+                            {card.expYear}
                           </div>
                         </li>
                       </ul>
@@ -165,7 +185,7 @@ export default function PaymentMethodsList() {
                             variant={"none"}
                             leftIcon={<TrashIcon />}
                             onClick={() => handleDelete(card.id)}
-                          // onClick={setDeleteId(card.id)}
+                            // onClick={setDeleteId(card.id)}
                           />
                         </div>
                       </div>
@@ -181,19 +201,32 @@ export default function PaymentMethodsList() {
         <div className="flex justify-between">
           <div className="flex items-center gap-2 mb-7.5">
             <input type="checkbox" id="rememberMe" value="" />
-            <label htmlFor="rememberMe" className="text-sm font-medium text-neutral-600">Save payments for future payments</label>
+            <label
+              htmlFor="rememberMe"
+              className="text-sm font-medium text-neutral-600"
+            >
+              Save payments for future payments
+            </label>
           </div>
         </div>
       </div>
-      <Button className={'btn btn-primary w-full'} label={'Complete Donation'} />
-
+      <Button
+        className={"btn btn-primary w-full"}
+        label={"Complete Donation"}
+      />
 
       {/* PAYPAL DETAILS */}
       <div>
         <div className="grid grid-cols-1 mb-6 sm:grid-cols-2">
           <div className="form-group">
-            <label htmlFor="email" className="block">Email Address</label>
-            <input type="text" className="w-full form-control" placeholder="Email Address" />
+            <label htmlFor="email" className="block">
+              Email Address
+            </label>
+            <input
+              type="text"
+              className="w-full form-control"
+              placeholder="Email Address"
+            />
           </div>
         </div>
       </div>
@@ -201,14 +234,20 @@ export default function PaymentMethodsList() {
         <div className="flex justify-between">
           <div className="flex items-center gap-2 mb-7.5">
             <input type="checkbox" id="rememberMe" value="" />
-            <label htmlFor="rememberMe" className="text-sm font-medium text-neutral-600">Save payments for future payments</label>
+            <label
+              htmlFor="rememberMe"
+              className="text-sm font-medium text-neutral-600"
+            >
+              Save payments for future payments
+            </label>
           </div>
         </div>
       </div>
-      <Button className={'btn btn-primary w-full'} label={'Complete Donation'} />
+      <Button
+        className={"btn btn-primary w-full"}
+        label={"Complete Donation"}
+      />
       {/* ============== */}
-
-
 
       {confirmModal && (
         <div

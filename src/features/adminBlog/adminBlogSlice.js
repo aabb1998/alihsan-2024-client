@@ -70,7 +70,7 @@ export const deleteBlog = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await api.delete("blog/delete/" + id);
-      const data = response?.data?.payload;
+      const data = response?.data;
       return data;
     } catch (e) {
       return rejectWithValue(e.response.data);

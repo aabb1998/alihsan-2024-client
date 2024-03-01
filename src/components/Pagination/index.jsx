@@ -50,7 +50,7 @@ export const Pagination = ({
           className="btn-pagination btn-neutral-text"
           onClick={() => onPageChange(parseInt(currentPage) - 1)}
           disabled={
-            currentPage == 1 ||
+            currentPage <= 1 ||
             pageNumbers.length === 1 ||
             pageNumbers.length === 0
           }
@@ -98,7 +98,7 @@ export const Pagination = ({
         <Button
           className="btn-pagination btn-neutral-text "
           onClick={() => onPageChange(parseInt(currentPage) + 1)}
-          disabled={currentPage === totalPages || pageNumbers.length === 1}
+          disabled={currentPage >= totalPages || pageNumbers.length === 1}
           variant={"none"}
           label={<span className="hidden md:block">Next</span>}
           rightIcon={<ArrowRightIcon iconSize={20} />}

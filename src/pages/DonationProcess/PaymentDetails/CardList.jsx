@@ -61,7 +61,9 @@ const CardList = ({ handleAddCard, handleDonationProcess, loading }) => {
           <CardItem
             key={card.id}
             card={card}
-            setCardSelection={setCardSelection}
+            setCardSelection={(e) =>
+              setCardSelection(e === cardSelected ? null : e)
+            }
             cardSelected={cardSelected}
             handleDelete={handleDelete}
           />
@@ -73,7 +75,12 @@ const CardList = ({ handleAddCard, handleDonationProcess, loading }) => {
           onClick={() => handleDonationProcess(cardSelected)}
         />
       </div>
-      {confirmModal && <DeleteConfirmation setConfirmModal={setConfirmModal} confirmDelete={confirmDelete}/>}
+      {confirmModal && (
+        <DeleteConfirmation
+          setConfirmModal={setConfirmModal}
+          confirmDelete={confirmDelete}
+        />
+      )}
     </div>
   );
 };

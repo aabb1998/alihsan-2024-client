@@ -9,4 +9,4 @@ const Loader = () => (
   </div>
 );
 
-export const routes = createBrowserRouter([...userRoutes, ...adminRoutes]);
+export const routes = [...userRoutes, ...adminRoutes];

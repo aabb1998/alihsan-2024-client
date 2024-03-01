@@ -38,12 +38,12 @@ export const Dropdown = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <Listbox.Options className="absolute z-10 w-full p-4 mt-1 overflow-auto text-sm font-medium bg-white rounded-md shadow-sm shadow-lg font-Montserrat text-neutral-1000 max-h-60 ring-1 ring-black/5 focus:outline-none">
+          <Listbox.Options className="absolute z-10 w-full p-4 mt-1 overflow-auto text-sm font-medium bg-white border rounded-md font-Montserrat text-neutral-1000 max-h-40 ring-1 ring-black/5 focus:outline-none border-neutral-200">
             {options.map((person, personIdx) => (
               <Listbox.Option
                 key={personIdx}
                 className={({ active }) =>
-                  `relative cursor-pointer hover:text-primary-300 select-none py-1.5 px-2 text-start ${
+                  `relative cursor-pointer hover:bg-primary-100 select-none py-1.5 px-2 text-start ${
                     active ? "text-primary-300" : "text-neutral-1000"
                   }`
                 }

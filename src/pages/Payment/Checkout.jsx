@@ -13,7 +13,7 @@ import {
 // Make sure to call loadStripe outside of a component’s render to avoid
 // recreating the Stripe object on every render.
 // This is your test publishable API key.
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_KEY);
+const stripePromise = loadStripe(import.meta.env.VITE_APP_STRIPE_KEY);
 
 export default function Checkout() {
   const [clientSecret, setClientSecret] = useState("");
@@ -25,12 +25,12 @@ export default function Checkout() {
         : sessionStorage.getItem("loggedIn")
         ? JSON.parse(sessionStorage.getItem("loggedIn")).token
         : "";
-      const basket = await fetch(process.env.REACT_APP_API_URL + "/basket", {
+      const basket = await fetch(import.meta.env.VITE_APP_API_URL + "/basket", {
         headers: {
           Authorization: "Bearer " + token,
         },
       }).then((res) => res.json());
-      fetch(process.env.REACT_APP_API_URL + "/basket/checkout", {
+      fetch(import.meta.env.VITE_APP_API_URL + "/basket/checkout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

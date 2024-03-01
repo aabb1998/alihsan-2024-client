@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useFormik } from "formik";
 import { Link } from "react-router-dom";
-import Button from "../../components/Button";
 import { Disclosure } from "@headlessui/react";
-import { useDispatch } from "react-redux";
-import { submitComplaintsForm } from "./ContactUs";
-import { PhoneField } from "../../components/PhoneField";
 import {
   ChevronUpIcon,
   MailIcon,
@@ -13,20 +8,21 @@ import {
   PhoneCallIcon,
   PostIcon,
 } from "../../theme/svg-icons";
-import TextArea from "../../components/TextArea";
 import { Form } from "./Form";
 import PageHead from "../../components/PageHead";
+import { Button } from "../../components";
 
 const ComplaintsComponent = () => {
+
   return (
     <div>
       <PageHead title={"Complaints"} />
-      <div className="pb-10 md:py-15">
+      <div className="pb-10 md:py-15 standard-details-page">
         <section className="" aria-label="Complaints">
           <div className="mb-5 banner-container md:mb-10">
             <div className="h-[160px] mb-5 overflow-hidden sm:h-64 md:h-[368px] md:mb-10 rounded-none sm:rounded-2xl md:rounded-4xl">
               <img
-                src="../images/banner/complaints.png"
+                src="https://alihsan.s3.ap-southeast-2.amazonaws.com/images/PolicyPage/8E5A5569+Large.jpeg"
                 alt=""
                 className="object-cover w-full h-full transition duration-500 hover:scale-110"
               />
@@ -96,7 +92,7 @@ const ComplaintsComponent = () => {
               </div>
               <div className="flex flex-col col-span-1 gap-10 p-10 border rounded-2.5xl border-neutral-300">
                 <Link to={"tel:1300998444"}>
-                <div className="flex flex-col col-span-1 gap-10">
+                  <div className="flex flex-col col-span-1 gap-10">
                     <div className="flex flex-col items-center justify-center gap-4">
                       <div className="text-primary-300">
                         <PhoneCallIcon iconSize={60} />
@@ -182,7 +178,7 @@ const ComplaintsComponent = () => {
               </div>
               <div className="flex flex-col col-span-1 gap-10 p-10 border rounded-2.5xl border-neutral-300">
                 <Link to={"tel:1300998444"}>
-                <div className="flex flex-col col-span-1 gap-10">
+                  <div className="flex flex-col col-span-1 gap-10">
                     <div className="flex flex-col items-center justify-center gap-4">
                       <div className="text-primary-300">
                         <PhoneCallIcon iconSize={60} />
@@ -347,12 +343,18 @@ function KnowMoreAccordion() {
               </Disclosure.Button>
               <Disclosure.Panel className="pt-4">
                 <p className="mb-2 text-sm text-neutral-600">
-                  You can also access our Complaints Handling Policy and Online
-                  Privacy Policy here. These policies provide valuable
-                  information about how we handle complaints and protect your
-                  privacy online. Your access to these policies reflects our
-                  commitment to transparency and ensuring that you are
-                  well-informed about our practices.
+                  Our Complaints Handling Policy and Online Privacy Policy are
+                  readily accessible to ensure transparency and trust. These
+                  documents outline our approach to managing complaints and
+                  safeguarding your privacy. You can view our policies directly
+                  on our website or request a copy through our contact form. We
+                  encourage you to familiarize yourself with these policies to
+                  understand how we handle your data and address any concerns
+                  you may have.{" "}
+                  <a className="cursor-pointer text-blue">
+                    You can find our complaints and handling policy document
+                    here.
+                  </a>
                 </p>
               </Disclosure.Panel>
             </div>
@@ -377,7 +379,12 @@ function KnowMoreAccordion() {
                 </div>
               </Disclosure.Button>
               <Disclosure.Panel className="pt-4 pb-2 text-sm text-gray-500">
-                No.
+                Anyone who has interacted with our services or has been affected
+                by our actions is eligible to lodge a complaint. Whether you're
+                a client, volunteer, donor, or a member of the community, we
+                value your feedback and are committed to addressing your
+                concerns. If you're unsure whether your situation warrants a
+                complaint, please reach out to us for guidance.
               </Disclosure.Panel>
             </div>
           )}
@@ -401,7 +408,13 @@ function KnowMoreAccordion() {
                 </div>
               </Disclosure.Button>
               <Disclosure.Panel className="pt-4 pb-2 text-sm text-gray-500">
-                No.
+                If you're concerned about someone else's experience with our
+                organization and they're unable to submit a complaint
+                themselves, you can do so on their behalf. Please ensure you
+                have their consent to act on their behalf. In your complaint,
+                include any relevant details and evidence to support the issue
+                raised. We'll handle the complaint with the same seriousness and
+                confidentiality as if it were lodged by the person affected.
               </Disclosure.Panel>
             </div>
           )}
@@ -425,7 +438,12 @@ function KnowMoreAccordion() {
                 </div>
               </Disclosure.Button>
               <Disclosure.Panel className="pt-4 pb-2 text-sm text-gray-500">
-                No.
+                We understand that you might wish to remain anonymous when
+                submitting a complaint. While we encourage you to provide
+                contact information so we can follow up directly, you can choose
+                to submit your complaint anonymously. Please note, however, that
+                this may limit our ability to investigate your concerns fully or
+                provide a personalized response.
               </Disclosure.Panel>
             </div>
           )}
@@ -449,7 +467,13 @@ function KnowMoreAccordion() {
                 </div>
               </Disclosure.Button>
               <Disclosure.Panel className="pt-4 pb-2 text-sm text-gray-500">
-                No.
+                Our organization maintains a zero-tolerance policy towards
+                abusive or threatening behavior directed at our staff or
+                volunteers. We are committed to creating a safe and respectful
+                environment for everyone. Complaints should be expressed in a
+                constructive and respectful manner. Abusive or threatening
+                complaints may lead to discontinuation of communication or
+                further action.
               </Disclosure.Panel>
             </div>
           )}
@@ -473,7 +497,12 @@ function KnowMoreAccordion() {
                 </div>
               </Disclosure.Button>
               <Disclosure.Panel className="pt-4 pb-2 text-sm text-gray-500">
-                No.
+                We remind all individuals lodging complaints to provide truthful
+                and accurate information. Fraudulent statements not only
+                undermine the trust in our complaints process but may also lead
+                to legal consequences. We take all complaints seriously and
+                investigate thoroughly; hence, accuracy and honesty are
+                paramount.
               </Disclosure.Panel>
             </div>
           )}
@@ -497,7 +526,13 @@ function KnowMoreAccordion() {
                 </div>
               </Disclosure.Button>
               <Disclosure.Panel className="pt-4 pb-2 text-sm text-gray-500">
-                No.
+                Upon receiving your complaint, we will acknowledge it promptly
+                and begin our investigation. We aim to resolve complaints
+                efficiently and fairly, keeping you informed throughout the
+                process. You will receive a response detailing the outcome of
+                our investigation and any actions taken. Our goal is to address
+                your concerns to your satisfaction, and we're committed to
+                learning from your feedback to improve our services.
               </Disclosure.Panel>
             </div>
           )}

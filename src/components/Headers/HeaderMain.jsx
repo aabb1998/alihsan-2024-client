@@ -41,7 +41,6 @@ const HeaderMain = ({ isSidebar, setSidebar }) => {
 
   const handleToggle = (index) => {
     const selectedItem = MenuData[index] || {};
-    console.log(index);
 
     setSelectedIndex(!headerModal?.isOpen ? index : -1);
     if (selectedItem?.subMenu?.length || selectedItem?.menu === "campaigns") {
@@ -111,7 +110,7 @@ const HeaderMain = ({ isSidebar, setSidebar }) => {
             <Link to="/">
               <img
                 src="/images/assets/logo.svg"
-                className="w-auto h-10 lg:h-11"
+                className="w-auto h-12"
                 alt="Al-Ihsan Foundation"
               />
             </Link>
@@ -161,7 +160,7 @@ const HeaderMain = ({ isSidebar, setSidebar }) => {
             <div className="flex justify-between gap-5 md:hidden">
               <div className="relative">
                 {basketItems.length > 0 && (
-                  <div className="-top-1.5 -right-2 absolute ">
+                  <div className="-top-1.5 -right-2 absolute cursor-default" onClick={handleBasket}>
                     <p className="flex h-4 w-4 items-center justify-center rounded-full bg-red-300 text-[11px] text-white">
                       {basketItems?.length ? basketItems?.length : ""}
                     </p>
@@ -173,10 +172,19 @@ const HeaderMain = ({ isSidebar, setSidebar }) => {
             </div>
             <div className="hidden md:block">
               <Button
-                label="Donate now"
+                label="Donate Now"
                 className={"text-sm"}
                 onClick={() => quickDonation()}
-                leftIcon={<span className="relative flex"> <span className="absolute inline-flex w-full h-full transition-all ease-in-out delay-75 bg-red-300 rounded-full animate-ping bg-sky-400 opacity-90"></span> <div className="text-red-300 rounded-full "> <HeartFilledIcon /> </div> </span>}
+                leftIcon={
+                  <span className="relative flex">
+                    {" "}
+                    <span className="absolute inline-flex w-full h-full transition-all ease-in-out delay-75 bg-red-300 rounded-full animate-ping bg-sky-400 opacity-90"></span>{" "}
+                    <div className="text-red-300 rounded-full ">
+                      {" "}
+                      <HeartFilledIcon />{" "}
+                    </div>{" "}
+                  </span>
+                }
               />
             </div>
           </div>

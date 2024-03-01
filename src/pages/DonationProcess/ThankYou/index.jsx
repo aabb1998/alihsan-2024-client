@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { getProfile } from "../../../features/authentication/authenticationSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -8,62 +8,66 @@ import {
   WhatsappIcon2,
 } from "../../../theme/svg-icons";
 import { StepperThankYou } from "../Common/Stepper/StepperThankYou";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { updatePaypalToken } from "../../../features/paymentDetails/paymentDetailsSlice";
 import { SnackMessages } from "../../../components/Toast";
 import Loader from "../../../components/Loader";
 import { getBasketItems } from "../../../features/basket/basketSlice";
 
-const retrieveUserInfo = () => {
-  const isLoggedIn = localStorage.getItem("loggedIn");
-  return isLoggedIn
-    ? JSON.parse(isLoggedIn)
-    : { token: null, role: null, id: null };
-};
 const ThankYouComponent = () => {
   const { showSuccessMessage, showErrorMessage } = SnackMessages();
   const [isLoading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
+  const [queryParams] = useSearchParams();
   const tokenValue = queryParams.get("token");
-  const { role,id } = retrieveUserInfo();
+  const checkoutType = queryParams.get("checkoutType");
+  const payemntStatus = queryParams.get("result");
+
+  const paypalTokenUsed = useRef(false);
 
   const profile = useSelector((state) => state.profile);
-  const url = process.env.REACT_APP_URL;
+  const { role, id } = profile.auth || {};
+  const url = import.meta.env.VITE_APP_URL;
   const message =
     'I just donated to charity, you can too!\n\n"Spend (on charity), o sun of Adam, and I shall spend on you"\n- Allah';
 
-  const paypalTokenAction = async (tokenValue) => {
+  const paypalTokenAction = async (tokenValue, checkoutType) => {
     setLoading(true);
-    if (role === "USER") {
-    }
+
     const response = await dispatch(
       updatePaypalToken({
         orderId: tokenValue,
         userId: role === "USER" ? id : null,
+        checkoutType: checkoutType,
       })
     );
-    if (response.payload.success) {
+    if (response?.payload?.success) {
       setLoading(false);
-      dispatch(getBasketItems())
-      showSuccessMessage(response.payload.message);
+      dispatch(getBasketItems());
+      showSuccessMessage(response?.payload?.message);
     } else {
       setLoading(false);
-      showErrorMessage(response.payload.message);
+      showErrorMessage(response?.payload?.message);
     }
   };
   useEffect(() => {
     localStorage.removeItem("checkout");
     localStorage.removeItem("personalInfo");
-    dispatch(getBasketItems())
-    if (!profile.email && !profile.isFetching && !profile.isError)
+    dispatch(getBasketItems());
+    if (!profile.user && !profile.isFetching && !profile.isError)
       dispatch(getProfile());
   }, [profile]);
 
   useEffect(() => {
-    if (tokenValue) {
-      paypalTokenAction(tokenValue);
+    if (tokenValue && !paypalTokenUsed.current) {
+      paypalTokenUsed.current = true;
+      if (payemntStatus === "true") {
+        paypalTokenAction(tokenValue, checkoutType);
+      } else {
+        showErrorMessage('Payment has been canceled');
+        navigate("/basket");
+      }
     }
   }, [tokenValue]);
 
@@ -92,13 +96,15 @@ const ThankYouComponent = () => {
                   </h3>
                   <p className="max-w-[15rem] text-neutral-700 text-center text-sm md:text-md">
                     A receipt and certificate has been sent to{" "}
-                    {!profile.email ? "your email" : ""}
+                    {!profile.user ? "your email" : ""}
                   </p>
                   <a
-                    href={profile.email && "mailto:" + profile.email}
+                    href={
+                      profile.user?.email && "mailto:" + profile.user?.email
+                    }
                     className="text-sm tracking-tighter text-center break-all text-button-lg md:text-md"
                   >
-                    {profile.email || ""}
+                    {profile.user?.email || ""}
                   </a>
                 </>
               )}

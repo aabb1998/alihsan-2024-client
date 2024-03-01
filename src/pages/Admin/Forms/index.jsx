@@ -9,6 +9,7 @@ import {
   adminFormsTitle,
   adminItemPerPage,
   exportUrl,
+  formsOptions,
   pathDispatchMap,
   statusUpade,
 } from "../../../utils/constants";
@@ -35,36 +36,28 @@ const initialState = {
   order: "",
 };
 
-
-
-
 const Forms = () => {
   const { pathname } = useLocation();
   const [updateId, setUpdateId] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
   const [deleteId, setDeleteId] = useState(1);
   const [filters, setFilters] = useState(initialState);
   const [isOpen, setIsOpen] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
   const [title, setTitle] = useState("");
-  const hasFilter = ["/admin/technical-support", "/admin/complaints"].includes(
-    pathname
-  );
-  const filtersList = hasFilter
+
+
+
+  const filtersList = formsOptions[pathname]
     ? [
         {
           label: "Filter By",
           name: "status",
           value: "status",
           defaultSelect: "All",
-          options: [
-            { label: "Active", value: "ACTIVE" },
-            { label: "Solved", value: "SOLVED" },
-          ],
+          options: formsOptions[pathname],
         },
       ]
     : [];
-
   const dispatch = useDispatch();
   const { formDatas, isLoading } = useSelector((state) => state.adminForm);
   const navigate = useNavigate();
@@ -72,9 +65,10 @@ const Forms = () => {
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= formDatas?.count) {
-      setCurrentPage(newPage);
+      // setCurrentPage(newPage);
       const dispatchAction = adminFormsDispatch[pathname];
       if (dispatchAction) {
+        setFilters({ ...filters, page: newPage });
         dispatch(dispatchAction({ ...filters, page: newPage }));
       }
     }
@@ -111,7 +105,8 @@ const Forms = () => {
     await dispatch(
       updateStatus({
         data: {
-          status: item?.status === "Active" ? "Completed" : "Active",
+          status:
+            item?.status?.toLowerCase() === "active" ? "COMPLETED" : "ACTIVE",
           id: item?.id,
         },
         url: statusUpade[pathname],
@@ -122,7 +117,7 @@ const Forms = () => {
   };
 
   const handleFilterChange = (name, value) => {
-    setFilters({ ...filters, [name]: value });
+    setFilters({ ...filters, [name]: value, page: 1 });
   };
   const handleFilterClick = (text) => {
     setFilters(initialState);
@@ -175,7 +170,6 @@ const Forms = () => {
 
   useEffect(() => {
     setTitle(adminFormsTitle[pathname]);
-    setCurrentPage(1);
     const dispatchAction = adminFormsDispatch[pathname];
     if (dispatchAction) {
       dispatch(dispatchAction(initialState));
@@ -208,7 +202,7 @@ const Forms = () => {
             <DeleteConfirmation
               onClose={() => setIsOpen(false)}
               confirmDelete={confirmDelete}
-              title={title}
+              title={title === "Contact Us" ? "Contact Details" : title}
             />
           )}
           {isUpdate && (
@@ -274,30 +268,7 @@ const Forms = () => {
                             </td>
                           ))}
                           <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
-                          {renderActionButtons(e, pathname)}
-
-                            {/* {pathname === "/admin/technical-support" ||
-                            pathname === "/admin/complaints" ? (
-                              e?.status !== "Solved" ? (
-                                <ActionButtonBgWithIcon
-                                  handleRemove={() => handleRemove(e.id)}
-                                  handleView={() => handleView(e.id)}
-                                  handleStatus={() => handleStatus(e.id)}
-                                />
-                              ) : (
-                                <ActionButtonBgWithIcon
-                                handleRemove={() => handleRemove(e.id)}
-                                handleView={() => handleView(e.id)}
-                              />
-                              )
-                            ) : (
-                              <ActionButtonBgWithIcon
-                                item={e}
-                                handleRemove={() => handleRemove(e.id)}
-                                handleView={() => handleView(e.id)}
-                                handleSwitchStatus={() => handleSwitchStatus(e)}
-                              />
-                            )} */}
+                            {renderActionButtons(e, pathname)}
                           </td>
                         </tr>
                       ))
@@ -315,7 +286,7 @@ const Forms = () => {
                 </table>
                 <div className="mt-5">
                   <Pagination
-                    currentPage={currentPage}
+                    currentPage={filters?.page}
                     totalPages={Math.ceil(formDatas?.count / adminItemPerPage)}
                     onPageChange={handlePageChange}
                   />{" "}

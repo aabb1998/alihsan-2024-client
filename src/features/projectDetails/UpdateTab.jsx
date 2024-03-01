@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import Img from "../../components/Image";
+import { nl2br } from "../../utils/helper";
+import ShareModal from "./ShareModal";
 
-export const UpdateTab = ({ posts }) => {
+export const UpdateTab = ({ posts, slug, title }) => {
+  const [sharing, setSharing] = useState(false);
   return (
     <div className="flex flex-col gap-10 mb-10">
       {posts?.map((post) => (
@@ -31,14 +34,20 @@ export const UpdateTab = ({ posts }) => {
                   </div>
                 </div>
                 <div>
-                  <a href="#" className="btn-responsive btn-outline-secondary">
+                  <span
+                    onClick={() => setSharing(true)}
+                    className="btn-responsive btn-outline-secondary"
+                  >
                     Share
-                  </a>
+                  </span>
                 </div>
               </div>
             </div>
             <div>
-              <p className="text-sm text-neutral-800">{post?.text}</p>
+              <p
+                className="text-sm text-neutral-800"
+                dangerouslySetInnerHTML={nl2br(post?.text)}
+              ></p>
             </div>
             <div className="grid gap-5 sm:grid-cols-3">
               {post?.PostMedia?.map((media) => (
@@ -57,6 +66,12 @@ export const UpdateTab = ({ posts }) => {
           </div>
         </div>
       ))}
+      <ShareModal
+        slug={slug}
+        title={title}
+        visible={sharing}
+        onClose={() => setSharing(false)}
+      />
     </div>
   );
 };

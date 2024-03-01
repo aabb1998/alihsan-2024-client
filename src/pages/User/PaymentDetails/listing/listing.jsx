@@ -18,7 +18,7 @@ import { Disclosure } from "@headlessui/react";
 import { Pagination } from "../../../Include/pagination";
 import { AddPaymentMethodModal } from "../AddPaymentMethodModal";
 
-export const PaymentDetailsListingComponent = () => {
+const PaymentDetailsListingComponent = () => {
   // Generate an array of 10 elements to represent 10 rows
   const rows = Array.from({ length: 6 }, (_, index) => (
     <tr key={index}>
@@ -546,3 +546,5 @@ function CardList() {
     </div>
   );
 }
+
+export default PaymentDetailsListingComponent;

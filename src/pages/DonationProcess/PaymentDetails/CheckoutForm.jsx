@@ -21,7 +21,7 @@ import { handleBasketCheckout } from "../../../features/basket/basketSlice";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_KEY);
+const stripePromise = loadStripe(import.meta.env.VITE_APP_STRIPE_KEY);
 const appearence = {
   theme: "flat",
 };
@@ -59,7 +59,7 @@ export const CheckoutForm = ({ setState, state }) => {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: process.env.REACT_APP_URL + "/thank-you",
+        return_url: import.meta.env.VITE_APP_URL + "/thank-you",
       },
     });
 

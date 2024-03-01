@@ -23,6 +23,7 @@ export const Footer = () => {
   const validationSchema = yup.object().shape({
     email: yup
       .string("Enter your email")
+      .trim()
       .email("Enter a valid email")
       .matches(
         /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,

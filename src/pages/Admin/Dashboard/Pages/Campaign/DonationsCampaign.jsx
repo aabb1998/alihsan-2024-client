@@ -64,7 +64,7 @@ export const DonationCampaignComponent = () => {
                                     ))}
                                 </select>
                             </div>
-                            <button className='text-button-md text-neutral-1000'>Clear Filter</button>
+                            <button className='text-button-md text-neutral-1000'>Clear</button>
                         </form>
                         <div className="w-full sm:w-auto form-group sm:min-w-72">
                             <label className="relative block">

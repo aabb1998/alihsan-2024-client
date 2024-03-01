@@ -13,7 +13,7 @@ const Button = (props) => {
     type,
     name,
     value,
-    disabled
+    disabled,
   } = props;
 
   const variants = {

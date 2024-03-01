@@ -5,12 +5,12 @@ import Img from "../../components/Image";
 
 export const ImpactStoryListItem = ({ item }) => {
   return (
-    <Link
-      to={`/impact-story/${item?.slug}`} className="flex flex-col">
-      <div className="h-full col-span-1 p-3 duration-700 ease-in-out border border-neutral-300 rounded-2xl hover:scale-95">
-        <div className="w-full h-48 mb-4 overflow-hidden rounded-lg">
+    <Link to={`/impact-story/${item?.slug}`} className="flex flex-col">
+      <div className="h-full col-span-1 p-3 duration-700 ease-in-out border border-neutral-300 rounded-xl hover:scale-95">
+        <div className="w-full h-48 mb-4 overflow-hidden rounded-xl">
           <Img
-            src={`${item?.coverImage || "/images/banner/impact-stories/2.jpg"}`} className="object-cover w-full h-full"
+            src={`${item?.coverImage || "/images/banner/impact-stories/2.jpg"}`}
+            className="object-cover w-full h-full"
             alt={`${item?.title}`}
           />
         </div>

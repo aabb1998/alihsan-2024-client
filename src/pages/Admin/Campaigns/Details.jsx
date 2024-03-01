@@ -8,6 +8,7 @@ import CampaignUpdates from "./CampaignUpdates";
 import { loadCampaignDetails } from "../../../features/adminCampaigns";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import Donations from '../../../components/Donations'
 
 const CampaignDetails = () => {
   const navigate = useNavigate();
@@ -85,7 +86,7 @@ const CampaignDetails = () => {
               <CampaignUpdates />
             </Tab.Panel>
             <Tab.Panel>
-              <CampaignDonations />
+              <Donations extraFilters={{campaignIds: campaignId}} />
             </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>

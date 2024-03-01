@@ -24,25 +24,22 @@ import { getProfile } from "../../../features/authentication/authenticationSlice
 import { updateCheckoutProfile } from "../../../features/paymentDetails/paymentDetailsSlice";
 import { useLocation } from "react-router-dom";
 
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_KEY);
+const stripePromise = loadStripe(import.meta.env.VITE_APP_STRIPE_KEY);
 const appearence = {
   theme: "flat",
-};
-const retrieveUserInfo = () => {
-  const isLoggedIn = localStorage.getItem("loggedIn");
-  return isLoggedIn ? JSON.parse(isLoggedIn) : { token: null, role: null };
 };
 const CheckoutPaymentComponent = () => {
   const dispatch = useDispatch();
   const location = useLocation();
-  const { role } = retrieveUserInfo();
+	const userData = useSelector(state => state.profile.auth)
+  const role = userData?.role;
   const { showErrorMessage } = SnackMessages();
-  const [paymentType, setPaymentType] = useState(true);
+  const [paymentType, setPaymentType] = useState(false);
+  const [bankDetails, setBankDetails] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const profile = useSelector((state) => state.profile);
+  const userProfile = useSelector((state) => state.profile.user);
   const { basketItems } = useSelector((state) => state.basketItem);
   const recurringItems = basketItems.filter((item) => item.isRecurring);
-  const numberOfRecurringItems = recurringItems.length;
 
   const [state, setState] = useState({
     loading: false,
@@ -54,9 +51,7 @@ const CheckoutPaymentComponent = () => {
   const isAnonymous = useSelector((state) => state.basketItem.isAnonymous);
 
   const handleAddCard = async () => {
-    const isLoggedIn = localStorage.getItem("loggedIn");
-    const userDetails = JSON.parse(isLoggedIn);
-    if (!profile.email || userDetails?.role === "ADMIN") {
+    if (!userProfile?.email || userProfile.role === "ADMIN") {
       if (location?.state?.clientSecret) {
         setState((s) => ({
           ...s,
@@ -79,25 +74,6 @@ const CheckoutPaymentComponent = () => {
         showErrorMessage(response?.payload?.message || "Something went wrong!");
       }
     }
-
-    // api
-    //   .post("/basket/checkout", { isAnonymous })
-    //   .then((res) => {
-    //   })
-    //   .catch((error) => {
-    //     if (error.response?.status === 401) {
-    //       localStorage.removeItem("loggedIn");
-    //       sessionStorage.removeItem("loggedIn");
-    //       window.location.href = "login";
-    //     } else if (error.response?.status === 400) {
-    //       window.location.href = "basket";
-    //     } else
-    //       setState((s) => ({
-    //         ...s,
-    //         loading: false,
-    //         error: { message: error.response?.data.message || error.message },
-    //       }));
-    //   });
   };
   const handleDonationProcess = async (cardSelected) => {
     setState((s) => ({ ...s, loading: true }));
@@ -121,28 +97,7 @@ const CheckoutPaymentComponent = () => {
       showErrorMessage(response?.error?.message);
     }
 
-    // api
-    //   .post("/basket/checkout", {
-    //     isAnonymous: isAnonymous,
-    //     paymentMethodId: cardSelected,
-    //   })
-    //   .then((res) => {
-    //
-    //   })
-    //   .catch((error) => {
-    //     if (error.response?.status === 401) {
-    // localStorage.removeItem("loggedIn");
-    // sessionStorage.removeItem("loggedIn");
-    // window.location.href = "login";
-    //     } else if (error.response?.status === 400) {
-    //       window.location.href = "basket";
-    //     } else
-    //       setState((s) => ({
-    //         ...s,
-    //         loading: false,
-    //         error: { message: error.response?.data.message || error.message },
-    //       }));
-    //   });
+   
   };
 
   const handlePaypalSubmit = async () => {
@@ -171,6 +126,7 @@ const CheckoutPaymentComponent = () => {
         updateCheckoutProfile({
           ...checkoutData,
           paymentGateway: "paypal",
+          isAnonymous: true,
         })
       );
       if (resp?.payload?.success && !resp.payload.payload?.error) {
@@ -190,49 +146,7 @@ const CheckoutPaymentComponent = () => {
     }
   }, []);
 
-  // useEffect(() => {
-  // if (
-  //   !state.loading &&
-  //   !state.error &&
-  //   !state.clientSecret &&
-  //   !location?.state?.clientSecret
-  // ) {
-  //   // if (!state.loading &&!state.clientSecret) {
-  //   setState((s) => ({ ...s, loading: true }));
-  //   api
-  //     .post("/basket/checkout", { isAnonymous })
-  //     .then((res) => {
-  //       setState((s) => ({
-  //         ...s,
-  //         loading: false,
-  //         clientSecret: res.data.payload.clientSecret,
-  //       }));
-  //     })
-  //     .catch((error) => {
-  //       if (error.response?.status === 401) {
-  //         localStorage.removeItem("loggedIn");
-  //         sessionStorage.removeItem("loggedIn");
-  //         window.location.href = "login";
-  //       } else if (error.response?.status === 400) {
-  //         window.location.href = "basket";
-  //       } else
-  //         setState((s) => ({
-  //           ...s,
-  //           loading: false,
-  //           error: { message: error.response?.data.message || error.message },
-  //         }));
-  //     });
-  // } else {
-  //   if (location?.state?.clientSecret) {
-  //     setState((s) => ({
-  //       ...s,
-  //       loading: false,
-  //       clientSecret: location?.state?.clientSecret,
-  //     }));
-  //   }
-  // }
-  // }, [state]);
-  // }, []);
+ 
 
   return (
     <>
@@ -257,7 +171,6 @@ const CheckoutPaymentComponent = () => {
                         leftIcon={<Edit3Icon iconSize={24} />}
                         variant={"none"}
                       />
-
                       <Button
                         className="hidden sm:block text-primary-300"
                         onClick={() => navigate("/checkout")}
@@ -273,7 +186,7 @@ const CheckoutPaymentComponent = () => {
 
                     <p className="mb-6 text-button-md">Select Payment Method</p>
 
-                    <div className="flex items-center gap-6 mb-5 sm:mb-6">
+                    <div className="flex items-center gap-6 mb-5 sm:mb-6 flex-row-reverse justify-end">
                       <div className="flex gap-2">
                         <input
                           id="default-radio-1"
@@ -281,7 +194,10 @@ const CheckoutPaymentComponent = () => {
                           value=""
                           name="paymentType"
                           className="rounded-full"
-                          onClick={() => setPaymentType(true)}
+                          onClick={() => {
+                            setPaymentType(true);
+                            setBankDetails(false);
+                          }}
                           checked={paymentType}
                         />
                         <label
@@ -297,13 +213,16 @@ const CheckoutPaymentComponent = () => {
                           false) ? (
                         <div className="flex gap-2">
                           <input
-                            id="default-radio-1"
+                            id="default-radio-2"
                             type="radio"
                             value=""
                             name="paymentType"
                             className="rounded-full"
-                            onClick={() => setPaymentType(false)}
-                            checked={!paymentType}
+                            onClick={() => {
+                              setBankDetails(false);
+                              setPaymentType(false);
+                            }}
+                            checked={!paymentType && !bankDetails}
                           />
                           <label
                             htmlFor="default-radio-2"
@@ -315,8 +234,28 @@ const CheckoutPaymentComponent = () => {
                       ) : (
                         ""
                       )}
+                      <div className="flex gap-2">
+                        <input
+                          id="default-radio-3"
+                          type="radio"
+                          value=""
+                          name="bankDetails"
+                          className="rounded-full"
+                          onClick={() => {
+                            setPaymentType(false);
+                            setBankDetails(true);
+                          }}
+                          checked={bankDetails}
+                        />
+                        <label
+                          htmlFor="default-radio-3"
+                          className="text-button-md text-neutral-800"
+                        >
+                          Bank Transfer
+                        </label>
+                      </div>
                     </div>
-                    {paymentType ? (
+                    {paymentType && !bankDetails ? (
                       <>
                         {state.clientSecret ? (
                           <Elements
@@ -341,11 +280,75 @@ const CheckoutPaymentComponent = () => {
                         )}
                       </>
                     ) : (
-                      <PaypalPayment
-                        state={state}
-                        isLoading={isLoading}
-                        handlePaypalSubmit={handlePaypalSubmit}
-                      />
+                      <>
+                        {!paymentType && !bankDetails ? (
+                          <PaypalPayment
+                            state={state}
+                            isLoading={isLoading}
+                            handlePaypalSubmit={handlePaypalSubmit}
+                          />
+                        ) : (
+                          <>
+                            <label htmlFor="LastName" className="">
+                              For direct bank transfers to avoid transaction
+                              fees, please send your donation to the following
+                              account:
+                            </label>
+                            <div className="mt-5">
+                              <table className="border-collapse border border-neutral-300">
+                                <tbody>
+                                  <tr>
+                                    <td className="text-heading-7 border border-neutral-300 p-2">
+                                      Bank Name:
+                                    </td>
+                                    <td className="border border-neutral-300 p-2">
+                                      St George Bank
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td className="text-heading-7 border border-neutral-300 p-2">
+                                      Account Name:
+                                    </td>
+                                    <td className="border border-neutral-300 p-2">
+                                      Al-Ihsan Foundation
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td className="text-heading-7 border border-neutral-300 p-2">
+                                      BSB:
+                                    </td>
+                                    <td className="border border-neutral-300 p-2">
+                                      112 879
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td className="text-heading-7 border border-neutral-300 p-2">
+                                      Account Number:
+                                    </td>
+                                    <td className="border border-neutral-300 p-2">
+                                      425 989 660
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td className="text-heading-7 border border-neutral-300 p-2">
+                                      Reference:
+                                    </td>
+                                    <td className="border border-neutral-300 p-2">
+                                      Site Donation
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                            <div className="mt-4">
+                              <Button
+                                variant={"primaryFull"}
+                                label={"Return Home"}
+                              />
+                            </div>
+                          </>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
@@ -410,7 +413,7 @@ function CheckoutForm({ setState, state }) {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: process.env.REACT_APP_URL + "/thank-you",
+        return_url: import.meta.env.VITE_APP_URL + "/thank-you",
       },
     });
 

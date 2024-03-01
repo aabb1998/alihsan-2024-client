@@ -21,7 +21,6 @@ const makeInitialState = (schema, values) => {
       ? schema[i].validator(state.values[i], state.values, state.touched) || ""
       : "";
   }
-	console.log('resetting', state);
   return state;
 };
 
@@ -48,31 +47,40 @@ const reducer = (state, action) => {
       val = target.checked;
     }
     const schemaItem = state.schema[target.name];
-    const values = schemaItem.setHelper
-      ? schemaItem.setHelper(
-          {
-            errors: state.errors,
-            values: state.values,
-            touched: state.touched,
-          },
-          val
-        )
-      : { [target.name]: val };
-    const error = schemaItem.validator
-      ? schemaItem.validator(
-          values[target.name],
-          state.values,
-          state.touched
-        ) || ""
-      : "";
-
+		let values, errors = {};
+		if(schemaItem.setHelper) {
+			values = {...state.values, ...schemaItem.setHelper(
+				{
+					errors: state.errors,
+					values: state.values,
+					touched: state.touched,
+				},
+				val
+			)};
+			// errors = {};
+			// for(let i in values) {
+			// 	errors[i] = state.schema[i].validator
+			// 		? state.schema[i].validator(values[i], state.values, state.touched) || ""
+			// 		: "";
+			// }
+		} else {
+			values = { ...state.values, [target.name]: val };
+			// errors = { [target.name]: schemaItem.validator
+			// 	? schemaItem.validator(values[target.name], state.values, state.touched) || ""
+			// 	: "" }
+		}
+		for(let i in state.schema) {
+			errors[i] = state.schema[i].validator
+				? state.schema[i].validator(values[i], values, state.touched) || ""
+				: "";
+		}
     return {
       ...state,
       values: {
         ...state.values,
         ...values,
       },
-      errors: { ...state.errors, [target.name]: error },
+      errors: { ...state.errors, ...errors },
       touched: { ...state.touched, [target.name]: true },
     };
   } else if (action.type === "remove") {
@@ -104,7 +112,8 @@ const reducer = (state, action) => {
   } else if (action.type === "submit-not-ready") {
     const touched = {};
     for (let i in state.schema) {
-      touched[i] = true;
+			if(state.errors[i])
+      	touched[i] = true;
     }
     return { ...state, touched };
   } else if (action.type === "reset") {

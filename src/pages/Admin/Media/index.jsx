@@ -3,18 +3,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Pagination } from "../../../components/Pagination";
 import { Button } from "../../../components";
-import { PlusIcon } from "../../../theme/svg-icons";
-import { itemPerPage } from "../../../utils/constants";
+import { ChevronsUpIcon, PlusIcon } from "../../../theme/svg-icons";
 import Filter from "../../../components/Filter";
 import ActionButtonBgWithIcon from "../Common/ActionButtonBgWithIcon";
 import StoriesModal from "../Common/StoriesModal";
 import DeleteConfirmation from "../Common/DeleteConfirmation";
 import { SnackMessages } from "../../../components/Toast";
-import { getImpactStories } from "../../../features/impactStories/impactStories";
 import {
   deleteMedia,
   getMedias,
 } from "../../../features/adminMedia/adminMediaSlice";
+import Loader from "../../../components/Loader";
 
 const initialState = {
   page: "1",
@@ -30,7 +29,7 @@ const pathDispatchMap = {
 };
 const mediaTitle = {
   "/admin/videos": "On Ground Video",
-  "/admin/posts": "Post Campaign Updates",
+  "/admin/posts": "Post Campaign Update",
 };
 const mediaDeleteUrl = {
   "/admin/videos": "/media/delete-video/",
@@ -52,12 +51,19 @@ const Media = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentItem, setCurrentItem] = useState(null);
 
-  const { medias, loading } = useSelector((state) => state.adminMedia);
+  const { medias, loading, isLoading } = useSelector(
+    (state) => state.adminMedia
+  );
   const count = medias?.count;
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= count) {
       const dispatchAction = pathDispatchMap[pathname];
-      dispatch(getMedias({ url: dispatchAction, filter: { ...filters, page: newPage } }));
+      dispatch(
+        getMedias({
+          url: dispatchAction,
+          filter: { ...filters, page: newPage },
+        })
+      );
       setCurrentPage(newPage);
     }
   };
@@ -103,7 +109,7 @@ const Media = () => {
       <div className="py-6 px-3 sm:!px-5 md:!px-7.5 sm:py-7.5 md:py-10 w-full h-[calc(100vh-4.5rem)] overflow-auto">
         <div className="flex items-center justify-between w-full border-b border-neutral-300 pb-3.5">
           <h5 className="text-heading-7 md:text-heading-5">
-            {mediaTitle[pathname]}
+            {mediaTitle[pathname]}s
           </h5>
           <Button
             className=" btn btn-primary text-button-md md:text-button-lg w-fit"
@@ -144,10 +150,34 @@ const Media = () => {
               <thead className="rounded bg-neutral-200">
                 <tr className="">
                   <th className="p-4 text-sm font-medium text-start font-Montserrat text-neutral-600">
-                    Id
+                    <div className="flex gap-1.5 items-center">
+                      Id
+                      <ChevronsUpIcon
+                        iconSize={14}
+                        onClick={() => {
+                          setFilters({
+                            ...filters,
+                            sort: "id",
+                            order: filters.order === "asc" ? "desc" : "asc",
+                          });
+                        }}
+                      />
+                    </div>
                   </th>
                   <th className="p-4 text-sm font-medium text-start font-Montserrat text-neutral-600">
-                    Title
+                    <div className="flex gap-1.5 items-center">
+                      Title
+                      <ChevronsUpIcon
+                        iconSize={14}
+                        onClick={() => {
+                          setFilters({
+                            ...filters,
+                            sort: "title",
+                            order: filters.order === "asc" ? "desc" : "asc",
+                          });
+                        }}
+                      />
+                    </div>
                   </th>
                   <th className="p-4 text-sm font-medium text-start font-Montserrat text-neutral-600">
                     Description
@@ -158,7 +188,7 @@ const Media = () => {
                 </tr>
               </thead>
               <tbody>
-                {medias?.rows?.length ? (
+                {medias?.rows?.length > 0 &&
                   medias?.rows?.map((impactStory, i) => (
                     <tr
                       key={i}
@@ -172,7 +202,8 @@ const Media = () => {
                       </td>
                       <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700 ">
                         <div className="break-all line-clamp-2">
-                          {impactStory.descriptionText || impactStory.description}
+                          {impactStory.descriptionText ||
+                            impactStory.description}
                         </div>
                       </td>
 
@@ -190,22 +221,21 @@ const Media = () => {
                         </div>
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
-                      No Data Found
-                    </td>
-                  </tr>
-                )}
+                  ))}
               </tbody>
             </table>
             <div className="mt-5">
-              <Pagination
-                currentPage={currentPage}
-                totalPages={Math.ceil(count / 20)}
-                onPageChange={handlePageChange}
-              />{" "}
+              {isLoading ? (
+                <Loader />
+              ) : medias?.rows?.length === 0 ? (
+                <div className="">No Data Found.</div>
+              ) : (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={Math.ceil(count / 20)}
+                  onPageChange={handlePageChange}
+                />
+              )}{" "}
             </div>
           </div>
         </div>

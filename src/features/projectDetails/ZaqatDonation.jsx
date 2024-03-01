@@ -6,6 +6,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { FormikValidationError } from "../Common/FormikValidationError";
 import { useNavigate } from "react-router-dom";
+import CalculateIcon from "@mui/icons-material/Calculate";
 import {
   updateBasket,
   addBasketItem,
@@ -38,14 +39,16 @@ const recurringPeriods = [
 ];
 
 export const ZaqatDonation = ({ campaign, handleClose, isModal }) => {
-	const user = localStorage.getItem('loggedIn');
-	const generalDonations = useSelector(state => state.settings.settings.generalAmounts)
+  const user = useSelector((state) => state.profile.auth);
+  const generalDonations = useSelector(
+    (state) => state.settings.settings.generalAmounts,
+  );
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleDonation = async (values, { resetForm }) => {
     const checkout = JSON.parse(localStorage.getItem("checkout") || "[]");
     const isInCheckoutList = checkout.find(
-      (obj) => obj.campaignId === values.campaignId
+      (obj) => obj.campaignId === values.campaignId,
     );
 
     const newValues = {
@@ -55,21 +58,20 @@ export const ZaqatDonation = ({ campaign, handleClose, isModal }) => {
       periodDays: parseInt(values.periodDays, 10),
       isRecurring: JSON.parse(values.isRecurring),
       Campaign: campaign,
-
     };
-    checkAdminPermission(newValues)
+    checkAdminPermission(newValues);
 
     const action = isInCheckoutList ? updateBasketItem : addBasketItem;
     const updatedCheckout = isInCheckoutList
       ? [
           ...checkout.slice(
             0,
-            checkout.findIndex((obj) => obj.campaignId === values.campaignId)
+            checkout.findIndex((obj) => obj.campaignId === values.campaignId),
           ),
           newValues,
           ...checkout.slice(
             checkout.findIndex((obj) => obj.campaignId === values.campaignId) +
-              1
+              1,
           ),
         ]
       : [...checkout, newValues];
@@ -78,7 +80,7 @@ export const ZaqatDonation = ({ campaign, handleClose, isModal }) => {
     localStorage.setItem("checkout", JSON.stringify(updatedCheckout));
     await dispatch(action(newValues));
     showSuccessMessage(
-      `Item ${isInCheckoutList ? "updated" : "added"} successfully`
+      `Item ${isInCheckoutList ? "updated" : "added"} successfully`,
     );
 
     resetForm();
@@ -87,10 +89,10 @@ export const ZaqatDonation = ({ campaign, handleClose, isModal }) => {
   };
 
   const handleChange = (e) => {
-		if(e.target.name==='isRecurring' && !user && e.target.value==='true') {
-			showErrorMessage('Please login to access this feature')
-			return;
-		}
+    if (e.target.name === "isRecurring" && !user && e.target.value === "true") {
+      showErrorMessage("Please login to access this feature");
+      return;
+    }
     formik.setFieldValue([e.target.name], e.target.value);
   };
   const handleAmount = (e) => {
@@ -102,13 +104,13 @@ export const ZaqatDonation = ({ campaign, handleClose, isModal }) => {
       selectedValue === currentAmount
         ? null
         : selectedValue === "Other"
-        ? ""
-        : selectedValue
+          ? ""
+          : selectedValue,
     );
 
     formik.setFieldValue(
       "custom",
-      selectedValue === "Other" ? !formik.values.custom : false
+      selectedValue === "Other" ? !formik.values.custom : false,
     );
   };
 
@@ -123,7 +125,7 @@ export const ZaqatDonation = ({ campaign, handleClose, isModal }) => {
       name: campaign?.name,
       coverImage: campaign?.coverImage,
       isRecurring: "false",
-      periodDays: "Weekly",
+      periodDays: "7",
       custom: false,
       checkoutType: campaign?.checkoutType,
     },
@@ -139,8 +141,8 @@ export const ZaqatDonation = ({ campaign, handleClose, isModal }) => {
     <div
       className={`${
         isModal
-          ? "md:rounded-4xl border-neutral-300 bg-white"
-          : "border rounded-2.5xl md:rounded-4xl border-neutral-300 p-4 md:p-7.5 bg-white"
+          ? "md:rounded-xl border-neutral-300 bg-white"
+          : "border rounded-xl md:rounded-xl border-neutral-300 p-4 md:p-7.5 bg-white"
       }`}
     >
       {!isModal && (
@@ -153,6 +155,7 @@ export const ZaqatDonation = ({ campaign, handleClose, isModal }) => {
           <div className="p-2 bg-accent-100 rounded-lg gap-3.5 flex">
             {paymentTypes?.map((e) => (
               <Button
+                key={e.label}
                 value={e.value}
                 label={e.label}
                 name="isRecurring"
@@ -202,13 +205,15 @@ export const ZaqatDonation = ({ campaign, handleClose, isModal }) => {
             }`}
           >
             <legend className="sr-only">Select an amount to donate</legend>
-            {[...generalDonations, 'Other'].map((option) => (
+            {[...generalDonations, "Other"].map((option) => (
               <div key={option} className="col-span-1">
                 <Button
                   type="button"
                   onClick={handleAmount}
                   value={option}
-                  label={option==='Other'?option:currencyConfig.label+option}
+                  label={
+                    option === "Other" ? option : currencyConfig.label + option
+                  }
                   name="amount"
                   variant={"secondaryOutlineFull"}
                   className={
@@ -240,9 +245,11 @@ export const ZaqatDonation = ({ campaign, handleClose, isModal }) => {
           <div>
             <Button
               onClick={handleClick}
-              className={`${"block mb-4 btn btn-secondary filled"}`}
+              className={`${"block mb-4 btn btn-zakat-calculator filled"}`}
               label={"Calculate Your Zakat"}
               type="button"
+              variant={"dark"}
+              leftIcon={<CalculateIcon />}
             />
 
             <div>

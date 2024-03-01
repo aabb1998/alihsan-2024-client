@@ -9,9 +9,13 @@ import { EyeOffIcon, EyeIcon } from "../../../theme/svg-icons";
 import { signUp } from "./signupAPI";
 import { PasswordMeter } from "./PasswordMeter";
 import { SnackMessages } from "../../../components/Toast";
-import { SocialLoginButtons } from "../Common/SocialLogin/SocialLoginButtons";
 import { PrimaryLoadingButton } from "../../../components/LoadingButtons";
 import PageHead from "../../../components/PageHead";
+import NoSSRSuspense from "../../../components/NoSSRSuspense";
+
+const SocialLoginButtons = React.lazy(() =>
+  import("../Common/SocialLogin/SocialLoginButtons")
+);
 
 const Signup = () => {
   const [isVisiblePassword, setVisiblePassword] = useState(false);
@@ -26,10 +30,12 @@ const Signup = () => {
   const validationSchema = yup.object({
     firstName: yup
       .string("Enter your first name")
+      .trim()
       .required("First name is required")
       .max(40, "First name must be at most 40 characters"),
     lastName: yup
       .string("Enter your last name")
+      .trim()
       .required("Last name is required")
       .max(40, "Last name must be at most 40 characters"),
     email: yup
@@ -144,22 +150,6 @@ const Signup = () => {
     setVisiblePasswordMeter(true);
   };
 
-  useEffect(() => {
-    const userData = localStorage.getItem("loggedIn")
-      ? localStorage.getItem("loggedIn")
-      : sessionStorage.getItem("loggedIn");
-
-    if (userData && isLoggedInChecked === false) {
-      const parsedData = JSON.parse(userData);
-      console.log(userData);
-      if (parsedData.isloggedIn === true && parsedData.role === "USER") {
-        isLoggedInChecked = true;
-        showSuccessMessage("Already logged in");
-        navigate("/");
-      }
-    }
-  }, []);
-
   return (
     <div>
       <main className="mx-auto">
@@ -167,13 +157,13 @@ const Signup = () => {
         <div className="flex justify-center min-h-screen gap-4 px-4 py-4 md:px-6 lg:justify-normal">
           <div className="flex items-center justify-center w-full md:w-8/12">
             <div className="w-full sm:w-[30.625rem]">
-              <a href="/">
+              <Link href="/">
                 <img
                   src="/images/assets/logo.svg"
                   className="mx-auto mb-15"
                   alt="Al-Ihsan Foundation"
                 />
-              </a>
+              </Link>
               <h1 className="mb-10 text-center text-heading-5 md:text-heading-4 text-neutral-900">
                 Create your account
               </h1>
@@ -254,8 +244,7 @@ const Signup = () => {
                       Password
                     </label>
                     <div className="absolute inset-y-0 right-0 flex items-center px-4 text-neutral-500">
-                      <a
-                        href="#"
+                      <p
                         aria-label="View Password"
                         onClick={() => setVisiblePassword(!isVisiblePassword)}
                       >
@@ -264,7 +253,7 @@ const Signup = () => {
                         ) : (
                           <EyeIcon iconSize={20} />
                         )}
-                      </a>
+                      </p>
                     </div>
                     <input
                       type={isVisiblePassword ? "text" : "password"}
@@ -298,8 +287,7 @@ const Signup = () => {
                       Confirm Password
                     </label>
                     <div className="absolute inset-y-0 right-0 flex items-center px-4 text-neutral-500">
-                      <a
-                        href="#"
+                      <p
                         aria-label="View Confirm Password"
                         onClick={() =>
                           setVisibleConfirmPassword(!isVisibleConfirmPassword)
@@ -310,7 +298,7 @@ const Signup = () => {
                         ) : (
                           <EyeIcon iconSize={20} />
                         )}
-                      </a>
+                      </p>
                     </div>
                     <input
                       type={isVisibleConfirmPassword ? "text" : "password"}
@@ -389,14 +377,16 @@ const Signup = () => {
                 </div>
                 <div className="w-full h-px bg-neutral-300"></div>
               </div>
-              <SocialLoginButtons />
+              <NoSSRSuspense>
+                <SocialLoginButtons />
+              </NoSSRSuspense>
               <div className="text-center">
                 <span className="font-Inter text-neutral-600">
                   Already have an account?{" "}
                 </span>
-                <a href="/login" className="font-medium text-primary-300">
+                <Link to="/login" className="font-medium text-primary-300">
                   Login
-                </a>
+                </Link>
               </div>
             </div>
           </div>

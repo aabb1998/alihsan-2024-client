@@ -12,6 +12,10 @@ import AddQurbanModal from './AddQurbanModal'
 import { useDispatch, useSelector } from 'react-redux'
 import { getSettings, updateCampaignOptions, getQurban, deleteQurban } from '../../../features/adminSettings'
 import { currencyConfig } from '../../../utils/constants'
+import { useConfirmationModal } from '../../../components/ConfirmationModal'
+import ArrayInput from './ArrayInput'
+import { CloseIcon } from '../../../theme/svg-icons'
+import CountriesSelector from '../../../components/CountriesSelector'
 
 const validateNumber = v => !/^[0-9]+(.[0-9]+)?$/.test(v)
 
@@ -19,6 +23,9 @@ export default function Settings() {
   const dispatch = useDispatch();
   const { settings, settingsLoader, qurbanValues, qurbanLoader } = useSelector(state => state.adminSettings);
   useEffect(() => {
+		resetState();
+  }, [settings])
+	const resetState = () => {
     formState.dispatch({
       type: 'reset', values: {
         ...settings,
@@ -26,10 +33,12 @@ export default function Settings() {
         ramadanStartDate: settings.ramadanStartDate?.split('T')[0],
         generalAmounts: settings.generalAmounts?.split(',') || ['', '', ''],
         fedyahAmounts: settings.fedyahAmounts?.split(',') || ['', '', '', ''],
-        waterWellCountries: settings.waterWellCountries?.split(',') || [],
+        shallowWaterCountries: settings.shallowWaterCountries?.split(',') || [],
+        deepWaterCountries: settings.deepWaterCountries?.split(',') || [],
+        deepWaterStationCountries: settings.deepWaterStationCountries?.split(',') || [],
       }
     })
-  }, [settings])
+	}
   useEffect(() => {
     dispatch(getSettings());
     dispatch(getQurban());
@@ -42,7 +51,11 @@ export default function Settings() {
       },
       ramadanEndDate: {
         initialValue: '',
-        validator: v => !v && 'This field is required',
+        validator: (v,{ramadanStartDate}) => {
+					if(!v) return 'This field is required'
+					const ed = new Date(v).getTime(), sd = new Date(ramadanStartDate).getTime();
+					if(ed<=sd) return "End date should be after start date"
+				},
       },
       fedyahAmounts: {
         initialValue: ['', '', ''],
@@ -62,8 +75,16 @@ export default function Settings() {
           return { generalAmounts: arr };
         },
       },
-      waterWellCountries: {
-        initialValue: ['IN'],
+      shallowWaterCountries: {
+        initialValue: [],
+        validator: (v) => !v.length && "Atleast one country should be selected",
+      },
+      deepWaterCountries: {
+        initialValue: [],
+        validator: (v) => !v.length && "Atleast one country should be selected",
+      },
+      deepWaterStationCountries: {
+        initialValue: [],
         validator: (v) => !v.length && "Atleast one country should be selected",
       },
       feedPrice: { initialValue: '', validator: v => !v ? 'This field is required' : isNaN(parseFloat(v)) && 'Should be a valid price amount' },
@@ -78,6 +99,9 @@ export default function Settings() {
     }, onSubmit: async ({ values }) => {
       dispatch(updateCampaignOptions({
         ...values,
+				shallowWaterCountries: values.shallowWaterCountries.join(','),
+				deepWaterCountries: values.deepWaterCountries.join(','),
+				deepWaterStationCountries: values.deepWaterStationCountries.join(','),
         generalAmounts: values.generalAmounts.join(','),
         fedyahAmounts: values.fedyahAmounts.join(','),
         waterWellCountries: (values.waterWellCountries || ['IN']).join(','),
@@ -86,6 +110,7 @@ export default function Settings() {
   })
 
   const [qurbanAdder, setQurbanAdder] = useState(null)
+	const askConfirmation = useConfirmationModal()
   const checkEdited = () => {
     for (let i in formState.touched)
       if (formState.touched[i]) return true
@@ -98,7 +123,13 @@ export default function Settings() {
   }
 
   const onDeleteQurban = (id) => {
-    dispatch(deleteQurban(id))
+		askConfirmation({
+			title: "Delete Qurban Group?",
+			text: "Are you sure you want to delete this Qurban Group?",
+			accept: {label: "Yes, Delete", onClick: () => {
+				dispatch(deleteQurban(id))
+			}}, reject: {label: "No, Keep it"},
+		})
   }
   const fixedArrayValueChange = (e, i) => {
     formState.dispatch({ type: 'change', target: { name: e.target.name, value: { value: e.target.value, index: i }, type: 'custom' } })
@@ -232,6 +263,18 @@ export default function Settings() {
                   />}
                 />
                 <SettingsField
+                  label="Shallow Waterwell Countries"
+                  error={formState.touched.shallowWaterCountries && formState.errors.shallowWaterCountries}
+                  value={
+										<CountriesSelector
+											isInline
+											onChange={formState.dispatch}
+											array={formState.values.shallowWaterCountries}
+											name="shallowWaterCountries"
+										/>
+									}
+                />
+                <SettingsField
                   label="Deep Waterwell"
                   error={formState.touched.deepWaterPrice && formState.errors.deepWaterPrice}
                   value={<AmountInput
@@ -241,6 +284,18 @@ export default function Settings() {
                   />}
                 />
                 <SettingsField
+                  label="Deep Waterwell Countries"
+                  error={formState.touched.deepWaterPrice && formState.errors.deepWaterPrice}
+                  value={
+										<CountriesSelector
+											isInline
+											onChange={formState.dispatch}
+											array={formState.values.deepWaterCountries}
+											name="deepWaterCountries"
+										/>
+									}
+                />
+                <SettingsField
                   label="Deep Water Station"
                   error={formState.touched.deepWaterStationPrice && formState.errors.deepWaterStationPrice}
                   value={<AmountInput
@@ -248,6 +303,18 @@ export default function Settings() {
                     value={formState.values.deepWaterStationPrice}
                     name="deepWaterStationPrice"
                   />}
+                />
+                <SettingsField
+                  label="Deep Water Station Countries"
+                  error={formState.touched.deepWaterStationCountries && formState.errors.deepWaterStationCountries}
+                  value={
+										<CountriesSelector
+											isInline
+											onChange={formState.dispatch}
+											array={formState.values.deepWaterStationCountries}
+											name="deepWaterStationCountries"
+										/>
+									}
                 />
               </SettingsGroup>
               <SettingsGroup label="Ramadan Campaigns">
@@ -280,9 +347,9 @@ export default function Settings() {
                   className="btn text-button-md md:text-button-lg"
                   variant="secondaryOutline"
                   type="submit"
-                  label="Cancel"
+                  label="Reset"
                   disabled={!edited || settingsLoader}
-                  onClick={() => formState.dispatch({ type: 'reset', values: settings })}
+                  onClick={resetState}
                 />
                 <Button
                   className="btn text-button-md md:text-button-lg"
@@ -328,7 +395,7 @@ export default function Settings() {
                               {i.country.map(j => (
                                 <div className="flex gap-2 p-1 pr-2 rounded w-fit bg-neutral-200" key={j}>
                                   <img
-                                    src={`${process.env.REACT_APP_COUNTRY_URL}${j}.svg`}
+                                    src={`${import.meta.env.VITE_APP_COUNTRY_URL}${j}.svg`}
                                     className={'w-[1.375rem] h-auto'}
                                     alt="flag"
                                   />
@@ -349,8 +416,6 @@ export default function Settings() {
                   </table>
                 </div>
                 </div>
-
-
                 <AddQurbanModal
                   state={qurbanAdder}
                   onClose={() => setQurbanAdder(null)}

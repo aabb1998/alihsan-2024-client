@@ -17,12 +17,11 @@ import { Footer } from "../../Include/footer";
 import { DonationTotal } from "../Common/DonationTotal";
 import { IntrestedProjects } from "../Common/InterestedProjects";
 import { StepperBasket } from "../Common/Stepper/StepperBasket";
+import PageHead from "../../../components/PageHead";
 
 export const BasketComponent = () => {
   const [megamenu, setMegamenu] = useState("");
-  useEffect(() => {
-    document.title = "Al-Ihsan Foundation - Basket";
-  }, []);
+
   // Generate an array of elements to represent rows
   const rows = Array.from({ length: 3 }, (_, index) => (
     <tr key={index}>
@@ -92,6 +91,7 @@ export const BasketComponent = () => {
   ));
   return (
     <div>
+      <PageHead title={"Basket"} />
       <aside
         id="default-sidebar"
         className="fixed hidden top-0 left-0 z-40 min-w-[16.875rem] h-screen transition-transform -translate-x-full sm:translate-x-0"
@@ -180,7 +180,7 @@ export const BasketComponent = () => {
             </div>
             <ChevronDownIcon />
           </div>
-          <Button variant="primaryFull" label="Donate now" />
+          <Button variant="primaryFull" label="Donate Now" />
         </div>
       </aside>
       {/* Header */}
@@ -317,7 +317,7 @@ export const BasketComponent = () => {
                   <UserIcon />
                 </div>
                 <div className="hidden md:block">
-                  <Button label="Donate now" className={"text-sm"} />
+                  <Button label="Donate Now" className={"text-sm"} />
                 </div>
               </div>
             </div>

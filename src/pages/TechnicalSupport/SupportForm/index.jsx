@@ -1,21 +1,16 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { useDispatch } from "react-redux";
-import { Button } from "../../../components";
-import TextArea from "../../../components/TextArea";
-import { PlusIcon, TrashIcon } from "../../../theme/svg-icons";
-import { PhoneField } from "../../../components/PhoneField";
 import { SnackMessages } from "../../../components/Toast";
-import { FormikValidationError } from "../../../features/Common/FormikValidationError";
-import { technicalRequirements } from "../../../utils/constants";
 import { submitSupport } from "../../../features/technicalSupport/technicalSupport";
-import { Dropdown } from "../../../components/Dropdown";
 import { getCountryLengths } from "../../../utils/helper";
-import ImageUpload from "../../../components/ImageUpload";
+import { captchaValidation } from "../../../features/authentication/authenticationSlice";
+import { Form } from "./Form";
 
 export const SupportForm = () => {
   const dispatch = useDispatch();
+  const captchaRef = useRef(null);
   const [countryCode, setCountryCode] = useState("");
   const [isDisable, setDisable] = useState(false);
   const { showSuccessMessage, showErrorMessage } = SnackMessages();
@@ -24,6 +19,7 @@ export const SupportForm = () => {
   const validationSchema = yup.object().shape({
     name: yup
       .string()
+      .trim()
       .required("Name is required")
       .max(50, ({ max }) => `First Name must be at most ${max} characters`),
     email: yup
@@ -34,10 +30,11 @@ export const SupportForm = () => {
         "Enter a valid email"
       )
       .max(50, ({ max }) => `Last Name must be at most ${max} characters`),
-    phone: yup.string().required("Phone Number is required"),
-    requirement: yup.string().required("Requirement is required"),
+    phone: yup.string().trim().required("Phone Number is required"),
+    requirement: yup.string().trim().required("Requirement is required"),
     description: yup
       .string()
+      .trim()
       .required("Description is required")
       .max(500, ({ max }) => `Company Name must be at most ${max} characters`),
   });
@@ -55,7 +52,7 @@ export const SupportForm = () => {
       email: "",
       phone: "",
       description: "",
-      images: Array.from({ length: 4 }).fill(undefined), // Initialize with undefined values
+      images: Array.from({ length: 4 }).fill(undefined),
     },
     validationSchema: validationSchema,
     validate: (values) => {
@@ -69,6 +66,14 @@ export const SupportForm = () => {
       return errors;
     },
     onSubmit: async (values, { resetForm, setErrors }) => {
+      const token = captchaRef.current.getValue();
+      captchaRef.current.reset();
+      const response = await dispatch(captchaValidation({ token: token }));
+      if (!response?.payload?.success) {
+        showErrorMessage(response?.payload?.message);
+        return;
+      }
+
       setDisable(true);
       const isValid = getCountryLengths(values.phone, countryCode);
       if (!isValid) {
@@ -99,7 +104,6 @@ export const SupportForm = () => {
           }
         } catch (error) {}
         setDisable(false);
-
       }
     },
   });
@@ -158,141 +162,18 @@ export const SupportForm = () => {
         <h2 className="mb-5 text-heading-6 md:text-heading-3">
           Technical Support
         </h2>
-        <form onSubmit={formik.handleSubmit} id="support" autoComplete="off">
-          <div className="md:grid-cols-2 md:grid gap-x-6">
-            <div className="flex flex-col mb-6 form-group grow">
-              <label htmlFor="Name" className="required">
-                Full Name<span className="text-red-300">*</span>
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formik.values.name}
-                onChange={formik.handleChange}
-                className="w-full form-control"
-                placeholder="Full Name"
-              />
-              {formik.touched.name && Boolean(formik.errors.name) && (
-                <FormikValidationError
-                  formikTouched={formik.touched.name}
-                  formikError={formik.errors.name}
-                />
-              )}
-            </div>
-            <div className="flex flex-col mb-6 form-group grow">
-              <label htmlFor="Name" className="required">
-                Email Address<span className="text-red-300">*</span>
-              </label>
-              <input
-                type="text"
-                id="email"
-                name="email"
-                value={formik.values.email}
-                onChange={formik.handleChange}
-                className="w-full form-control"
-                placeholder="Email Address"
-              />
-              {formik.touched.email && Boolean(formik.errors.email) && (
-                <FormikValidationError
-                  formikTouched={formik.touched.email}
-                  formikError={formik.errors.email}
-                />
-              )}
-            </div>
-            <div className="flex flex-col mb-6 form-group grow">
-              <label htmlFor="Name" className="required">
-                Phone Number of Contact<span className="text-red-300">*</span>
-              </label>
-              <PhoneField
-                name={"phone"}
-                value={formik.values.phone}
-                handleChange={handlePhoneChange}
-              />
-              {formik.touched.phone && Boolean(formik.errors.phone) && (
-                <FormikValidationError
-                  formikTouched={formik.touched.phone}
-                  formikError={formik.errors.phone}
-                />
-              )}
-            </div>
-            <div className="flex flex-col mb-6 form-group grow">
-              <label htmlFor="Name" className="required">
-                Requirement<span className="text-red-300">*</span>
-              </label>
-              <Dropdown
-                value={formik.values.requirement}
-                className="!w-full"
-                onChange={handleRequirementChange}
-                options={technicalRequirements}
-                name={"requirement"}
-              />
-              {formik.touched.requirement &&
-                Boolean(formik.errors.requirement) && (
-                  <FormikValidationError
-                    formikTouched={formik.touched.requirement}
-                    formikError={formik.errors.requirement}
-                  />
-                )}
-            </div>
-            <div className="flex flex-col col-span-2 mb-6 form-group grow">
-              <label htmlFor="Name" className="required">
-                Images<span className="text-red-300">*</span>
-              </label>
-              <div className="grid col-span-2 gap-5 p-5 bg-white md:grid-cols-4 rounded-2xl">
-                {Array.from({ length: 4 }).map((_, index) => (
-                  <>
-                    <ImageUpload
-                      key={index}
-                      imagePreviews={imagePreviews[index]}
-                      name={"images-" + index}
-                      handleImageDelete={(event) =>
-                        handleImageDelete(event, index)
-                      }
-                      handleImageChange={(event) =>
-                        handleImageChange(event, index)
-                      }
-                      getCroppedImage={(e) => getCroppedImage(e, index)}
-
-                    />
-                  </>
-                ))}
-              </div>
-              {formik.touched.images && Boolean(formik.errors.images) && (
-                <FormikValidationError
-                  formikTouched={formik.touched.images}
-                  formikError={formik.errors.images}
-                />
-              )}
-            </div>
-            <div className="flex flex-col col-span-2 mb-6 form-group grow">
-              <label htmlFor="Description" className="required">
-                Describe The Problem<span className="text-red-300">*</span>
-              </label>
-              <div className="relative">
-                <TextArea
-                  value={formik.values.description}
-                  name="description"
-                  handleChange={formik.handleChange}
-                />
-                {formik.touched.description &&
-                  Boolean(formik.errors.description) && (
-                    <FormikValidationError
-                      formikTouched={formik.touched.description}
-                      formikError={formik.errors.description}
-                    />
-                  )}
-              </div>
-            </div>
-          </div>
-          <Button
-            variant="primaryFull"
-            type="submit"
-            label="Submit"
-            disabled={isDisable}
-          />
-        </form>
+        <Form
+          formik={formik}
+          handlePhoneChange={handlePhoneChange}
+          handleRequirementChange={handleRequirementChange}
+          imagePreviews={imagePreviews}
+          handleImageDelete={handleImageDelete}
+          handleImageChange={handleImageChange}
+          getCroppedImage={(e, index) => getCroppedImage(e, index)}
+          captchaRef={captchaRef}
+        />
       </div>
     </div>
   );
 };
+

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Button } from "../../components";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -9,31 +9,34 @@ import { addVolunteer } from "../../features/volunteerWithUs/volunteerWithUs";
 import { PhoneField } from "../../components/PhoneField";
 import { TextArea } from "../../components/TextArea";
 import { getCountryLengths } from "../../utils/helper";
+import ReCAPTCHA from "react-google-recaptcha";
+import { captchaValidation } from "../../features/authentication/authenticationSlice";
 
 const { showSuccessMessage, showErrorMessage } = SnackMessages();
 
 const validationSchema = yup.object().shape({
   firstName: yup
     .string()
+    .trim()
     .required("First Name is required")
     .max(50, ({ max }) => `First Name must be at most ${max} characters`),
   lastName: yup
     .string()
+    .trim()
     .required("Last Name is required")
     .max(50, ({ max }) => `Last Name must be at most ${max} characters`),
-  companyName: yup
-    .string()
-    .required("Company Name is required")
-    .max(50, ({ max }) => `Company name must be at most ${max} characters`),
-  phone: yup.string().required("Phone Number is required"),
+  phone: yup.string().trim().required("Phone Number is required"),
   message: yup
     .string()
+    .trim()
     .required("Message is required")
     .max(500, ({ max }) => `Message must be at most ${max} characters`),
 });
 
 export const Form = () => {
   const dispatch = useDispatch();
+  const captchaRef = useRef(null);
+
   const [countryCode, setCountryCode] = useState("");
   const [isDisable, setDisable] = useState(false);
 
@@ -47,6 +50,13 @@ export const Form = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values, { resetForm, setErrors }) => {
+      const token = captchaRef.current.getValue();
+      captchaRef.current.reset();
+      const response = await dispatch(captchaValidation({ token: token }));
+      if (!response?.payload?.success) {
+        showErrorMessage(response?.payload?.message);
+        return;
+      }
       const isValid = getCountryLengths(values.phone, countryCode);
       setDisable(true);
 
@@ -125,27 +135,6 @@ export const Form = () => {
               )}
             </div>
             <div className="flex flex-col mb-5 sm:mb-6 form-group grow">
-              <label htmlFor="Name">
-                Company Name<span className="text-red-300">*</span>
-              </label>
-              <input
-                type="text"
-                className="w-full form-control"
-                id="Name"
-                name="companyName"
-                value={formik.values.companyName}
-                onChange={formik.handleChange}
-                placeholder="Company Name"
-              />
-              {formik.touched.companyName &&
-                Boolean(formik.errors.companyName) && (
-                  <FormikValidationError
-                    formikTouched={formik.touched.companyName}
-                    formikError={formik.errors.companyName}
-                  />
-                )}
-            </div>
-            <div className="flex flex-col mb-5 sm:mb-6 form-group grow">
               <label htmlFor="Number">
                 Phone Number of Contact<span className="text-red-300">*</span>
               </label>
@@ -180,12 +169,18 @@ export const Form = () => {
                 )}
               </div>
             </div>
+            <div className="mb-4">
+              <ReCAPTCHA
+                sitekey={import.meta.env.VITE_APP_RECAPTCHA_SITE_KEY}
+                ref={captchaRef}
+              />
+            </div>
           </div>
           <Button
             variant="primaryFull"
             type="submit"
             label="Submit"
-            disabled={isDisable}
+            disabled={formik.isSubmitting}            
           />
         </form>
       </div>

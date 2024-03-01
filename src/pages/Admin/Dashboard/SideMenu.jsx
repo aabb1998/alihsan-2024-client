@@ -25,7 +25,7 @@ export const Sidemenus = () => {
     sessionStorage.setItem("submenuStates", JSON.stringify(submenuStates));
   }, [submenuStates]);
   return (
-    <div className="flex h-[calc(100vh-4.5rem)]">
+    <div className="flex h-[calc(100vh-5.5rem)]">
       <aside className="relative justify-start hidden overflow-y-auto h-full py-7.5 min-w-[16.875rem] px-5 duration-300 border-r sm:flex border-neutral-300 overflow-x-hidden">
         <ul className="flex flex-col gap-3 grow">
           {adminNavigationItems.map((item, index) => (

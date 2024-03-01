@@ -36,7 +36,7 @@ const filterList = [
 
 export default function PaymentList() {
   const { rows, count, loading } = useSelector(
-    (state) => state.paymentDetails.paymentList
+    (state) => state.paymentDetails.paymentList,
   );
   const [filters, setFilters] = useState(initialState);
   const [selectAll, setSelectAll] = useState(false);
@@ -50,7 +50,7 @@ export default function PaymentList() {
     const action = await dispatch(
       generateInvoice({
         donationId: id,
-      })
+      }),
     );
   };
   const handleAllClick = () => {
@@ -63,7 +63,7 @@ export default function PaymentList() {
   };
   const handleSingleChange = (i) => {
     const newCheckboxes = payments.map((payment, index) =>
-      index === i ? { ...payment, checked: !payment.checked } : payment
+      index === i ? { ...payment, checked: !payment.checked } : payment,
     );
     setPayments(newCheckboxes);
     setSelectAll(false);
@@ -76,12 +76,12 @@ export default function PaymentList() {
       filters.fromdate === "today"
         ? today.getTime()
         : filters.fromdate === "monthly"
-        ? new Date(
-            now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear(),
-            now.getMonth() === 0 ? 11 : now.getMonth() - 1,
-            now.getDate()
-          ).getTime()
-        : new Date(today.getTime() - 7 * 24 * 3600 * 1000).getTime();
+          ? new Date(
+              now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear(),
+              now.getMonth() === 0 ? 11 : now.getMonth() - 1,
+              now.getDate(),
+            ).getTime()
+          : new Date(today.getTime() - 7 * 24 * 3600 * 1000).getTime();
 
     const checkedIds = payments
       .filter((item) => item.checked) // Filter only items where checked is true
@@ -89,7 +89,7 @@ export default function PaymentList() {
       .join(",");
 
     const invoice = await dispatch(
-      exportInvoice({ fromdate: fromdate, exportId: checkedIds })
+      exportInvoice({ fromdate: fromdate, exportId: checkedIds }),
     );
   };
   //
@@ -104,7 +104,7 @@ export default function PaymentList() {
         const lastMonth = new Date(
           now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear(),
           now.getMonth() === 0 ? 11 : now.getMonth() - 1,
-          now.getDate()
+          now.getDate(),
         );
         return lastMonth.getTime();
       default:
@@ -163,7 +163,7 @@ export default function PaymentList() {
                     >
                       {i.label}
                     </button>
-                  )
+                  ),
                 )}
               </div>
               <button
@@ -225,7 +225,8 @@ export default function PaymentList() {
                         {i.updatedAt}
                       </td>
                       <td className="p-4 border-b border-neutral-300">
-                        {currencyConfig.label}{i.total}
+                        {currencyConfig.label}
+                        {i.total}
                       </td>
                       <td className="hidden p-4 text-center border-b border-neutral-300 sm:table-cell">
                         <Button
@@ -250,7 +251,7 @@ export default function PaymentList() {
                               <Menu.Item>
                                 <button
                                   className="flex w-full gap-2 px-3 py-2 text-sm font-medium rounded hover:bg-primary-200 text-start text-neutral-1000 font-Montserrat"
-                                  onClick={() => handleDownload(i.id)}
+                                  onClick={() => handleDownload(i.donationId)}
                                 >
                                   Download
                                 </button>
@@ -274,7 +275,7 @@ export default function PaymentList() {
       {payments.length < count && (
         <Pagination
           totalPages={Math.ceil(
-            count / process.env.REACT_APP_PAGINATION_PER_PAGE
+            count / import.meta.env.VITE_APP_PAGINATION_PER_PAGE,
           )}
           currentPage={filters.page}
           onPageChange={(page) => setFilters((f) => ({ ...f, page }))}

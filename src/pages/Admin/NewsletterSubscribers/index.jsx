@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { PlusIcon, TrashIcon } from "../../../theme/svg-icons";
+import { ChevronsUpIcon, PlusIcon, TrashIcon } from "../../../theme/svg-icons";
 import { Pagination } from "../../../components/Pagination";
 import Filter from "../../../components/Filter";
 import { Button } from "../../../components";
-import { useLocation } from "react-router-dom";
 import { itemPerPage } from "../../../utils/constants";
 import DeleteConfirmation from "../Common/DeleteConfirmation";
 import { SnackMessages } from "../../../components/Toast";
@@ -14,6 +13,7 @@ import {
   getNewsletterSubscribers,
 } from "../../../features/adminNewsletterSubscribers/adminNewsletterSubscribersSlice";
 import AddSubscriber from "./AddSubscriber";
+import Loader from "../../../components/Loader";
 
 const initialState = {
   page: "1",
@@ -25,15 +25,13 @@ const { showSuccessMessage, showErrorMessage } = SnackMessages();
 
 const NewsletterSubscribers = () => {
   const dispatch = useDispatch();
-
   const [isOpen, setIsOpen] = useState(false);
   const [deleteId, setDeleteId] = useState("");
   const [isDelete, setIsDelete] = useState(false);
   const [filters, setFilters] = useState(initialState);
   const [currentPage, setCurrentPage] = useState(1);
-  const [currentItem, setCurrentItem] = useState(null);
 
-  const { newsletterSubscribers, loading } = useSelector(
+  const { newsletterSubscribers, loading, isLoading } = useSelector(
     (state) => state.adminNewsletterSubscribers
   );
 
@@ -89,12 +87,7 @@ const NewsletterSubscribers = () => {
             }
             label={<span className="hidden sm:flex">Add New</span>}
           />{" "}
-          {isOpen && (
-            <AddSubscriber
-              item={currentItem}
-              onClose={() => setIsOpen(false)}
-            />
-          )}
+          {isOpen && <AddSubscriber onClose={() => setIsOpen(false)} />}
         </div>
         {isDelete && (
           <DeleteConfirmation
@@ -119,10 +112,34 @@ const NewsletterSubscribers = () => {
               <thead className="rounded bg-neutral-200">
                 <tr className="">
                   <th className="p-4 text-sm font-medium text-start font-Montserrat text-neutral-600">
-                    Id
+                    <div className="flex gap-1.5 items-center">
+                      Id
+                      <ChevronsUpIcon
+                        iconSize={14}
+                        onClick={() => {
+                          setFilters({
+                            ...filters,
+                            sort: "id",
+                            order: filters.order === "asc" ? "desc" : "asc",
+                          });
+                        }}
+                      />
+                    </div>
                   </th>
                   <th className="p-4 text-sm font-medium text-start font-Montserrat text-neutral-600">
-                    Email
+                    <div className="flex gap-1.5 items-center">
+                      Email
+                      <ChevronsUpIcon
+                        iconSize={14}
+                        onClick={() => {
+                          setFilters({
+                            ...filters,
+                            sort: "email",
+                            order: filters.order === "asc" ? "desc" : "asc",
+                          });
+                        }}
+                      />
+                    </div>
                   </th>
                   <th className="p-4 text-sm font-medium text-start font-Montserrat text-neutral-600">
                     Created At
@@ -134,7 +151,7 @@ const NewsletterSubscribers = () => {
                 </tr>
               </thead>
               <tbody>
-                {newsletterSubscribers?.rows?.length ? (
+                {newsletterSubscribers?.rows?.length > 0 &&
                   newsletterSubscribers?.rows?.map((impactStory, i) => (
                     <tr
                       key={i}
@@ -159,24 +176,23 @@ const NewsletterSubscribers = () => {
                         </div>
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
-                      No Data Found
-                    </td>
-                  </tr>
-                )}
+                  ))}
               </tbody>
             </table>
             <div className="mt-5">
-              <Pagination
-                currentPage={currentPage}
-                totalPages={Math.ceil(
-                  newsletterSubscribers?.count / itemPerPage
-                )}
-                onPageChange={handlePageChange}
-              />{" "}
+              {isLoading ? (
+                <Loader />
+              ) : newsletterSubscribers?.rows?.length === 0 ? (
+                <div className="">No Data Found.</div>
+              ) : (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={Math.ceil(
+                    newsletterSubscribers?.count / itemPerPage
+                  )}
+                  onPageChange={handlePageChange}
+                />
+              )}{" "}
             </div>
           </div>
         </div>

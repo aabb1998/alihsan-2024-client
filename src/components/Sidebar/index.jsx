@@ -29,8 +29,20 @@ export const Sidebar = ({ isSidebar, setSidebar }) => {
       className={`fixed top-0 left-0 z-40  h-screen ${isSidebar && ""}`}
       aria-label="Sidebar"
     >
-      <div className={!isSidebar && "fixed inset-0 transition-opacity bg-opacity-30 bg-neutral-1000"}>
-        <div className={!isSidebar && "fixed top-0 left-0 z-40 w-full h-screen max-w-xs transition-transform"}>
+      <div
+        className={
+          !isSidebar
+            ? "fixed inset-0 transition-opacity bg-opacity-30 bg-neutral-1000"
+            : ""
+        }
+      >
+        <div
+          className={
+            !isSidebar
+              ? "fixed top-0 left-0 z-40 w-full h-screen max-w-xs transition-transform"
+              : ""
+          }
+        >
           <Transition
             appear={true}
             show={!isSidebar}
@@ -46,7 +58,7 @@ export const Sidebar = ({ isSidebar, setSidebar }) => {
                 <Link to="/" onClick={() => setSidebar(true)}>
                   <Img
                     src={"/images/assets/logo.svg"}
-                    className="w-auto h-10"
+                    className="w-25 h-12"
                     alt="Al-Ihsan Foundation"
                   />
                 </Link>
@@ -72,7 +84,7 @@ export const Sidebar = ({ isSidebar, setSidebar }) => {
                     }}
                     onChange={(e) => setSearch(e.target.value)}
                     className="block w-full !py-2 !pr-3 bg-white border rounded-md form-control !pl-9"
-                    placeholder="Search"
+                    placeholder="Search for a campaign"
                     type="text"
                     name="search"
                   />
@@ -81,13 +93,11 @@ export const Sidebar = ({ isSidebar, setSidebar }) => {
                     className="absolute inset-y-0 right-0 flex items-center !p-2 rounded-lg !rounded-tl-none !rounded-bl-none text-primary-300 bg-accent-300"
                     rightIcon={<SearchIcon />}
                     onClick={(e) => {
-                      if (e.key === "Enter") {
-                        setSidebar(true);
-                        navigate("/projects", {
-                          state: { search: search },
-                        });
-                        setSearch("");
-                      }
+                      setSidebar(true);
+                      navigate("/projects", {
+                        state: { search: search },
+                      });
+                      setSearch("");
                     }}
                   />
                 </label>
@@ -170,7 +180,9 @@ export const Sidebar = ({ isSidebar, setSidebar }) => {
                               <div className="flex items-center gap-2">
                                 <div className="w-6 h-6 overflow-hidden rounded-full">
                                   <img
-                                    src={`${process.env.REACT_APP_COUNTRY_URL}AU.svg`}
+                                    src={`${
+                                      import.meta.env.VITE_APP_COUNTRY_URL
+                                    }AU.svg`}
                                     className="object-cover w-full h-full"
                                     alt="US flag"
                                   />
@@ -193,7 +205,7 @@ export const Sidebar = ({ isSidebar, setSidebar }) => {
                 </ul>
                 <Button
                   variant="primaryFull"
-                  label="Donate now"
+                  label="Donate Now"
                   onClick={handleDonateAction}
                 />
               </div>

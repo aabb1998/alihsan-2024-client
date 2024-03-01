@@ -20,7 +20,7 @@ const FinancialReports = () => {
       <section>
         <div className="container py-7.5 md:py-15">
           <h1 className="mb-2 text-center sm:mb-5 text-heading-6 sm:text-heading-3">
-            Financial Reports & Constitution
+            Financial Reports
           </h1>
           <p className="text-sm font-medium text-center sm:text-lg text-neutral-600">
             Annual Reports can be downloaded as PDF files from the below links
@@ -42,20 +42,6 @@ const FinancialReports = () => {
                     </button>
                   )}
                 </Tab>
-                <Tab as={Fragment} onClick={() => setTab("constitution")}>
-                  {({ selected }) => (
-                    <button
-                      className={
-                        "flex justify-center ease-in-out delay-150 duration-300 flex-grow w-auto px-4 md:px-8 py-3 font-bold border-b-2  border-transparent sm:flex-grow-0 sm:py-3 text-button-md sm:text-button-lg text-neutral-600 focus:outline-none focus-within:outline-none " +
-                        (selected
-                          ? "border-primary-300 text-primary-300 border-b-primary-300"
-                          : "")
-                      }
-                    >
-                      Constitution
-                    </button>
-                  )}
-                </Tab>
               </Tab.List>
               <Tab.Panels>
                 <Tab.Panel>
@@ -73,5 +59,4 @@ const FinancialReports = () => {
   );
 };
 
-
-export default FinancialReports
+export default FinancialReports;

@@ -1,5 +1,5 @@
-import React from 'react'
-import Img from '../../../components/Image'
+import React from "react";
+import Img from "../../../components/Image";
 
 export default function ZakatHeader() {
   return (
@@ -7,11 +7,11 @@ export default function ZakatHeader() {
       <h1 className="text-white text-heading-6 sm:text-heading-5">
         Zakat Calculator
       </h1>
-      <Img
+      {/* <Img
         src={"/images/illustration/stars.svg"}
         className="absolute bottom-0 right-4"
         alt="stars"
-      />
+      /> */}
     </div>
-  )
+  );
 }

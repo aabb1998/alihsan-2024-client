@@ -10,13 +10,23 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateBannerImage } from "../../../features/adminHomeContent/adminHomeContentSlice";
 import { SnackMessages } from "../../../components/Toast";
 import Modal from "../../../components/ImageUpload/Modal";
+import FieldRequired from "../../../components/FieldRequired";
+import TextArea from "../../../components/TextArea";
 
 const validationSchema = yup.object({
-  bannerImage: yup.string().required("Banner Image is required"),
+  image: yup.string().required("Banner Image is required"),
+  title: yup.string().required("Title is required"),
+  description: yup.string().required("Description is required"),
 });
 const { showSuccessMessage, showErrorMessage } = SnackMessages();
 
-export const BannerEdit = ({ getAllSettings, onClose, data }) => {
+export const BannerEdit = ({
+  getAllSettings,
+  onClose,
+  data,
+  item,
+  setItem,
+}) => {
   const [imagePreview, setImagePreview] = useState("");
   const [isUpdate, setUpdate] = useState(true);
   const [isLoader, setLoader] = useState(true);
@@ -27,21 +37,32 @@ export const BannerEdit = ({ getAllSettings, onClose, data }) => {
 
   const formik = useFormik({
     initialValues: {
-      bannerImage: "",
+      image: item?.bannerImage ?? "",
+      title: item?.title ?? "",
+      description: item?.description ?? "",
     },
     validationSchema: validationSchema,
     onSubmit: async (values, { resetForm }) => {
       const formData = new FormData();
-      formData.append(`bannerImage`, values.bannerImage, `image.png`);
+      formData.append(`bannerImage`, values.image);
+      formData.append(`title`, values.title);
+      formData.append(`description`, values.description);
+      if (item?.id) {
+        formData.append(`id`, item?.id);
+      }
       try {
         setButtonLoader(true);
-        let response = await dispatch(updateBannerImage(formData));
+        let response = await dispatch(
+          updateBannerImage({ formData: formData, id: item?.id })
+        );
         if (response?.payload?.success) {
+          setItem(null);
           setButtonLoader(false);
           onClose();
           showSuccessMessage(response?.payload?.message);
-          getAllSettings()
+          getAllSettings();
         } else {
+          setItem(null);
           setButtonLoader(false);
           showErrorMessage(response?.payload?.message);
         }
@@ -55,32 +76,32 @@ export const BannerEdit = ({ getAllSettings, onClose, data }) => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result);
-        formik.setFieldValue(`bannerImage`, file);
+        formik.setFieldValue(`image`, file);
       };
       reader.readAsDataURL(file);
       setUpdate(false);
-
     }
   };
 
-  const handleCoverImage = (event) => {
-    const file = event.currentTarget.files[0];
-    if (file) {
-      const reader = new FileReader();
-      setUpdate(false);
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-        formik.setFieldValue(`bannerImage`, file);
-      };
-      reader.readAsDataURL(file);
-    }
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    formik.setFieldValue(name, value);
   };
   useEffect(() => {
     if (data) {
       setLoader(false);
-      setImagePreview(data);
+      // setImagePreview(data);
     }
   }, [data]);
+
+  useEffect(() => {
+    if (item) {
+      setLoader(false);
+      setImagePreview(item?.image);
+      formik.setValues(item);
+    }
+  }, [item]);
+  // image
   return (
     <>
       <div className="fixed inset-0 z-30 transition-opacity bg-gray-500 bg-opacity-75">
@@ -111,64 +132,106 @@ export const BannerEdit = ({ getAllSettings, onClose, data }) => {
                     onSubmit={formik.handleSubmit}
                     className="w-full flex flex-col gap-5 md:gap-7.5"
                   >
+                    <div className="flex flex-col form-group">
+                      <label htmlFor="ProjectName" className="">
+                        Title
+                        <FieldRequired />
+                      </label>
+                      <input
+                        type="text"
+                        name="title"
+                        className="w-full bg-white form-control"
+                        id="project-name"
+                        placeholder="Title"
+                        value={formik.values.title}
+                        onChange={handleInputChange}
+                      />
+
+                      {formik.touched.title && Boolean(formik.errors.title) && (
+                        <FormikValidationError
+                          formikTouched={formik.touched.title}
+                          formikError={formik.errors.title}
+                        />
+                      )}
+                    </div>
+                    <div className="flex flex-col  form-group">
+                      <label htmlFor="ProjectName" className="">
+                        Description
+                        <FieldRequired />
+                      </label>
+                      <TextArea
+                        handleChange={handleInputChange}
+                        name="description"
+                        value={formik.values.description}
+                      />
+                      {/* <input
+                        type="text"
+                        name="description"
+                        className="w-full bg-white form-control"
+                        id="project-name"
+                        placeholder="Description"
+                        value={formik.values.description}
+                        onChange={handleInputChange}
+                      /> */}
+                      {formik.touched.description &&
+                        Boolean(formik.errors.description) && (
+                          <FormikValidationError
+                            formikTouched={formik.touched.description}
+                            formikError={formik.errors.description}
+                          />
+                        )}
+                    </div>
                     <div className="flex flex-col gap-4 sm:gap-5 max-h-[calc(100vh-20rem)] overflow-auto pr-2">
                       <div className="flex flex-col form-group">
                         <div
                           htmlFor="dropzone-file"
                           className="overflow-hidden cursor-pointer rounded-3xl h-[12.5rem]"
                         >
-                          {/* <button className='absolute btn btn-lite-primary text-button-md md:text-button-lg right-5 bottom-5'>Change Cover</button> */}
                           <div className="relative flex items-center justify-center w-full h-full">
-                            {isLoader ? (
-                              <Loader />
-                            ) : (
-                              <div
-                                htmlFor="dropzone-file"
-                                className="flex flex-col items-center justify-center w-full overflow-hidden bg-center bg-no-repeat bg-cover cursor-pointer rounded-3xl h-[12.5rem] bg-choose-cover"
-                              >
-                                {imagePreview ? (
-                                  <img
-                                    src={imagePreview}
-                                    alt="preview"
-                                    className="object-cover w-full"
-                                  />
-                                ) : (
-                                  ""
-                                )}
-                                <div className="flex items-center justify-center w-full h-full ">
-                                  <label
-                                    htmlFor="dropzone-file"
-                                    className="!mb-0 cursor-pointer absolute right-5 bottom-5"
-                                  >
-                                    <div className="flex flex-col items-center justify-center px-5 py-3 rounded-lg bg-primary-100 text-primary-300 text-button-lg">
-                                      Add Cover
-                                    </div>
-                                    <input
-                                      id="dropzone-file"
-                                      // type="file"
-                                      className="hidden"
-                                      name={`bannerImage`}
-                                      // onChange={(event) =>
-                                      //   handleCoverImage(event)
-                                      // }
-                                      accept="image/*"
-                                      onClick={() => setCropOpen(true)}
-
-                                    />
-                                  </label>
-                                </div>
-                              </div>
-                            )}
-                            {formik.touched.bannerImage &&
-                              Boolean(formik.errors.bannerImage) && (
-                                <FormikValidationError
-                                  formikTouched={formik.touched.bannerImage}
-                                  formikError={formik.errors.bannerImage}
+                            <div
+                              htmlFor="dropzone-file"
+                              className="flex flex-col items-center justify-center w-full overflow-hidden bg-center bg-no-repeat bg-cover cursor-pointer rounded-3xl h-[12.5rem] bg-choose-cover"
+                            >
+                              {imagePreview ? (
+                                <img
+                                  src={imagePreview}
+                                  alt="preview"
+                                  className="object-cover w-full"
                                 />
+                              ) : (
+                                ""
                               )}
+                              <div className="flex items-center justify-center w-full h-full ">
+                                <label
+                                  htmlFor="dropzone-file"
+                                  className="!mb-0 cursor-pointer absolute right-5 bottom-5"
+                                >
+                                  <div className="flex flex-col items-center justify-center px-5 py-3 rounded-lg bg-primary-100 text-primary-300 text-button-lg">
+                                    {item ? "Change Cover" : "Add Cover"}
+                                  </div>
+                                  <input
+                                    id="dropzone-file"
+                                    // type="file"
+                                    className="hidden"
+                                    name={`image`}
+                                    // onChange={(event) =>
+                                    //   handleCoverImage(event)
+                                    // }
+                                    accept="image/*"
+                                    onClick={() => setCropOpen(true)}
+                                  />
+                                </label>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
+                      {formik.touched.image && Boolean(formik.errors.image) && (
+                        <FormikValidationError
+                          formikTouched={formik.touched.image}
+                          formikError={formik.errors.image}
+                        />
+                      )}
                     </div>
                     <div className="flex justify-between gap-4 sm:gap-5">
                       <Button
@@ -184,9 +247,8 @@ export const BannerEdit = ({ getAllSettings, onClose, data }) => {
                         <Button
                           variant={"primary"}
                           className="flex-grow"
-                          label={"Update"}
+                          label={item?"Update":"Submit"}
                           type={"submit"}
-                          disabled={isUpdate}
                         />
                       )}
                     </div>
@@ -200,4 +262,5 @@ export const BannerEdit = ({ getAllSettings, onClose, data }) => {
     </>
   );
 };
+
 export default BannerEdit;

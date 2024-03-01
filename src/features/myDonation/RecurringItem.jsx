@@ -25,7 +25,7 @@ export const RecurringItem = ({
   const date = new Date(
     type === "INACTIVE_RECURRING" || type === "ONETIME"
       ? mydonation?.donatedAt
-      : mydonation?.nextPaymentOn
+      : mydonation?.nextPaymentOn,
   );
   const year = date.getFullYear().toString().substr(-4);
   const month = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -59,12 +59,12 @@ export const RecurringItem = ({
               {mydonation.periodDays === 7
                 ? "Weekly"
                 : mydonation.periodDays === 30
-                ? "Monthly"
-                : mydonation.periodDays === 1
-                ? "Daily"
-                : mydonation.periodDays === 10
-                ? "Last 10 days"
-                : `Yearly`}
+                  ? "Monthly"
+                  : mydonation.periodDays === 1
+                    ? "Daily"
+                    : mydonation.periodDays === 10
+                      ? "Last 10 days"
+                      : `Yearly`}
             </div>
           ) : null}
         </div>
@@ -79,11 +79,12 @@ export const RecurringItem = ({
           </Link>
           <p className="mb-5 text-sm text-neutral-600 line-clamp-3 sm:line-clamp-2 md:line-clamp-1">
             {" "}
-            {mydonation?.Campaign?.description}
+            {mydonation?.Campaign?.descriptionText ||
+              mydonation?.Campaign?.description}
           </p>
         </div>
-        <div className="flex justify-between gap-4 sm:gap-5">
-          <div className="flex gap-2">
+        <div className="justify-between gap-4 md:mb-4 md:flex md:gap-5">
+          <div className="flex gap-2 mb-4 md:mb-0">
             <div className="flex items-center justify-center w-10 h-10 p-2 text-yellow-500 rounded bg-accent-300">
               <DollarSignIcon iconSize={24} strokeWidth={1.5} />
             </div>
@@ -100,7 +101,7 @@ export const RecurringItem = ({
               </div>
             </div>
           </div>
-          <div className="flex justify-between gap-2">
+          <div className="flex gap-2 md:justify-between">
             <div className="flex items-center justify-center w-10 h-10 p-2 text-green-500 bg-green-300 rounded">
               <CalendarIcon iconSize={24} />
             </div>
@@ -120,37 +121,37 @@ export const RecurringItem = ({
         </div>
         <div className="flex flex-wrap justify-end gap-4 mt-6">
           {type !== "ONETIME" && (
-                <Button
-                  onClick={() => setIdForPayment(mydonation?.id)}
-                  label="Payment Details"
-                  type="button"
-                />
-              )}
-              {mydonation.periodDays && mydonation.status === "ACTIVE" ? (
-                <button
-                  className="!py-2 btn btn-outline-secondary flex-grow sm:flex-grow-0"
-                  onClick={() => toggleModal(mydonation?.id)}
-                  disabled={loading}
-                >
-                  {" "}
-                  Cancel
-                </button>
-              ) : null}
-              <button
-                className="!py-2 btn btn-secondary flex-grow sm:flex-grow-0"
-                onClick={() => handleViewDetails(mydonation)}
-                // onClick={() => setIsOpen(true)}
-              >
-                {" "}
-                <span>View</span> <ArrowRightIcon iconSize={20} />{" "}
-              </button>
-              {isOpen && (
-                <ViewDetailsRecurring
-                  isOpen={isOpen}
-                  onClose={() => setIsOpen(false)}
-                  mydonation={mydonation}
-                />
-              )}
+            <Button
+              onClick={() => setIdForPayment(mydonation?.id)}
+              label="Payment Details"
+              type="button"
+            />
+          )}
+          {mydonation.periodDays && mydonation.status === "ACTIVE" ? (
+            <button
+              className="!py-2 btn btn-outline-secondary flex-grow sm:flex-grow-0"
+              onClick={() => toggleModal(mydonation?.id)}
+              disabled={loading}
+            >
+              {" "}
+              Cancel
+            </button>
+          ) : null}
+          <button
+            className="!py-2 btn btn-secondary flex-grow sm:flex-grow-0"
+            onClick={() => handleViewDetails(mydonation)}
+            // onClick={() => setIsOpen(true)}
+          >
+            {" "}
+            <span>View</span> <ArrowRightIcon iconSize={20} />{" "}
+          </button>
+          {isOpen && (
+            <ViewDetailsRecurring
+              isOpen={isOpen}
+              onClose={() => setIsOpen(false)}
+              mydonation={mydonation}
+            />
+          )}
         </div>
       </div>
       {isModalOpen && (

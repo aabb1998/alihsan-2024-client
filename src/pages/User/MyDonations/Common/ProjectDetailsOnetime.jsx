@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { generateInvoice } from "../../../../features/myDonation/myDonationSlice";
 import {
-  CalendarIcon,
-  DollarSignIcon,
-  RepeatIcon,
-} from "../../../../theme/svg-icons";
+  generateCertificate,
+  generateInvoice,
+} from "../../../../features/myDonation/myDonationSlice";
+import { CalendarIcon, DollarSignIcon } from "../../../../theme/svg-icons";
 import { SnackMessages } from "../../../../components/Toast";
 import { Transition } from "@headlessui/react";
 import Img from "../../../../components/Image";
 import { currencyConfig } from "../../../../utils/constants";
+import Button from "../../../../components/Button";
 
-const { showSuccessMessage, showErrorMessage } = SnackMessages();
+const { showErrorMessage } = SnackMessages();
 
 const ProjectDetailsOnetime = ({ mydonation, isOpen }) => {
   const [loading, setLoading] = useState(false);
@@ -56,9 +56,9 @@ const ProjectDetailsOnetime = ({ mydonation, isOpen }) => {
   };
   const downloadInvoice = async () => {
     setLoading(true);
-    if (mydonation.invoice) startDownload(mydonation.invoice);
-    else if (invoice) startDownload(invoice);
-    else {
+    // if (mydonation.invoice) startDownload(mydonation.invoice);
+    // else if (invoice) startDownload(invoice);
+    // else {
       const action = await dispatch(
         generateInvoice({
           donationId: mydonation.id,
@@ -72,7 +72,25 @@ const ProjectDetailsOnetime = ({ mydonation, isOpen }) => {
       setInvoice(action.payload);
       if (!action.payload) showErrorMessage("Unable to download invoice");
       else startDownload(action.payload);
-    }
+    // }
+    setLoading(false);
+  };
+
+  const downloadCertificate = async () => {
+    setLoading(true);
+    const action = await dispatch(
+      generateCertificate({
+        donationId: mydonation.id,
+        type: mydonation.isRecurring
+          ? mydonation.status === "ACTIVE"
+            ? "activeRecurring"
+            : "inactiveRecurring"
+          : "onetime",
+      })
+    );
+    setInvoice(action.payload);
+    if (!action.payload) showErrorMessage("Unable to download invoice");
+    else startDownload(action.payload);
     setLoading(false);
   };
   return (
@@ -158,17 +176,18 @@ const ProjectDetailsOnetime = ({ mydonation, isOpen }) => {
             </div>
           </div>
           <div className="flex flex-wrap gap-4">
-            <button className="flex-grow btn btn-dark" label="">
-              Get Certificate
-            </button>
-            <button
+            <Button
+              className="flex-grow btn btn-dark"
+              label="Get Certificate"
+              onClick={downloadCertificate}
+              disabled={loading || !isInvoiceExist}
+            />
+            <Button
               className="flex-grow btn btn-primary "
               label="Get Invoice"
-              onClick={() => downloadInvoice()}
+              onClick={downloadInvoice}
               disabled={loading || !isInvoiceExist}
-            >
-              Get Invoice
-            </button>
+            />
           </div>
         </div>
       </Transition>

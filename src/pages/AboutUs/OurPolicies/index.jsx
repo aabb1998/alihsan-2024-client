@@ -1,84 +1,21 @@
 import React, { useState } from "react";
-import Button from "../../../components/Button";
-import {
-  AntiBriberyIcon,
-  ChevronDownIcon,
-  ChildProtectionIcon,
-  CloseIcon,
-  CodeOfEthicsIcon,
-  ComplaintHandlingIcon,
-  DataDeletionsIcon,
-  GlobeIcon,
-  MailIcon,
-  MapPinIcon,
-  MenuIcon,
-  ModernSlaveryIcon,
-  PhoneCallIcon,
-  PostIcon,
-  SafeguardingIcon,
-  SearchIcon,
-  ShoppingCartIcon,
-  UserIcon,
-  WhistleBlowerIcon,
-} from "../../../theme/svg-icons";
 import { useNavigate } from "react-router-dom";
 import PageHead from "../../../components/PageHead";
+import { ourPolicies } from "../../../utils/constants";
 
-const policies = [
-  {
-    Icon: <CodeOfEthicsIcon />,
-    Title: "Code of Ethics",
-    Description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-  {
-    Icon: <ModernSlaveryIcon />,
-    Title: "Modern Slavery",
-    Description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-  {
-    Icon: <SafeguardingIcon />,
-    Title: "Safeguarding Policy",
-    Description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-  {
-    Icon: <ComplaintHandlingIcon />,
-    Title: "Complaint Handling",
-    Description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-  {
-    Icon: <DataDeletionsIcon />,
-    Title: "Data Deletion Policy",
-    Description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-  {
-    Icon: <WhistleBlowerIcon />,
-    Title: "Whistle Blower Policy",
-    Description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-  {
-    Icon: <AntiBriberyIcon />,
-    Title: "Anti Bribery & Fraud Policy",
-    Description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-  {
-    Icon: <ChildProtectionIcon />,
-    Title: "Child Protection Policies and Procedures",
-    Description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-];
-export const OurPoliciesComponent = () => {
+
+const OurPoliciesComponent = () => {
   const navigate = useNavigate();
 
   return (
     <div>
-      {/* Updates */}
-      <PageHead title={'Our policies'}/>
-      <div className="md:py-10">
+      <PageHead title={"Our policies"} />
+      <div className="md:py-10 standard-details-page">
         <section className="mb-8">
           <div className="banner-container">
             <div className="h-[160px] mb-5 overflow-hidden sm:h-64 md:h-[368px] md:mb-10 rounded-none sm:rounded-2xl md:rounded-4xl">
               <img
-                src="../images/banner/our-policies.png"
+                src="https://alihsan.s3.ap-southeast-2.amazonaws.com/images/PolicyPage/WhatsApp+Image+2024-02-06+at+16.15.54.jpeg"
                 alt=""
                 className="object-cover w-full h-full transition duration-500 hover:scale-110"
               />
@@ -107,10 +44,11 @@ export const OurPoliciesComponent = () => {
           <div className="container">
             <div className="">
               <div className="flex flex-wrap items-center justify-center gap-y-8 sm:gap-x-5 sm:gap-y-8 md:px-12">
-                {policies.map((e) => (
+                {ourPolicies.map((e) => (
                   <PoliciesCard
+                    key={e.link}
                     Icon={e.Icon}
-                    onClick={() => navigate("/privacy-policy")}
+                    onClick={() => navigate(`${e.link}`)}
                     Title={e.Title}
                     Description={e.Description}
                   />
@@ -141,3 +79,5 @@ export const PoliciesCard = ({ Icon, Title, Description, onClick }) => {
     </div>
   );
 };
+
+export default OurPoliciesComponent;

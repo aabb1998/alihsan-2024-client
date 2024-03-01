@@ -8,7 +8,6 @@ import { Button } from "../../components";
 import { Im } from "react-flags-select";
 import Img from "../../components/Image";
 import PageHead from "../../components/PageHead";
-import { NoDataFound } from "../../components/NoDataFound";
 
 const ImpactStoryDetails = () => {
   const { slug } = useParams();
@@ -20,15 +19,14 @@ const ImpactStoryDetails = () => {
     dispatch(getImpactStory(slug));
   }, [slug]);
 
-  if (error) {
-    return <NoDataFound title={"No Data Found"} />;
-  }
+  if (error) return navigate("/404");
+
   return (
     <div>
       <PageHead title={"Impact Story Details"} />
       <div className="sm:pt-7.5 md:py-15">
         <div className="container !px-0">
-          <div className="w-full">
+          <div className="w-full rounded-xl">
             <BannerImage
               bannerImage={
                 impactStory?.coverImage ||
@@ -52,7 +50,10 @@ const ImpactStoryDetails = () => {
               </div>
             </div>
 
-            <p dangerouslySetInnerHTML={{__html: impactStory?.description}} className="mb-5 text-sm font-medium break-words text-neutral-800"></p>
+            <p
+              dangerouslySetInnerHTML={{ __html: impactStory?.description }}
+              className="mb-5 text-sm font-medium break-words text-neutral-800"
+            ></p>
             <div className="flex flex-col gap-10 sm:flex-row">
               {impactStory?.ImpactStoryMedia.map((e) => (
                 <div className="w-full overflow-hidden h-45 sm:h-[18.25rem] flex-grow-1">

@@ -8,7 +8,7 @@ import Loader from "../../components/Loader";
 
 const initialState = {
   page: "1",
-  limit: process.env.REACT_APP_PAGINATION_PER_PAGE,
+  limit: import.meta.env.VITE_APP_PAGINATION_PER_PAGE,
   search: "",
   tags: [],
   order: "desc",

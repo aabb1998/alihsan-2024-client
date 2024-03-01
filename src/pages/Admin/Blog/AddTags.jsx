@@ -12,7 +12,7 @@ const { showSuccessMessage, showErrorMessage } = SnackMessages();
 const AddTags = ({ onClose }) => {
   const dispatch = useDispatch();
   const validationSchema = yup.object({
-    text: yup.string().required("Text is required"),
+    text: yup.string().trim().required("Text is required"),
     color: yup.string().required("Color is required"),
   });
   const formik = useFormik({

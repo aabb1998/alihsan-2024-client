@@ -44,7 +44,6 @@ export const Details = () => {
     }
     setTitle(titleMap[url]);
   }, [id]);
-  console.log(formDetails);
   return (
     <div className="py-10 px-2 sm:px-7.5 w-full h-[calc(100vh-4.5rem)] overflow-auto">
       <div className="flex flex-wrap gap-4 items-center justify-between w-full border-b border-neutral-300 pb-3.5">

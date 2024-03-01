@@ -57,8 +57,8 @@ export const ImpactStoryList = () => {
               value: "order",
               options: [
                 { label: "All", value: "" },
-                { label: "Old - New", value: "desc" },
-                { label: "New - Old", value: "asc" },
+                { label: "Old - New", value: "asc" },
+                { label: "New - Old", value: "desc" },
               ],
             },
           ]}

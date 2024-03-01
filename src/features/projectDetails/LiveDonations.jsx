@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
 import { getTopDonation } from "../quickDonation/quickDonationSlice";
 import { DonationModal } from "./DonationModal";
 import { NoDataFound } from "../../components/NoDataFound";
 import { currencyConfig } from "../../utils/constants";
+import Img from "../../components/Image";
 
 const initialState = {
   sort: "createdAt",
@@ -47,7 +47,7 @@ export const LiveDonations = (props) => {
         ...selectedFilter,
         live: true,
         id: id,
-      })
+      }),
     );
   };
   const handlePeriod = (e) => {
@@ -64,7 +64,7 @@ export const LiveDonations = (props) => {
         period: e.target.value,
         id: id,
         live: true,
-      })
+      }),
     );
   };
   const handleSearch = (e) => {
@@ -80,12 +80,12 @@ export const LiveDonations = (props) => {
         search: e.target.value,
         id: id,
         live: true,
-      })
+      }),
     );
   };
   const getDataPagination = (e) => {
     dispatch(
-      getTopDonation({ ...selectedFilters, page: e, id: id, live: true })
+      getTopDonation({ ...selectedFilters, page: e, id: id, live: true }),
     );
   };
   useEffect(() => {
@@ -93,7 +93,7 @@ export const LiveDonations = (props) => {
       dispatch(getTopDonation({ ...initialState, id: id, live: true }));
   }, [isOpen]);
   return (
-    <div className="border rounded-4xl border-neutral-300  px-4 py-6 md:p-7.5 bg-white">
+    <div className="border rounded-xl border-neutral-300  px-4 py-6 md:p-7.5 bg-white">
       <div className="flex items-center justify-between mb-7.5">
         <h5 className="text-button-lg md:text-heading-5">Live Donations </h5>
         <Link
@@ -111,23 +111,30 @@ export const LiveDonations = (props) => {
               <div className="flex items-center justify-between my-1 md:my-1.5">
                 <div className="flex items-center gap-3">
                   <div>
-                    <img
-                      className="object-cover rounded-full w-9 md:w-11 md:h-11"
-                      src="/images/avatar/avatar-2.jpg"
+                    <Img
+                      className="object-cover w-6 md:w-6 md:h-6"
+                      src={"/images/avatar/charity.png"}
                       alt=""
                     />
                   </div>
                   <div>
-                    <div className="text-button-md md:text-heading-7 line-clamp-1">
-                      {donation?.firstName} {donation?.lastName}
+                    <div className="text-button-md md:text-button-md line-clamp-1 ">
+                      {donation?.firstName ? (
+                        <>
+                          {donation?.firstName} {donation?.lastName}
+                        </>
+                      ) : (
+                        <>Anonymous</>
+                      )}
                     </div>
                     <div className="text-xs md:text-sm text-neutral-500">
                       {donation?.displayTime}
                     </div>
                   </div>
                 </div>
-                <div className="font-bold heading-5">
-                  {currencyConfig.label}{donation?.total?.toLocaleString()}
+                <div className="font-bold heading-7">
+                  {currencyConfig.label}
+                  {donation?.total?.toLocaleString()}
                 </div>
               </div>
             ))

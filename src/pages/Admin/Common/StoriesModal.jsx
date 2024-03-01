@@ -17,9 +17,9 @@ import TextArea from "../../../components/TextArea";
 const { showSuccessMessage, showErrorMessage } = SnackMessages();
 const validationSchema = yup.object({
   campaignId: yup.string().required("Campaign is required"),
-  title: yup.string().required("Title is required"),
-  description: yup.string().required("Description is required"),
-  content: yup.string().required("Content is required"),
+  title: yup.string().trim().required("Title is required"),
+  description: yup.string().trim().required("Description is required"),
+  content: yup.string().trim().required("Content is required"),
 });
 
 export const StoriesModal = ({ onClose, item }) => {

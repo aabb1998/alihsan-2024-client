@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
 import Header from "../../components/Header";
 import { UserSidebar } from "../User/Common/UserSidebar";
+import PageHead from "../../components/PageHead";
 
 export const MyDonations = () => {
-  useEffect(() => {
-    document.title = "Al-Ihsan Foundation - Profile";
-  }, []);
+
   return (
     <div>
       <Header />
@@ -23,9 +22,7 @@ export const MyDonations = () => {
                   </h1>
                 </div>
                 <div className="flex form-group">
-                  <div className="w-full sm:w-10/12 md:w-8/12">
-
-                  </div>
+                  <div className="w-full sm:w-10/12 md:w-8/12"></div>
                 </div>
               </div>
             </div>

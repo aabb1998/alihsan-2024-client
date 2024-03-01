@@ -24,6 +24,7 @@ import { currencyConfig } from "../../utils/constants";
 
 const Basket = () => {
   const { basketItems } = useSelector((state) => state.basketItem);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   useEffect(() => {
@@ -108,9 +109,12 @@ const Basket = () => {
         "COMMON",
         "WATER_CAMPAIGN",
         "KURBAN",
+
         item?.quantity === null ? "FEDYAH" : "",
       ].includes(checkoutType);
       let total = item?.total;
+      const constantPrices = ["FEED1", "FEED10", "CLOTHE10", "FEED60"];
+      const isFieldEditable = constantPrices.includes(item?.type);
       const quanity = isAdeeqah
         ? parseInt(item?.riceQuantity)
         : parseInt(item?.quantity);
@@ -224,40 +228,42 @@ const Basket = () => {
                 Counter Input
               </label>
               {/* <div className="relative flex flex-row w-full bg-transparent rounded-lg"> */}
-              {!isCommonORZaqat && (
-                <div className="flex justify-center">
-                  {!isAdeeqah ? (
-                    <>
-                      <button
-                        data-action="decrement"
-                        className="flex items-center justify-center w-8 h-8 border border-r-0 rounded-l-lg border-neutral-300"
-                        onClick={() => handleQuantityChange(index, "sub")}
-                      >
-                        <span className="">
-                          <MinusIcon />
-                        </span>
-                      </button>
-                      <input
-                        type="number"
-                        className="border !rounded-none w-11 h-8 form-control !text-heading-7 !text-neutral-1000 !p-0 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                        name="custom-input-number"
-                        value={quanity}
-                      />
-                      <button
-                        data-action="increment"
-                        className="flex items-center justify-center w-8 h-8 border border-l-0 rounded-r-lg border-neutral-300"
-                        onClick={() => handleQuantityChange(index, "add")}
-                      >
-                        <span className="">
-                          <PlusIcon />
-                        </span>
-                      </button>
-                    </>
-                  ) : (
-                    quanity
-                  )}
-                </div>
-              )}
+              {!isFieldEditable
+                ? !isCommonORZaqat && (
+                    <div className="flex justify-center">
+                      {!isAdeeqah ? (
+                        <>
+                          <button
+                            data-action="decrement"
+                            className="flex items-center justify-center w-8 h-8 border border-r-0 rounded-l-lg border-neutral-300"
+                            onClick={() => handleQuantityChange(index, "sub")}
+                          >
+                            <span className="">
+                              <MinusIcon />
+                            </span>
+                          </button>
+                          <input
+                            type="number"
+                            className="border !rounded-none w-11 h-8 form-control !text-heading-7 !text-neutral-1000 !p-0 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            name="custom-input-number"
+                            value={quanity}
+                          />
+                          <button
+                            data-action="increment"
+                            className="flex items-center justify-center w-8 h-8 border border-l-0 rounded-r-lg border-neutral-300"
+                            onClick={() => handleQuantityChange(index, "add")}
+                          >
+                            <span className="">
+                              <PlusIcon />
+                            </span>
+                          </button>
+                        </>
+                      ) : (
+                        quanity
+                      )}
+                    </div>
+                  )
+                : ""}
             </div>
           </td>
           <td className="hidden px-2 py-4 text-center border-b md:p-4 md:table-cell border-neutral-300 text-button-lg">

@@ -34,7 +34,7 @@ export const SideDrawer = ({ open, handleClose, children }) => {
                             >
                                 <Dialog.Panel className="relative w-screen pointer-events-auto">
                                     <div className="flex flex-col h-full overflow-y-scroll shadow-xl">
-                                        <div className="relative flex-1">
+                                        <div className="relative flex-1 flex flex-row">
                                             {children}
                                         </div>
                                     </div>

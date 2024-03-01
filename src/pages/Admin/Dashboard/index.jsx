@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  DownloadIcon,
-  ChevronUpIcon,
-  ChevronDownIcon,
-} from "../../../theme/svg-icons";
+import { DownloadIcon } from "../../../theme/svg-icons";
 import { Dropdown } from "../../../components/Dropdown";
 import {
   downloadReport,
@@ -23,28 +19,22 @@ import VisitorChart from "./VisitorChart";
 import { Button } from "../../../components";
 import { PrimaryLoadingButton } from "../../../components/LoadingButtons";
 import { SnackMessages } from "../../../components/Toast";
-import { Tooltip } from "react-tooltip";
-import { currencyConfig } from "../../../utils/constants";
+import {
+  adminItemPerPage,
+  currencyConfig,
+  dashboardDateList,
+} from "../../../utils/constants";
+import { NotableTile } from "./NotableTile";
 
-export const itemPerPage = 10;
 const initialState = {
-  limit: itemPerPage,
+  limit: adminItemPerPage,
   page: "1",
   sort: "",
   order: "",
   search: "",
+  startDate: "",
+  endDate: "",
 };
-const dateList = [
-  { value: "today", label: "Today" },
-  { value: "yesterday", label: "Yesterday" },
-  { value: "this_week", label: "This Week" },
-  { value: "last_week", label: "Last Week" },
-  { value: "past_two_weeks", label: "Past Two Weeks" },
-  { value: "this_month", label: "This Month" },
-  { value: "last_month", label: "Last Month" },
-  { value: "this_year", label: "This Year" },
-  { value: "custom_date", label: "Custom Date" },
-];
 
 const AdminsDashboard = () => {
   const dispatch = useDispatch();
@@ -66,6 +56,7 @@ const AdminsDashboard = () => {
   const [filter, setFilter] = useState(initialState);
   const [selectedOption, setSelectedOption] = useState("this_month");
   const [customDate, setCustomDate] = useState(false);
+  const [isOrderPopup, setOrderPopup] = useState(true);
   const [date, setDate] = useState({
     startDate: "",
     endDate: "",
@@ -89,8 +80,8 @@ const AdminsDashboard = () => {
   };
 
   const handleOptionChange = (option) => {
-    console.log(option);
     setSelectedOption(option?.value);
+    setOrderPopup(false);
     if (option?.value === "custom_date") {
       setCustomDate(true);
     } else {
@@ -107,26 +98,28 @@ const AdminsDashboard = () => {
         startDate: startDate,
         endDate: endDate,
       });
-      console.log({ startDate: startDate, endDate: endDate });
     }
+  };
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Adding 1 to month because January is 0-indexed
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
   };
 
   const confirmDate = (dates) => {
-    const endDate = new Date(dates?.endDate).toISOString().split("T")[0];
-    const startDate = new Date(dates?.startDate).toISOString().split("T")[0];
-    dispatch(
-      getVisitorsOverview({
-        campaignId: campSelected,
-        startDate: startDate,
-        endDate: endDate,
-        selectedDate: "custom_date",
-      })
-    );
+    setFilter({
+      ...filter,
+      period: "custom_date",
+      startDate: formatDate(dates?.startDate),
+      endDate: formatDate(dates?.endDate),
+    });
     setCustomDate(false);
   };
 
   const handleDownloadReport = async () => {
-    const response = await dispatch(downloadReport());
+    const response = await dispatch(downloadReport({ title: "RecentOrders" }));
     if (response?.payload) {
       showSuccessMessage(response?.payload?.message);
     } else {
@@ -135,20 +128,43 @@ const AdminsDashboard = () => {
   };
 
   const handleFilterChange = (name, value) => {
-    setFilter({ ...filter, [name]: value });
+    const updateFilters = (newFilters) => {
+      setFilter({
+        ...filter,
+        ...newFilters,
+        page: 1,
+      });
+    };
+
+    const filterActions = {
+      amount: () => {
+        const [startAmount, endAmount] = value.split("-");
+        updateFilters({ amount: value, startAmount, endAmount });
+      },
+      period: () => {
+        if (value === "custom_date") {
+          setCustomDate(true);
+        } else if (value === "") {
+          updateFilters({ period: value, startDate: "", endDate: "" });
+        } else {
+          const { startDate, endDate } = value
+            ? getDateRange(value)
+            : { startDate: "", endDate: "" };
+          updateFilters({ period: value, startDate, endDate });
+        }
+      },
+      search: () => updateFilters({ search: value }),
+      status: () => updateFilters({ status: value }),
+      userId: () => updateFilters({ userId: value }),
+      default: () => setFilter(initialState),
+    };
+
+    (filterActions[name] || filterActions.default)();
   };
 
   useEffect(() => {
     dispatch(getOrders(filter));
   }, [filter]);
-
-  useEffect(() => {
-    // setSelected(
-    //   selected
-    //     ? selected
-    //     : quickdonations?.map((e) => ({ label: e.name, value: e.id }))[0]?.value
-    // );
-  }, [quickdonations]);
 
   useEffect(() => {
     dispatch(getDashboardData());
@@ -158,8 +174,6 @@ const AdminsDashboard = () => {
 
   useEffect(() => {
     const id = quickdonations[0]?.id;
-    // setSelected(id);
-    // setCampSelected(id);
     dispatch(getIncomeOverview());
   }, [quickdonations]);
 
@@ -255,7 +269,7 @@ const AdminsDashboard = () => {
                     name={"date"}
                     value={selectedOption}
                     onChange={handleOptionChange}
-                    options={dateList}
+                    options={dashboardDateList}
                   />
                 </div>
               </div>
@@ -270,7 +284,8 @@ const AdminsDashboard = () => {
                     Income Overview
                   </p>
                   <h5 className="break-words text-button-lg md:text-heading-7">
-                    {currencyConfig.label}{formatPrice(totalAmount)}
+                    {currencyConfig.label}
+                    {formatPrice(totalAmount)}
                   </h5>
                 </div>
                 <Dropdown
@@ -288,15 +303,9 @@ const AdminsDashboard = () => {
               </div>
               <div className="mt-5">
                 <IncomeChart data={incomeOverView} />
-                {/* <Img
-                  className="w-fit md:w-full"
-                  src={"../images/bar-chart.png"}
-                  alt="line area chart"
-                /> */}
               </div>
             </div>
           </div>
-          {/* TABLE AREA */}
 
           <Table
             setFilter={setFilter}
@@ -311,41 +320,4 @@ const AdminsDashboard = () => {
     </>
   );
 };
-
 export default AdminsDashboard;
-
-function NotableTile({ total, percentage, title, value, id }) {
-  return (
-    <>
-      <h6 className="mb-3 md:mb-5 text-base !font-medium md:text-lg font-Montserrat text-neutral-600">
-        {" "}
-        {title}
-      </h6>
-      <div className="flex items-center justify-between gap-2">
-        <h2
-          className="uppercase text-heading-5 md:text-heading-2"
-          data-tooltip-id={id}
-        >
-          {total}
-        </h2>
-        <Tooltip
-          id={id}
-          className="tooltip opacity-100"
-          style={{ color: "#000" }}
-        >
-          {formatPrice(value)}
-        </Tooltip>
-
-        <h6
-          className={`flex items-center ${
-            parseInt(percentage) > 0 ? "text-green-300" : "text-red-300"
-          } gap-x-1 text-base !font-medium md:text-lg font-Montserrat`}
-        >
-          {" "}
-          {parseInt(percentage) > 0 ? <ChevronUpIcon /> : <ChevronDownIcon />}
-          {Math.abs(parseFloat(percentage))}%
-        </h6>
-      </div>
-    </>
-  );
-}

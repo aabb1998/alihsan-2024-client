@@ -17,7 +17,7 @@ export const IntrestedProjects = () => {
         </h2>
         <div className="grid gap-x-5 gap-y-7.5 sm:grid-cols-2 md:grid-cols-4">
           {interestedItems?.map((project, i) =>
-            i ? <ProjectListItem project={project} /> : ""
+            i ? <ProjectListItem project={project} /> : "",
           )}
         </div>
         {/* Slider control goes here */}

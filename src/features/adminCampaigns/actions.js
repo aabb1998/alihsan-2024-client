@@ -27,7 +27,7 @@ export const loadCampaignDonations = createAsyncThunk(
       sort: filters.sort,
       order: filters.order,
       search: filters.search,
-      limit: process.env.REACT_APP_PAGINATION_PER_PAGE,
+      limit: import.meta.env.VITE_APP_PAGINATION_PER_PAGE,
     }
     if(filters.period) {
       const now = new Date();
@@ -100,7 +100,7 @@ export const addCampaign = createAsyncThunk(
     try {
       await api.post('/project/', body, {headers: {'Content-Type': 'multipart/form-data'}});
     } catch(error) {
-      throw new Error(error.response?.data?.payload?.message || "Something went wrong")
+      throw new Error(error.response?.data?.message || "Something went wrong")
     }
 	}
 )

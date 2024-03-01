@@ -72,7 +72,7 @@ export const RelatedCampaignsCard = ({ Image = '', Title = '', Description = 'Lo
                     <h3 className="mb-3 text-heading-7 sm:heading-6 line-clamp-1 text-neutral-800">{Title}</h3>
                     <p className="text-sm font-normal line-clamp-2">{Description}</p>
                 </div>
-                <button className="btn btn-primary filled">Donate now</button>
+                <button className="btn btn-primary filled">Donate Now</button>
             </div>
         </div>
 

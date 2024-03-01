@@ -18,7 +18,7 @@ const UpdateForm = ({ onClose, confirmDelete, id }) => {
   const { pathname } = useLocation();
 
   const validationSchema = yup.object({
-    adminReason: yup.string().required("Admin Reason is required"),
+    adminReason: yup.string().trim().required("Admin Reason is required"),
   });
   const formik = useFormik({
     initialValues: {

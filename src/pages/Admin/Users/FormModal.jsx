@@ -26,11 +26,13 @@ export default function FormModal({ visible, onClose }) {
 			company: { initialValue: '' },
 			country: { initialValue: '', validator: v => !v && 'This field is required' },
 			address: { initialValue: '' },
-			email: { initialValue: '', validator: v => !v && 'This field is required' },
+			email: { initialValue: '', validator: v => (v?.length
+				? !(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(v)) && "Enter a  valid email address"
+				: 'This field is required') || ''
+			},
 			phone: { initialValue: '', validator: v => !v && 'This field is required' },
 		}, onSubmit: ({ values }) => {
 			let p;
-			console.log(userDetails, values)
 			if (userDetails.id)
 				p = dispatch(editUser({ id: userDetails.id, payload: { ...userDetails, ...values } }));
 			else
@@ -41,7 +43,8 @@ export default function FormModal({ visible, onClose }) {
 					showErrorMessage(res.error.message);
 				else {
 					showSuccessMessage(res.payload.message);
-					dispatch(cancelUserDetails());
+					if(userDetails.id) dispatch(cancelUserDetails());
+					else onClose();
 				}
 			})
 		}
@@ -71,9 +74,16 @@ export default function FormModal({ visible, onClose }) {
 		return v;
 	}, [formState, userDetails, userDetailsLoader])
 	useEffect(() => {
-		console.log('resetting', userDetails)
-		formState.dispatch({ values: userDetails, type: 'reset' })
-	}, [userDetails])
+		formState.dispatch({ values: userDetails || {
+			firstName: '',
+			lastName: '',
+			company: '',
+			country: '',
+			address: '',
+			email: '',
+			phone: '',
+		}, type: 'reset' })
+	}, [userDetails, visible])
 	return (
 		<>
 			<div className={"fixed inset-0 z-30 transition-opacity bg-gray-500 bg-opacity-75 " + (visible || userDetails.id ? '' : 'hidden')}>
@@ -118,9 +128,9 @@ export default function FormModal({ visible, onClose }) {
 											<div className="form-group">
 												<label htmlFor="Country" className="block">Country<span className="text-red-300">*</span></label>
 												<select className="w-full text-sm !text-neutral-800 border-neutral-300 form-control" id="SelectProject" name="country" value={formState.values.country} onChange={formState.dispatch}>
-													<option value="" className="text-neutral-400">Select Country</option>
+													<option value="" className="text-neutral-800">Select Country</option>
 													{countriesList.map(i => (
-														<option key={i.code} value={i.code} className="text-neutral-400">{i.name}</option>
+														<option key={i.code} value={i.code} className="text-neutral-800">{i.name}</option>
 													))}
 												</select>
 												<ErrorLabel
@@ -160,7 +170,7 @@ export default function FormModal({ visible, onClose }) {
 										</div>
 									</div>
 									<div className='flex justify-between gap-4 sm:gap-5'>
-										<Button disabled={!enable} onClick={cancel} variant={"secondaryOutline"} className="flex-grow" label={"Cancel"} />
+										<Button onClick={cancel} variant={"secondaryOutline"} className="flex-grow" label={"Cancel"} />
 										<Button disabled={!enable} onClick={submit} variant={"primary"} className="flex-grow" label={userDetails.id ? "Submit" : "Add Admin"} />
 									</div>
 								</div>

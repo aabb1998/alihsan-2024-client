@@ -18,7 +18,7 @@ const validationSchema = yup.object({
   password: yup.string("Enter your password").required("Password is required"),
   rememberMe: yup.boolean(),
 });
-export const AdminloginComponent = () => {
+const AdminloginComponent = () => {
   const dispatch = useDispatch();
   const [isVisiblePassword, setVisiblePassword] = useState(false);
   const { showSuccessMessage, showErrorMessage } = SnackMessages();
@@ -43,11 +43,11 @@ export const AdminloginComponent = () => {
         // formik.values.password
         // );
         const response = await dispatch(
-          loginUser({
+          loginUser({body: {
             email: formik.values.email,
             password: formik.values.password,
             isAdmin: true,
-          })
+          }, keepSession: false})
         );
         if (response?.payload?.success) {
           showSuccessMessage(response?.payload?.message);
@@ -93,13 +93,11 @@ export const AdminloginComponent = () => {
   });
   return (
     <div className="flex flex-col items-center justify-center w-full h-screen px-3 m-auto sm:px-0 max-w-25">
-      <a href="/">
-        <img
-          src="/images/assets/logo.svg"
-          className="mx-auto mb-15"
-          alt="Al-Ihsan Foundation"
-        />
-      </a>
+      <img
+        src="/images/assets/logo.svg"
+        className="mx-auto mb-15"
+        alt="Al-Ihsan Foundation"
+      />
       <h1 className="mb-10 text-center text-heading-5 md:text-heading-4 text-neutral-900">
         Login To Your Account
       </h1>
@@ -183,3 +181,5 @@ export const AdminloginComponent = () => {
     </div>
   );
 };
+
+export default AdminloginComponent;

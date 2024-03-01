@@ -110,7 +110,7 @@
             "type": "Polygon",
             "arcs": [[86, 87, 88, 89]],
             "id": "BIH",
-            "properties": { "name": "Bosnia and Herzegovina" }
+            "properties": { "name": "Bosnia" }
           },
           {
             "type": "Polygon",
@@ -565,8 +565,8 @@
           {
             "type": "Polygon",
             "arcs": [[402, 403, 404, 405, 406, 407]],
-            "id": "ISR",
-            "properties": { "name": "Israel" }
+            "id": "PAL",
+            "properties": { "name": "Palestine" }
           },
           {
             "type": "MultiPolygon",

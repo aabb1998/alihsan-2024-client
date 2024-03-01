@@ -2,15 +2,18 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import QuickDonation from "../quickDonation/QuickDonation";
 import Button from "../../components/Button";
-import { useQuickDonation } from '../quickDonation'
+import { useQuickDonation } from "../quickDonation";
 import Img from "../../components/Image";
 
 export const ProjectListItem = ({ project }) => {
   const quickDonation = useQuickDonation();
   return (
-    <div className="transition-all ease-in border rounded-xl bg-neutral-100 border-neutral-300 hover:border-neutral-100 focus:border-primary-300 hover:shadow-card">
+    <div className="transition-all ease-in border rounded-xl bg-accent-100 border-white hover:border-neutral-100 focus:border-primary-300 hover:shadow-card">
       <div className="flex flex-col gap-5 p-5">
-        <Link to={`/project/${project?.slug}`} className="w-full h-[11.875rem] md:h-44 overflow-hidden">
+        <Link
+          to={`/project/${project?.slug}`}
+          className="w-full h-[11.875rem] md:h-44 overflow-hidden"
+        >
           <Img
             src={project?.coverImage}
             className="object-cover w-full h-full rounded-xl"
@@ -30,7 +33,7 @@ export const ProjectListItem = ({ project }) => {
         <Button
           className="btn btn-primary filled"
           onClick={() => quickDonation(project)}
-          label="Donate now"
+          label="Donate Now"
         />
       </div>
     </div>

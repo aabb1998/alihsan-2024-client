@@ -67,7 +67,6 @@ export const updateCheckoutProfile = createAsyncThunk(
   }
 );
 
-
 export const updatePaypalToken = createAsyncThunk(
   "post/paypalToken",
   async (payload, thunkAPI) => {

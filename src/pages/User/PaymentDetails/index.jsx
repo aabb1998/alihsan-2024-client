@@ -1,29 +1,19 @@
 import React, { useEffect, useState } from "react";
 import Button from "../../../components/Button";
 import { useSelector, useDispatch } from "react-redux";
-
-import {
-  ChevronDownIcon,
-  CloseIcon,
-  EyeIcon,
-  GlobeIcon,
-  MenuIcon,
-  SearchIcon,
-  ShoppingCartIcon,
-  UserIcon,
-} from "../../../theme/svg-icons";
+import { CloseIcon } from "../../../theme/svg-icons";
 import { PaymentMethodItem } from "./PaymentMethodItem";
 import { getPaymentMethods } from "../../../features/paymentDetails/paymentDetailsSlice";
 import { SnackMessages } from "../../../components/Toast";
 import { deletePaymentMethod } from "../../../features/paymentDetails/paymentDetailsSlice";
 import { UserSidebar } from "../Common/UserSidebar";
-import PaymentMethodsList from "../../../features/paymentDetails/PaymentMethodsList";
 import PaymentList from "../../../features/paymentDetails/PaymentList";
 import PageHead from "../../../components/PageHead";
 import { AddPaymentMethodModal } from "./AddPaymentMethodModal";
+
 const { showSuccessMessage, showErrorMessage } = SnackMessages();
 
-export const PaymentDetailsComponent = () => {
+const PaymentDetailsComponent = () => {
   const dispatch = useDispatch();
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -79,6 +69,7 @@ export const PaymentDetailsComponent = () => {
                   {list.length ? (
                     list.map((card) => (
                       <PaymentMethodItem
+                        key={card?.id}
                         card={card}
                         handleDelete={handleDelete}
                       />
@@ -100,7 +91,9 @@ export const PaymentDetailsComponent = () => {
           </div>
         </div>
       </section>
-      {isModalVisible && <AddPaymentMethodModal onClose={()=>setModalVisible(false)}/>}
+      {isModalVisible && (
+        <AddPaymentMethodModal onClose={() => setModalVisible(false)} />
+      )}
       {confirmModal && (
         <div
           className="relative z-10"
@@ -146,3 +139,5 @@ export const PaymentDetailsComponent = () => {
     </div>
   );
 };
+
+export default PaymentDetailsComponent;

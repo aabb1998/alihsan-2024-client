@@ -4,10 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { getMyDonations } from "../../features/myDonation/myDonationSlice";
 import { MyDonationTypes } from "../../utils/constants";
 import { Donations } from "./Donations";
-import ViewDetailsRecurring from "../../../src/pages/User/MyDonations/Common/ViewOnetimeModal";
+import ProjectDetailsModal from "./ProjectDetailsModal";
 import PageHead from "../../components/PageHead";
 
-export const OneTimeDonations = () => {
+const OneTimeDonations = () => {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [viewDonation, setViewDonation] = useState(null);
@@ -20,7 +20,6 @@ export const OneTimeDonations = () => {
   };
 
   useEffect(() => {
-    document.title = "Al-Ihsan Foundation - Profile";
     loadDonations(1);
   }, []);
   const loadDonations = (page) => {
@@ -40,7 +39,7 @@ export const OneTimeDonations = () => {
   }, [filters]);
   return (
     <div>
-      <PageHead title={'Onetime donations'}/>
+      <PageHead title={"Onetime donations"} />
       <section className="py-7.5 md:py-15">
         <div className="container">
           <div className="flex gap-[60px]">
@@ -51,7 +50,7 @@ export const OneTimeDonations = () => {
               <div className="md:border border-neutral-300 md:px-10 md:py-7.5 rounded-1.5xl">
                 <div className=" mb-5 md:mb-7.5 ">
                   <h1 className="text-heading-6 text-center md:text-heading-5 pb-3.5">
-                    My Donations - One time
+                    My Donations - One Time
                   </h1>
                 </div>
                 <Donations
@@ -64,7 +63,7 @@ export const OneTimeDonations = () => {
         </div>
       </section>
       {isOpen && (
-        <ViewDetailsRecurring
+        <ProjectDetailsModal
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
           mydonation={viewDonation}
@@ -73,3 +72,5 @@ export const OneTimeDonations = () => {
     </div>
   );
 };
+
+export default OneTimeDonations;

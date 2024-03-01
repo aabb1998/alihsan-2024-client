@@ -8,7 +8,7 @@ import { formatPrice } from "../../../utils/helper";
 import { currencyConfig } from "../../../utils/constants";
 
 export const DonationTotal = ({ onNext, disableAnonymous }) => {
-  const user = localStorage.getItem("loggedIn");
+  const user = useSelector(state => state.profile.auth);
   const { settings } = useSelector((state) => state.mapCountries);
   const processingFee = settings?.processingFee / 100 || 0;
 
@@ -39,12 +39,47 @@ export const DonationTotal = ({ onNext, disableAnonymous }) => {
       </h6>
       <div className="flex justify-between mb-5 md:mb-7.5 text:md md:text-lg">
         <div>Subtotal</div>
-        <div className="text-right">{currencyConfig.label}{formatPrice(totalPoints)}</div>
+        <div className="text-right">
+          {currencyConfig.label}
+          {formatPrice(totalPoints)}
+        </div>
       </div>
       <div className="flex justify-between text:md md:text-lg">
-        <div>Processing Fee</div>
+        <div className="flex flex-row items-center">
+          <div className="mr-2">Processing Fee (3%)</div>
+
+          <div
+            className="cursor-pointer text-neutral-700 hover:text-primary-300"
+            data-tooltip-id="processing-tooltip"
+            data-tooltip-place="bottom-end"
+          >
+            <HelpCircleIcon iconSize={16} />
+            <Tooltip
+              id="processing-tooltip"
+              className="opacity-100 tooltip"
+              style={{ backgroundColor: "#fff", padding: "1rem" }}
+            >
+              <div>
+                <h2 className="mb-2 text-neutral-1000 text-button-md">
+                  Procesing Fee
+                </h2>
+                <p className="text-xs font-medium text-neutral-600">
+                  The processing fee helps us cover all costs associated with
+                  the payment, ensuring that 100% of your donation goes to the
+                  project.
+                  <br />
+                  <br />
+                  To avoid the processing fee, transfer directly to our bank
+                  account. You can find the details on the payment details page
+                  or in the footer.
+                </p>
+              </div>
+            </Tooltip>
+          </div>
+        </div>
         <div className="text-right">
-          {currencyConfig.label}{formatPrice(totalPoints ? processingAmount : 0)}
+          {currencyConfig.label}
+          {formatPrice(totalPoints ? processingAmount : 0)}
         </div>
       </div>
       <div className="h-px my-5 bg-neutral-300"></div>
@@ -64,7 +99,10 @@ export const DonationTotal = ({ onNext, disableAnonymous }) => {
           <input
             type="checkbox"
             id="Anonymous"
-            className="custom-checkbox"
+            className={
+              "custom-checkbox " +
+              (disableAnonymous || !user ? "cursor-default" : "")
+            }
             onChange={(e) =>
               user ? dispatch(setIsAnonymous(e.target.checked)) : null
             }
@@ -97,22 +135,27 @@ export const DonationTotal = ({ onNext, disableAnonymous }) => {
               <p className="text-xs font-medium text-neutral-600">
                 Selecting this option allows you to donate anonymously, ensuring
                 that your identity and other details remain undisclosed during
-                the checkout process.
+                the checkout process. To disable Anonymous checkout, please
+                login.
               </p>
             </div>
           </Tooltip>
         </div>
       </div>
-      <div className="p-4 mb-6 rounded-xl bg-primary-100">
-        <small className="mb-4 text-red-300">{ramadanPaymentNote}</small>
-      </div>
+      {ramadanPaymentNote ? (
+        <div className="p-4 mb-6 rounded-xl bg-primary-100">
+          <small className="mb-4 text-red-300">{ramadanPaymentNote}</small>
+        </div>
+      ) : (
+        ""
+      )}
       {onNext ? (
         <Button
           onClick={onNext}
           disabled={totalPoints <= 0 || hasZero}
           className="btn btn-primary filled"
           value={isAnonymous}
-          label={"Process to Checkout"}
+          label={"Proceed to Checkout"}
         />
       ) : null}
     </div>

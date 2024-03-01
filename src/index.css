@@ -488,8 +488,60 @@ outline: none !important;
 .ramadan-details-page{
     @apply bg-ramadan-bg bg-no-repeat bg-center bg-[#F1F1F1] bg-auto w-full h-full;
 }
+.default-details-page{
+    @apply w-full h-full bg-center bg-no-repeat bg-auto bg-ramadan-bg;
+}
+
+.standard-details-page {
+    @apply bg-ramadan-bg bg-no-repeat bg-center bg-auto w-full h-full bg-[#fff];
+
+}
+
+.homepage-bg {
+    @apply bg-ramadan-bg bg-no-repeat bg-center bg-auto w-full  top-4 mb-96;
+}
 
 /*  */
-input[type="file"] {    
+input[type="file"] {
     @apply cursor-pointer
+}
+/* CROP IMAGE */
+.ReactCrop
+{
+    @apply max-h-[16rem];
+}
+/* HOME BANNER SLIDER BUTTONS */
+.home-banner .slick-dots{
+    @apply sm:!-bottom-7
+}
+.home-banner .slick-dots li button::before {
+    @apply !w-18 !h-0 !bg-accent-300 text-[0]
+}
+.home-banner .slick-dots li {
+    @apply !w-12 !h-1 !bg-primary-100 rounded-xl
+}
+.home-banner .slick-dots li button {
+    @apply !w-18 !h-1 !p-0
+}
+.home-banner .slick-dots li.slick-active {
+    @apply !w-18 !h-1 !bg-accent-300
+}
+
+/* =========================== */
+
+.transition-all.transform .react-tel-input .country-list {
+    @apply sm:!fixed
+}
+
+
+.ql-toolbar.ql-snow {
+    @apply !rounded-t-lg
+}
+
+.ql-container.ql-snow {
+    @apply !rounded-b-lg
+}
+
+.ql-snow {
+    @apply !border-neutral-300
 }

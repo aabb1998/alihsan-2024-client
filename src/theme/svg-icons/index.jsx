@@ -1047,6 +1047,32 @@ export const CompaignsIcon = ({ iconSize = 20 }) => {
     </svg>
   );
 };
+
+export const CampaignIcon = ({ iconSize = 20 }) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={iconSize}
+      height={iconSize}
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke="currentcolor"
+        strokeWidth="1.5"
+        d="M14 5L4.757 7.31A1 1 0 004 8.28v4.94a1 1 0 00.757.97L14 16.5V5zM14 17V4.5a1.5 1.5 0 013 0V17a1.5 1.5 0 01-3 0zM4 9H2a1 1 0 00-1 1v1.5a1 1 0 001 1h2"
+      ></path>
+      <path
+        stroke="currentcolor"
+        strokeWidth="1.5"
+        d="M5.5 14.5V20A1.5 1.5 0 007 21.5v0A1.5 1.5 0 008.5 20v-1m0-4v4m3.5-3c0 .667-.7 2.2-3.5 3"
+      ></path>
+    </svg>
+  );
+};
+
+
+
 export const StatisticsIcon = ({ iconSize = 20 }) => {
   return (
     <svg
@@ -2158,6 +2184,70 @@ export const TagIcon = ({ iconSize = 20 }) => {
           <path fill="currentcolor" d="M0 0H24V24H0z"></path>
         </clipPath>
       </defs>
+    </svg>
+  );
+};
+export const CampaignSettingsIcon = ({ iconSize = 20 }) => {
+  return (
+    <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={iconSize}
+      height={iconSize}
+    fill="none"
+    viewBox="0 0 24 24"
+  >
+    <path
+      stroke="currentcolor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.5"
+      d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+    ></path>
+  </svg>
+  );
+};
+export const ShieldOffIcon = ({ iconSize = 20 }) => {
+  return (
+    <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={iconSize}
+    height={iconSize}
+    fill="none"
+    viewBox="0 0 24 24"
+  >
+    <g
+      stroke="currentcolor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.5"
+      clipPath="url(#clip0_10_1089)"
+    >
+      <path d="M19.69 14a6.897 6.897 0 00.31-2V5l-8-3-3.16 1.18M4.73 4.73L4 5v7c0 6 8 10 8 10a20.29 20.29 0 005.62-4.38M1 1l22 22"></path>
+    </g>
+    <defs>
+      <clipPath id="clip0_10_1089">
+        <path fill="#fff" d="M0 0H24V24H0z"></path>
+      </clipPath>
+    </defs>
+  </svg>
+  );
+};
+export const ShieldIcon = ({ iconSize = 20 }) => {
+  return (
+<svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={iconSize}
+    height={iconSize}
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke="currentcolor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
+      ></path>
     </svg>
   );
 };

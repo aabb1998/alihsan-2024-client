@@ -14,7 +14,7 @@ import { Link } from "react-router-dom";
 import { useNavigate, useLocation } from "react-router-dom";
 import { emptyBasket } from "../../features/basket/basketSlice";
 import { logout } from "../../features/authentication/authenticationSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function AccountMenu() {
   const { showSuccessMessage, showErrorMessage } = SnackMessages();
@@ -23,9 +23,7 @@ export default function AccountMenu() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { pathname } = useLocation();
-  const userData = localStorage.getItem("loggedIn")
-    ? localStorage.getItem("loggedIn")
-    : sessionStorage.getItem("loggedIn");
+  const userData = useSelector(state => state.profile.auth);
 
   const logoutUser = async (e) => {
     try {
@@ -71,7 +69,7 @@ export default function AccountMenu() {
         >
           <Menu.Items className="absolute right-0 z-40 flex flex-col w-56 p-2 mt-4 origin-top-right bg-white rounded-md shadow">
             {({ close }) =>
-              userData && JSON.parse(userData).isloggedIn === true ? (
+              userData ? (
                 <>
                   <div>
                     <Menu.Item>

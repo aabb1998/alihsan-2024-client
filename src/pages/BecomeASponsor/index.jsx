@@ -39,13 +39,13 @@ const settings = {
 const BecomeASponsor = () => {
   return (
     <div>
-      <PageHead title={'Become a sponsor'} />
-      <div className="pb-7.5 md:py-15">
+      <PageHead title={"Become a sponsor"} />
+      <div className="pb-7.5 md:py-15 standard-details-page">
         <section aria-label="Become a Sponsor">
           <div className="banner-container">
             <div className="h-[160px] mb-5 overflow-hidden sm:h-64 md:h-[368px] md:mb-10 rounded-none sm:rounded-2xl md:rounded-4xl">
               <Img
-                src="../images/banner/become-a-sponsor.png"
+                src="https://alihsan.s3.ap-southeast-2.amazonaws.com/images/PolicyPage/IMG_E4212+Large.jpeg"
                 alt="sponsor"
                 className="object-cover w-full h-full transition duration-500 hover:scale-110"
               />
@@ -53,37 +53,61 @@ const BecomeASponsor = () => {
           </div>
           <div className="container">
             <h1 className="mb-3 sm:mb-5 text-heading-6 sm:text-heading-3">
-              Become a Sponsor
+              Become a Sponsor and Make a Difference
             </h1>
             <div className="mb-10 text-sm leading-5 sm:leading-6 md:text-lg text-neutral-800">
               <p>
-                Al-Ihsan works in partnership with people who are disadvantaged
-                and their communities to create a meaningful and lasting change
-                around the world. Help become a Sponsor of Al-Ihsan Foundation
-                and provide your business with an opportunity to have access to
-                a unique mix of consumers. It will also give your business an
-                opportunity to increase brand loyalty, create awareness and
-                visibility amongst your target market, and demonstrate to the
-                community that you align corporate social responsibility with
-                your business. Your business will be advertised at our events,
-                on our website, and in pamphlets, ensuring a mix of consumers
-                are reached. Al-Ihsan endeavors to focus on being professional
-                and providing the best service for its sponsor. Your business
-                will receive a positive return on its investment as sponsoring
-                Al-Ihsan Foundation is an easy and affordable way to promote the
-                range of products and services you have to offer, raise your
-                business’s profile and image, as well as promote your unique
-                brands and products. Al-Ihsan Foundation holds a DGR (deductible
-                gift recipient), meaning that all donations above {currencyConfig.label}2 are tax
-                deductible. By financially supporting us, your business will
-                receive a tax statement showing your donation, allowing you to
-                claim a tax deduction when it is time for tax return.
+                Thank you for considering sponsorship with Al-Ihsan Foundation.
+                Your support is crucial in building a legacy of impact,
+                resilience, and shared humanity. By partnering with us, you join
+                a community dedicated to providing humanitarian assistance and
+                creating a brighter future for all through compassion and
+                support.
               </p>
             </div>
+            <h2 className="mb-3 md:mb-4 text-heading-6 md:text-heading-3 text-neutral-1000">
+              Sponsorship Opportunities
+            </h2>
+
+            <h3 className="mb-2 md:mb-4 text-heading-7 md:text-heading-6 text-neutral-800">
+              Levels of Support
+            </h3>
+            <p className="mb-6 text-sm font-medium md:text-lg text-neutral-800">
+              Explore various sponsorship levels, each offering unique benefits
+              such as brand visibility, recognition, and exclusive access to
+              events. Whether you represent a small business, corporation, or
+              are an individual, there's a sponsorship package aligning with
+              your goals. Benefit from tax-deductible donations (above $2) with
+              Al-Ihsan Foundation's Deductible Gift Recipient (DGR) status.
+            </p>
+            <h4 className="mb-2 text-heading-7 md:text-heading-6 text-neutral-800">
+              Recognition and Visibility:
+            </h4>
+            <p className="mb-6 text-sm font-medium md:text-lg text-neutral-800">
+              As a sponsor, enjoy prominent recognition on our website, in
+              promotional materials, and during events. We promote and support
+              the organisations and individuals making our work possible.
+            </p>
+            <h4 className="mb-2 md:mb-4 text-heading-7 text-neutral-800">
+              Ready to Make a Difference? Contact Us to learn more.
+            </h4>
+            <p className="mb-6 text-sm font-medium md:text-lg text-neutral-800">
+              Have questions or ready to discuss sponsorship details? Fill out
+              the form below, and we'll be in touch. We look forward to
+              discussing how your business can make a lasting impact through
+              sponsorship with Al-Ihsan Foundation.
+            </p>
+            <h4 className="mb-2 md:mb-4 text-heading-7 md:text-heading-6 text-neutral-800">
+              Join Us Today!
+            </h4>
+            <p className="mb-6 text-sm font-medium md:text-lg text-neutral-800">
+              Your sponsorship can directly impact the lives of those we serve.
+              Together, let's make a difference.
+            </p>
           </div>
           <Form />{" "}
           <div className="container">
-            <h3 className="mb-5 text-heading-3">Featured Sponsor</h3>
+            <h3 className="mb-5 text-heading-3">Our Sponsors</h3>
             <div className="hidden grid-flow-row grid-cols-1 overflow-x-auto overflow-y-hidden md:grid md:grid-cols-5">
               {sponsorList.map((sponsor) => (
                 <SponsorLogo key={sponsor.id} Logo={sponsor.logo} />
@@ -105,9 +129,9 @@ const BecomeASponsor = () => {
 
 export const SponsorLogo = ({ Logo }) => {
   return (
-    <div className="flex items-center justify-center p-3 md:p-14 w-full h-40 md:h-[16.5rem] md:w-auto border border-neutral-300 carousel-item">
+    <div className="flex items-center justify-center p-3 w-full h-40 md:h-[16.5rem] md:w-auto border border-neutral-300 carousel-item">
       <Img
-        src={`/images/sponsors/${Logo}`}
+        src={Logo}
         alt={Logo}
         className="object-contain w-full h-full transition duration-300 ease-in-out delay-50 hover:scale-110"
       />

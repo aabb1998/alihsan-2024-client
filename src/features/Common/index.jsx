@@ -1,11 +1,7 @@
-import React from 'react'
+import React from "react";
 
-const CommonAuthentication = ({children}) => {
-  return (
-    <div>
-      {children}
-    </div>
-  )
-}
+const CommonAuthentication = ({ children }) => {
+  return <div>{children}</div>;
+};
 
-export default React.memo(CommonAuthentication)
+export default React.memo(CommonAuthentication);

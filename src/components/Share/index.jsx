@@ -10,7 +10,7 @@ import { Link, useLocation } from "react-router-dom";
 
 const Share = () => {
   const location = useLocation();
-  const shareUrl = process.env.REACT_APP_URL + location.pathname;
+  const shareUrl = import.meta.env.VITE_APP_URL + location.pathname;
   const share = [
     {
       link: "https://www.facebook.com/sharer/sharer.php?u=" + shareUrl,

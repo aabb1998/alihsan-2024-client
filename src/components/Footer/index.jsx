@@ -87,7 +87,7 @@ export const Footer = () => {
             <h5 className="text-base mb-4.5">Follow Us</h5>
             <ul className="flex items-center gap-1 text-[#C0BEB9] mb-6">
               {followUs?.map((e) => (
-                <li key={e.url}  className="flex items-center">
+                <li key={e.url} className="flex items-center">
                   <Link to={e.url} target="_blank">
                     <span className="sr-only">{e.label}</span>
                     {e.icon}
@@ -96,13 +96,14 @@ export const Footer = () => {
               ))}
             </ul>
             <h5 className="mb-1 text-base">Subscribe</h5>
-            <p className="mb-4.5 text-neutral-600 text-sm">
-              Stay connected with our subscription service.
+            <p className="mb-4.5 text-neutral-600 text-sm max-w-[300px]">
+              Stay informed with the latest news and regular updates from
+              Al-Ihsan Foundation.
             </p>
             <div className="flex gap-3 form-group">
               <form
                 onSubmit={formik.handleSubmit}
-                className="flex items-start gap-3"
+                className="flex flex-wrap items-start gap-3"
               >
                 <label htmlFor="subscribeEmail" className="sr-only">
                   Email Address
@@ -154,7 +155,7 @@ export const Footer = () => {
       <div className="container text-sm md:justify-between md:flex">
         <div className="mb-8 md:mb-0">
           {" "}
-          &#169; Copyright 2023 Al-Ihsan Foundation | ABN: 53168960361 | CFN:
+          &#169; Copyright 2024 Al-Ihsan Foundation | ABN: 53168960361 | CFN:
           23924
         </div>
         <div className="flex justify-between gap-7.5">

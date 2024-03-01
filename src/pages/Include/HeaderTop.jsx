@@ -1,11 +1,12 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { ChevronDownIcon, GlobeIcon, SearchIcon, ShoppingCartIcon, UserIcon } from '../../theme/svg-icons';
 import AccountMenu from './UserMenu';
 
 
 
 export const HeaderTop = () => {
-    const userData = localStorage.getItem('loggedIn') ? localStorage.getItem('loggedIn') : sessionStorage.getItem('loggedIn');
+    const userData = useSelector(state => state.profile.auth);
     return (
 
         <div className="border-b border-b-neutral-300">
@@ -40,7 +41,7 @@ export const HeaderTop = () => {
             <span className="text-sm text-neutral-800">Account</span>
             <ChevronDownIcon iconSize={16} />
         </a> */}
-                    {userData && JSON.parse(userData).isloggedIn == true ?
+                    {userData ?
                         <AccountMenu />
                         :
                         //  If not logged in show below

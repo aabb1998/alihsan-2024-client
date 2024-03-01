@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useFormik } from "formik";
 import { Button } from "../../components";
 import { useDispatch } from "react-redux";
@@ -11,18 +11,20 @@ import TextArea from "../../components/TextArea";
 import { CloseIcon } from "../../theme/svg-icons";
 import { getCountryLengths } from "../../utils/helper";
 import ReCAPTCHA from "react-google-recaptcha";
+import { captchaValidation } from "../../features/authentication/authenticationSlice";
 
 const validationSchema = yup.object().shape({
-  firstName: yup.string().required("First Name is required").max(25),
-  lastName: yup.string().required("Last Name is required").max(25),
+  firstName: yup.string().trim().required("First Name is required").max(25),
+  lastName: yup.string().trim().required("Last Name is required").max(25),
   email: yup
     .string("Enter your email")
+    .trim()
     .email("Enter a valid email")
     .matches(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, "Enter a valid email")
     .required("Email is required"),
-  phone: yup.string().required("Phone Number is required"),
+  phone: yup.string().trim().required("Phone Number is required"),
   category: yup.string().required("Category is required"),
-  description: yup.string().required("Description is required").max(500),
+  description: yup.string().trim().required("Description is required").max(500),
 });
 
 export const Form = () => {
@@ -32,8 +34,7 @@ export const Form = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [countryCode, setCountryCode] = useState("");
   const dispatch = useDispatch();
-  const [isDisable, setDisable] = useState(false);
-  const [recaptchaValue, setRecaptchaValue] = useState(null);
+  const captchaRef = useRef(null);
 
   const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;
@@ -44,11 +45,6 @@ export const Form = () => {
     accurate: false,
     information: false,
   });
-
-  const handleRecaptchaChange = (value) => {
-    // Store the ReCAPTCHA value in the state or use it for validation
-    setRecaptchaValue(value);
-  };
 
   const formik = useFormik({
     initialValues: {
@@ -61,6 +57,13 @@ export const Form = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values, { resetForm, setErrors }) => {
+      const token = captchaRef.current.getValue();
+      captchaRef.current.reset();
+      const response = await dispatch(captchaValidation({ token: token }));
+      if (!response?.payload?.success) {
+        showErrorMessage(response?.payload?.message);
+        return;
+      }
       setDisableButton(true);
       const isValid = getCountryLengths(values.phone, countryCode);
       if (!isValid) {
@@ -103,19 +106,12 @@ export const Form = () => {
     formik.setFieldValue("referenceNumber", "REF101");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  // useEffect(() => {
-  //   if (disableButton) {
-  //     setTimeout(() => {
-  //       setDisableButton(false);
-  //     }, 2500);
-  //   }
-  // }, [disableButton]);
+
   return (
     <>
       <form onSubmit={formik.handleSubmit} autoComplete="off">
         <div className="grid grid-cols-1 md:grid-cols-2 md:gap-x-6">
           <div className="flex flex-col col-span-2 mb-6 md:col-span-1 form-group grow">
-            <div className="my-4"></div>
             <label htmlFor="Name" className="required">
               First Name<span className="text-sm text-red-300">*</span>
             </label>
@@ -208,8 +204,9 @@ export const Form = () => {
               id="ComplaintsCategories"
             >
               <option value="">Select Option</option>
-              <option value="Category 1">Category 1</option>
-              <option value="Category 2">Category 2</option>
+              <option value="Category 1">General Complaint</option>
+              <option value="Category 2">Child protection Complaint</option>
+              <option value="Category 3">Safeguarding Complaint</option>
             </select>
             {formik.touched.category && Boolean(formik.errors.category) && (
               <FormikValidationError
@@ -274,15 +271,17 @@ export const Form = () => {
             </label>
           </div>
         </div>
-        <ReCAPTCHA
-          sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
-          onChange={handleRecaptchaChange}
-        />
+        <div className="mb-4">
+          <ReCAPTCHA
+            sitekey={import.meta.env.VITE_APP_RECAPTCHA_SITE_KEY}
+            ref={captchaRef}
+          />
+        </div>
 
         <Button
           variant="primaryFull"
           type="submit"
-          disabled={disableButton}
+          disabled={formik.isSubmitting}
           label="Submit"
         />
       </form>
@@ -305,8 +304,12 @@ export const Form = () => {
                       </div>
                     </div>
                     <div className="flex flex-col items-center justify-center">
-                      <div className="flex items-end">
-                        <div className="font-bold text-md">
+                      <div className="flex items-center flex-col">
+                        <h5>
+                          Your complaint has been submitted. Please save your
+                          reference number for later use.
+                        </h5>
+                        <div className="font-bold text-md mt-10">
                           Ref no: #{referenceNo}
                         </div>
                       </div>

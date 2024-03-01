@@ -8,7 +8,6 @@ import { FormikValidationError } from "../Common/FormikValidationError";
 import { SnackMessages } from "../../../components/Toast";
 import { logIn } from "./loginAPI";
 import { useNavigate } from "react-router-dom";
-import { SocialLoginButtons } from "../Common/SocialLogin/SocialLoginButtons";
 import { PrimaryLoadingButton } from "../../../components/LoadingButtons";
 import {
   getBasketItems,
@@ -17,6 +16,10 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../../features/authentication/authenticationSlice";
 import PageHead from "../../../components/PageHead";
+import NoSSRSuspense from "../../../components/NoSSRSuspense";
+
+
+const SocialLoginButtons = React.lazy(() => import("../Common/SocialLogin/SocialLoginButtons"));
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -24,11 +27,11 @@ const Login = () => {
   const [isVisiblePassword, setVisiblePassword] = useState(false);
   const { showSuccessMessage, showErrorMessage } = SnackMessages();
   let navigate = useNavigate();
-  let isLoggedInChecked = false;
 
   const validationSchema = yup.object({
     email: yup
       .string("Enter your email")
+      .trim()
       .email("Enter a valid email")
       .matches(
         /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
@@ -37,6 +40,7 @@ const Login = () => {
       .required("Email is required"),
     password: yup
       .string("Enter your password")
+      .trim()
       .required("Password is required"),
     rememberMe: yup.boolean(),
   });
@@ -61,46 +65,16 @@ const Login = () => {
         // );
         
         const response = await dispatch(
-          loginUser({
+          loginUser({body: {
             email: formik.values.email,
             password: formik.values.password,
             isAdmin: false,
-          })
+          }, keepSession: true})
         );
         if (response?.payload?.success) {
           const payload = response?.payload?.payload;
           if (payload?.role === "USER") {
             showSuccessMessage(response?.payload?.message);
-            if (formik.values.rememberMe == true) {
-              localStorage.setItem(
-                "loggedIn",
-                JSON.stringify({
-                  token: payload?.token,
-                  role: payload?.role,
-                  isloggedIn: true,
-                })
-              );
-            } else {
-              localStorage.setItem(
-                "loggedIn",
-                JSON.stringify({
-                  token: response?.payload?.payload?.token,
-                  role: response?.payload?.payload?.role,
-                  firstName: response?.payload?.payload?.firstName,
-                  lastName: response?.payload?.payload?.lastName,
-                  id: response?.payload?.payload?.id,
-                  isloggedIn: true,
-                })
-              );
-              sessionStorage.setItem(
-                "loggedIn",
-                JSON.stringify({
-                  token: response?.payload?.payload?.token,
-                  role: response?.payload?.payload?.role,
-                  isloggedIn: true,
-                })
-              );
-            }
             await updateSelectedItems();
             navigate("/");
           }else{
@@ -121,18 +95,16 @@ const Login = () => {
   const handleChangePassword = (e) =>
     formik.setFieldValue("password", e.target.value.trim());
 
+	const {auth: userAuth, isReady} = useSelector(state => state.profile)
+
   useEffect(() => {
-    const userData = localStorage.getItem("loggedIn")
-      ? localStorage.getItem("loggedIn")
-      : sessionStorage.getItem("loggedIn");
-    if (userData && isLoggedInChecked == false) {
-      const parsedData = JSON.parse(userData);
-      if (parsedData.isloggedIn == true && parsedData.role === "USER") {
-        isLoggedInChecked = true;
-        navigate("/");
-      }
-    }
-  }, [isLoggedInChecked]);
+    if (isReady && userAuth && userAuth.role === "USER") {
+			navigate("/");
+		}
+  }, [userAuth, isReady]);
+
+	if(!isReady)
+		return <div>Loading...</div>
 
   return (
     <div>
@@ -250,8 +222,9 @@ const Login = () => {
                 </div>
                 <div className="w-full h-px bg-neutral-300"></div>
               </div>
-
-              <SocialLoginButtons />
+							<NoSSRSuspense fallback={<div />}>
+              	<SocialLoginButtons />
+							</NoSSRSuspense>
               <div className="text-center">
                 <span className="font-Inter text-neutral-600">
                   Don't have an account yet?{" "}
@@ -278,4 +251,4 @@ const Login = () => {
   );
 };
 
-export default React.memo(Login);
+export default Login;

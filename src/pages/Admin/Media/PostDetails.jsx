@@ -24,9 +24,9 @@ const { showSuccessMessage, showErrorMessage } = SnackMessages();
 
 const validationSchema = yup.object({
   url: yup.string().required("Image is required"),
-  title: yup.string().required("Title is required"),
-  description: yup.string().required("Description is required"),
-  slug: yup.string()
+  title: yup.string().trim().required("Title is required"),
+  description: yup.string().trim().required("Description is required"),
+  slug: yup.string().trim()
 		.required("Slug is required")
 		.test(
 			'test-slug',
@@ -189,6 +189,7 @@ export const PostDetails = () => {
                 variant=""
                 type="submit"
                 label={"Submit"}
+                disabled={formik.isSubmitting}
               />
             )}
           </div>

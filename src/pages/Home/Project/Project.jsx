@@ -14,7 +14,7 @@ export const Project = (props) => {
 									dangerouslySetInnerHTML={{__html: project.description}}
 									className="text-sm font-normal line-clamp-2" />
             </div>
-            <button className="btn btn-primary filled">Donate now</button>
+            <button className="btn btn-primary filled">Donate Now</button>
         </div>
     </div>;
 

@@ -4,6 +4,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 const initialState = {
   mapCountries: [],
   settings: [],
+  bannerImages: [],
   subscriber: null,
   loading: false,
   error: "",
@@ -60,6 +61,22 @@ export const getSettings = createAsyncThunk(
   }
 );
 
+export const getBannerImages = createAsyncThunk(
+  "get/bannerImages",
+  async (thunkAPI) => {
+    try {
+      const response = await api.get("settings/get-banner-image");
+      if (response.status === 200) {
+        return response?.data?.payload;
+      } else {
+        return thunkAPI.rejectWithValue(response?.data?.payload);
+      }
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e.response);
+    }
+  }
+);
+
 export const addSubscriber = createAsyncThunk(
   "add/subscriber",
   async (data, thunkAPI) => {
@@ -86,13 +103,14 @@ export const homeSlice = createSlice({
     });
     builder.addCase(getSettings.fulfilled, (state, action) => {
       state.settings = {
-				...action.payload,
-				generalAmounts: action.payload.generalAmounts.split(','),
-				fedyahAmounts: action.payload.fedyahAmounts.split(','),
-			};
+        ...action.payload,
+        generalAmounts: action.payload.generalAmounts.split(","),
+        fedyahAmounts: action.payload.fedyahAmounts.split(","),
+      };
     });
-    builder.addCase(addSubscriber.fulfilled, (state, action) => {
-      state.subscriber = action?.payload;
+
+    builder.addCase(getBannerImages.fulfilled, (state, action) => {
+      state.bannerImages = action?.payload;
     });
   },
 });

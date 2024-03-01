@@ -26,7 +26,7 @@ export const AqeeqaDonation = ({ campaign, handleClose, isModal }) => {
   const handleDonation = async (values, { resetForm }) => {
     const checkout = JSON.parse(localStorage.getItem("checkout") || "[]");
     const isInCheckoutList = checkout.find(
-      (obj) => obj.campaignId === values.campaignId
+      (obj) => obj.campaignId === values.campaignId,
     );
     const newValues = {
       ...values,
@@ -34,19 +34,19 @@ export const AqeeqaDonation = ({ campaign, handleClose, isModal }) => {
       isRecurring: false,
       Campaign: campaign,
     };
-    checkAdminPermission(newValues)
+    checkAdminPermission(newValues);
 
     const action = isInCheckoutList ? updateBasketItem : addBasketItem;
     const updatedCheckout = isInCheckoutList
       ? [
           ...checkout.slice(
             0,
-            checkout.findIndex((obj) => obj.campaignId === values.campaignId)
+            checkout.findIndex((obj) => obj.campaignId === values.campaignId),
           ),
           newValues,
           ...checkout.slice(
             checkout.findIndex((obj) => obj.campaignId === values.campaignId) +
-              1
+              1,
           ),
         ]
       : [...checkout, newValues];
@@ -55,7 +55,7 @@ export const AqeeqaDonation = ({ campaign, handleClose, isModal }) => {
     await dispatch(action(newValues));
 
     showSuccessMessage(
-      `Item ${isInCheckoutList ? "updated" : "added"} successfully`
+      `Item ${isInCheckoutList ? "updated" : "added"} successfully`,
     );
 
     resetForm();
@@ -97,7 +97,7 @@ export const AqeeqaDonation = ({ campaign, handleClose, isModal }) => {
       name: campaign?.campaign?.name,
       coverImage: campaign?.campaign?.coverImage,
       isRecurring: "false",
-      periodDays: "Weekly",
+      periodDays: "7",
       custom: false,
       videoRequest: "",
       phoneNumber: "",
@@ -114,8 +114,8 @@ export const AqeeqaDonation = ({ campaign, handleClose, isModal }) => {
     <div
       className={`${
         isModal
-          ? "md:rounded-4xl border-neutral-300 bg-white"
-          : "border rounded-2.5xl md:rounded-4xl border-neutral-300 p-4 md:p-7.5 bg-white"
+          ? "md:rounded-xl border-neutral-300 bg-white"
+          : "border rounded-xl md:rounded-xl border-neutral-300 p-4 md:p-7.5 bg-white"
       }`}
     >
       {!isModal && (
@@ -133,7 +133,8 @@ export const AqeeqaDonation = ({ campaign, handleClose, isModal }) => {
         >
           <div className="flex items-center gap-4 mb-5 md:mb-8">
             <div className="font-bold text-heading-5 md:heading-4">
-              {currencyConfig.label}{campaign?.prices?.aqeeqahAdahiPrice?.toLocaleString()}
+              {currencyConfig.label}
+              {campaign?.prices?.aqeeqahAdahiPrice?.toLocaleString()}
             </div>
             <div className="custom-number-input form-group">
               <label htmlFor="custom-input-number" className="sr-only">
@@ -192,22 +193,6 @@ export const AqeeqaDonation = ({ campaign, handleClose, isModal }) => {
             </div>
             <div className="mb-6">
               <label htmlFor="PhoneNumber">Phone Number</label>
-              {/* <input
-                type="number"
-                country={"us"}
-                className="w-full form-control"
-                id="PhoneNumber"
-                value={formik.values.phoneNumber}
-                name="phoneNumber"
-                onChange={handleChange}
-                placeholder="+38 (000) 000 - 00 - 00"
-                inputProps={{
-                  name: "phoneNumber",
-                  required: true,
-                  autoFocus: true,
-                }}
-              /> */}
-
               <PhoneInput
                 country={"au"}
                 placeholder="+38 (000) 000 - 00 - 00"
@@ -266,7 +251,8 @@ export const AqeeqaDonation = ({ campaign, handleClose, isModal }) => {
                 <div>Aqeeqah Adahi</div>
                 <div>{formik.values?.quantity}KG x</div>
                 <div>
-                  {currencyConfig.label}{campaign?.prices?.aqeeqahAdahiPrice?.toLocaleString()}
+                  {currencyConfig.label}
+                  {campaign?.prices?.aqeeqahAdahiPrice?.toLocaleString()}
                 </div>
               </div>
               <div className="h-px my-5 bg-neutral-300"></div>

@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "../../components";
 import { Disclosure } from "@headlessui/react";
-import { ChevronDownIcon, CloseIcon, FilterIcon, SearchIcon } from "../../theme/svg-icons";
+import {
+  ChevronDownIcon,
+  CloseIcon,
+  FilterIcon,
+  SearchIcon,
+} from "../../theme/svg-icons";
 import { Dropdown } from "../../components/Dropdown";
 
 const tagsList = [
@@ -148,9 +153,7 @@ export const Filter = ({
                   <>
                     <Disclosure.Button className={"w-full"}>
                       <Button
-                        className={
-                          "flex items-center justify-between w-full"
-                        }
+                        className={"flex items-center justify-between w-full"}
                         variant={"none"}
                         label={
                           <>

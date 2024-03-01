@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { CloseIcon, PdfIcon, PlusIcon } from "../../../theme/svg-icons";
 import { Button } from "../../../components";
 import { useFormik } from "formik";
@@ -23,10 +23,12 @@ const UpdateModal = ({ onClose, confirmDelete, item }) => {
   const { showSuccessMessage, showErrorMessage } = SnackMessages();
   const [imagePreviews, setImagePreviews] = useState("");
   const [isVisible, setIsvisible] = useState(false);
+  const [fileName, setFileName] = useState("");
   const { pathname } = useLocation();
+  const fileInputRef = useRef(null);
 
   const validationSchema = yup.object({
-    year: yup.string().required("Year is required"),
+    year: yup.string().trim().required("Year is required"),
     document: yup.string().required("Document is required"),
   });
   const formik = useFormik({
@@ -40,6 +42,7 @@ const UpdateModal = ({ onClose, confirmDelete, item }) => {
       const formData = new FormData();
       formData.append("year", values?.year);
       formData.append("document", values?.document);
+      formData.append("fileName", fileName);
       let action;
       if (formik.values.id) {
         action =
@@ -57,7 +60,6 @@ const UpdateModal = ({ onClose, confirmDelete, item }) => {
         const response = await dispatch(
           action({ data: formData, id: formik.values?.id })
         );
-        console.log(response, "response");
         if (response?.payload) {
           resetForm();
           showSuccessMessage(response?.payload?.message);
@@ -79,6 +81,7 @@ const UpdateModal = ({ onClose, confirmDelete, item }) => {
     const file = event.currentTarget.files[0];
     if (file) {
       if (file.type === "application/pdf") {
+        setFileName(file.name);
         const reader = new FileReader();
         reader.onloadend = () => {
           const newImagePreviews = reader.result;
@@ -94,6 +97,9 @@ const UpdateModal = ({ onClose, confirmDelete, item }) => {
   };
 
   const handleRemove = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
     setIsvisible(false);
     formik.setFieldValue("document", "");
   };
@@ -102,6 +108,7 @@ const UpdateModal = ({ onClose, confirmDelete, item }) => {
     if (item?.document) {
       setIsvisible(true);
       setImagePreviews(item?.document);
+      setFileName(item?.fileName)
     }
     formik.setFieldValue(item);
   }, []);
@@ -162,7 +169,7 @@ const UpdateModal = ({ onClose, confirmDelete, item }) => {
                                 <PdfIcon iconSize={20} />
                               </div>
                               <div className="text-xs font-semibold capitalize break-words line-clamp-1 font-Montserrat text-neutral-1000 ">
-                                <TruncatedText text={imagePreviews} maxLength={50} />
+                               {fileName}
                               </div>
                             </div>
 
@@ -192,6 +199,7 @@ const UpdateModal = ({ onClose, confirmDelete, item }) => {
                               </>
 
                               <input
+                                ref={fileInputRef}
                                 className="absolute invisible w-full h-full"
                                 id={`document`}
                                 type="file"
@@ -226,6 +234,7 @@ const UpdateModal = ({ onClose, confirmDelete, item }) => {
                             className="flex-grow"
                             label={"Save"}
                             type="submit"
+                            disabled={formik.isSubmitting}
                           />
                         )}
                       </div>

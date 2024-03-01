@@ -2,7 +2,7 @@ import React from "react";
 import Button from "../../components/Button";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { useDispatch,useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toggleBasket } from "../basket/basketSlice";
 import {
   addBasketItem,
@@ -24,14 +24,16 @@ const paymentTypes = [
 ];
 
 export const CommonDonation = ({ campaign, handleClose, isModal }) => {
-  const user = localStorage.getItem("loggedIn");
-	const generalAmounts = useSelector(state => state.settings.settings?.generalAmounts)
+  const user = useSelector((state) => state.profile.auth);
+  const generalAmounts = useSelector(
+    (state) => state.settings.settings?.generalAmounts,
+  );
   const dispatch = useDispatch();
 
   const handleDonation = async (values, { resetForm }) => {
     const checkout = JSON.parse(localStorage.getItem("checkout") || "[]");
     const isInCheckoutList = checkout.find(
-      (obj) => obj.campaignId === values.campaignId
+      (obj) => obj.campaignId === values.campaignId,
     );
     const newValues = {
       ...values,
@@ -42,18 +44,18 @@ export const CommonDonation = ({ campaign, handleClose, isModal }) => {
       Campaign: campaign,
     };
     checkAdminPermission(newValues);
-    
+
     const action = isInCheckoutList ? updateBasketItem : addBasketItem;
     const updatedCheckout = isInCheckoutList
       ? [
           ...checkout.slice(
             0,
-            checkout.findIndex((obj) => obj.campaignId === values.campaignId)
+            checkout.findIndex((obj) => obj.campaignId === values.campaignId),
           ),
           newValues,
           ...checkout.slice(
             checkout.findIndex((obj) => obj.campaignId === values.campaignId) +
-              1
+              1,
           ),
         ]
       : [...checkout, newValues];
@@ -61,7 +63,7 @@ export const CommonDonation = ({ campaign, handleClose, isModal }) => {
     localStorage.setItem("checkout", JSON.stringify(updatedCheckout));
     await dispatch(action(newValues));
     showSuccessMessage(
-      `Item ${isInCheckoutList ? "updated" : "added"} successfully`
+      `Item ${isInCheckoutList ? "updated" : "added"} successfully`,
     );
 
     resetForm();
@@ -78,13 +80,13 @@ export const CommonDonation = ({ campaign, handleClose, isModal }) => {
       selectedValue === currentAmount
         ? null
         : selectedValue === "Other"
-        ? ""
-        : selectedValue
+          ? ""
+          : selectedValue,
     );
 
     formik.setFieldValue(
       "custom",
-      selectedValue === "Other" ? !formik.values.custom : false
+      selectedValue === "Other" ? !formik.values.custom : false,
     );
   };
 
@@ -120,8 +122,8 @@ export const CommonDonation = ({ campaign, handleClose, isModal }) => {
     <div
       className={`${
         isModal
-          ? "md:rounded-4xl border-neutral-300 bg-white"
-          : "border rounded-2.5xl md:rounded-4xl border-neutral-300 p-4 md:p-7.5 bg-white"
+          ? "md:rounded-xl border-neutral-300 bg-white"
+          : "border rounded-2.5xl md:rounded-xl border-neutral-300 p-4 md:p-7.5 bg-white"
       }`}
     >
       {!isModal && (
@@ -134,6 +136,7 @@ export const CommonDonation = ({ campaign, handleClose, isModal }) => {
           <div className="p-2 bg-accent-100 rounded-lg gap-3.5 flex">
             {paymentTypes?.map((e) => (
               <Button
+                key={e.label}
                 label={e.label}
                 value={e.value}
                 type="button"
@@ -170,7 +173,9 @@ export const CommonDonation = ({ campaign, handleClose, isModal }) => {
                   type="button"
                   onClick={handleAmount}
                   value={option}
-                  label={option==="Other"?"Other":currencyConfig.label+option}
+                  label={
+                    option === "Other" ? "Other" : currencyConfig.label + option
+                  }
                   name="amount"
                   variant={"secondaryOutlineFull"}
                   className={

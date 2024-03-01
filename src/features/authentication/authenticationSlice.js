@@ -1,35 +1,96 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { api } from "../../../src/utils/api";
+import { createElement } from "react";
 
 const initialState = {
+	keepSession: false,
+	isReady: false,
   user: null,
+	auth: null,
   loading: false,
   error: "",
-  //
-  username: "",
-  firstname: "",
-  lastname: "",
-  email: "",
   isFetching: false,
   isSuccess: false,
   isError: false,
   errorMessage: "",
 };
 
-export const loginUser = createAsyncThunk(
-  "authenticat/user",
-  async (payload, thunkAPI) => {
-    try {
-      const response = await api.post("auth/login", payload);
+export const initAuth = createAsyncThunk(
+	"init/auth",
+	async() => {
+		const localStorageData = localStorage.getItem('loggedIn');
+		const sessionStorageData = sessionStorage.getItem('loggedIn');
 
+		const data = localStorageData || sessionStorageData;
+		if(!data) return null;
+		
+		const authData = JSON.parse(data);
+		api.defaults.headers.common.Authorization = `Bearer ${authData.token}`;
+
+		return authData;
+	}
+)
+
+export const socialMediaLogin = createAsyncThunk(
+	"authenticate/social-media",
+	async({body, provider, keepSession}) => {
+		try {
+			const response = await api.post(
+				provider==="google"
+					? "auth/googlelogin"
+					: "auth/facebooklogin",
+				{
+					...body,
+					timezoneOffset: new Date().getTimezoneOffset(),
+				}
+			);
+			const { payload } = response.data;
+			const storage = keepSession ? localStorage : sessionStorage;
+			storage.setItem('loggedIn', JSON.stringify({
+				token: payload.token,
+				role: payload.role,
+				authType: provider,
+				firstName: payload.firstName,
+				lastName: payload.lastName,
+				id: payload.id,
+				isloggedIn: true,
+			}))
+
+      api.defaults.headers.common.Authorization = `Bearer ${response.data.payload?.token}`;
+			
+			return response.data;
+		} catch (e) {
+			if(!e.response)
+				console.error(e);
+      throw new Error(e?.response?.data.message || "Something went wrong");
+    }
+	}
+)
+
+export const loginUser = createAsyncThunk(
+  "authenticate/email",
+  async ({body, keepSession}, thunkAPI) => {
+    try {
+      const response = await api.post("auth/login", body);
+			const payload = response.data.payload;
+			const storage = keepSession ? localStorage : sessionStorage;
+			storage.setItem('loggedIn', JSON.stringify({
+				token: payload.token,
+				role: payload.role,
+				authType: 'email',
+				firstName: payload.firstName,
+				lastName: payload.lastName,
+				id: payload.id,
+				isloggedIn: true,
+			}))
       api.defaults.headers.common[
         "Authorization"
-      ] = `Bearer ${response.data.payload?.token}`;
+      ] = `Bearer ${payload.token}`;
       return response.data;
     } catch (e) {
+			if(!e.response)
+				console.error(e);
       throw new Error(e?.response?.data.message || "Something went wrong");
-
-      // return e.response.data;
     }
   }
 );
@@ -53,8 +114,11 @@ export const getProfile = createAsyncThunk(
           sessionStorage.removeItem("loggedIn");
           window.location.href = "login";
         }
-      } else
+      } else {
+				if(!e.response)
+					console.error(e);
         throw new Error(e.response?.data.message || "Something went wrong");
+			}
     }
   }
 );
@@ -101,6 +165,17 @@ export const changePassword = createAsyncThunk(
   }
 );
 
+export const captchaValidation = createAsyncThunk(
+  "auth/verify-captcha",
+  async (payload, thunkAPI) => {
+    try {
+      const response = await api.post("auth/verify-captcha", payload);
+      return response.data;
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e.response.data);
+    }
+  }
+);
 // profile/password
 
 export const authenticationSlice = createSlice({
@@ -109,22 +184,23 @@ export const authenticationSlice = createSlice({
   reducers: {
     logout(state, action) {
       return {
-        username: "",
-        firstname: "",
-        lastname: "",
-        email: "",
         isFetching: false,
         isSuccess: false,
         isError: false,
         errorMessage: "",
         user: null,
+				auth: null,
+				isReady: true,
+				loading: false,
+				error: false,
       };
     },
   },
   extraReducers(builder) {
     builder
       .addCase(getProfile.fulfilled, (state, action) => {
-        return action.payload;
+        state.user = action.payload;
+				state.isFetching = false;
       })
       .addCase(getProfile.rejected, (state, action) => {
         state.isError = true;
@@ -134,7 +210,39 @@ export const authenticationSlice = createSlice({
       .addCase(getProfile.pending, (state) => {
         state.isFetching = true;
         state.isError = false;
-      })
+      });
+		
+		builder
+			.addCase(initAuth.fulfilled, (state, action) => {
+				state.auth = action.payload;
+				state.isReady = true;
+			})
+		
+		builder
+			.addCase(socialMediaLogin.fulfilled, (state, action) => {
+				const payload = action.payload.payload;
+				state.user = payload;
+				state.auth = {
+					token: payload.token,
+					role: payload.role,
+					authType: action.meta.arg.provider,
+					firstName: payload.firstName,
+					lastName: payload.lastName,
+					id: payload.id,
+					isloggedIn: true,
+				}
+				state.loading = false;
+			})
+			.addCase(socialMediaLogin.rejected, (state, action) => {
+				state.loading = false;
+				state.error = action.error;
+			})
+			.addCase(socialMediaLogin.pending, (state) => {
+				state.loading = true;
+				state.error = null;
+			});
+	
+		builder
       .addCase(updateProfile.fulfilled, (state, action) => {
         for (let i in action.meta.arg) {
           state[i] = action.meta.arg[i];
@@ -151,18 +259,30 @@ export const authenticationSlice = createSlice({
         state.isFetching = true;
         state.isError = false;
       });
-    builder.addCase(loginUser.fulfilled, (state, action) => {
-      state.user = action.payload;
-      state.loading = false;
-    });
-    builder.addCase(loginUser.pending, (state, action) => {
-      state.loading = true;
-    });
-    builder.addCase(loginUser.rejected, (state, action) => {
-      state.user = null;
-      state.loading = false;
-      state.error = action.error;
-    });
+
+    builder
+			.addCase(loginUser.fulfilled, (state, action) => {
+				const payload = action.payload.payload;
+				state.user = payload;
+				state.auth = {
+					token: payload.token,
+					role: payload.role,
+					authType: 'email',
+					firstName: payload.firstName,
+					lastName: payload.lastName,
+					id: payload.id,
+					isloggedIn: true,
+				}
+				state.loading = false;
+			})
+			.addCase(loginUser.pending, (state, action) => {
+				state.loading = true;
+			})
+			.addCase(loginUser.rejected, (state, action) => {
+				state.user = null;
+				state.loading = false;
+				state.error = action.error;
+			});
   },
 });
 

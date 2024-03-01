@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Img from "../../components/Image";
 import PageHead from "../../components/PageHead";
 
-export const TermsAndConditionsComponent = () => {
+const TermsAndConditionsComponent = () => {
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -11,7 +11,7 @@ export const TermsAndConditionsComponent = () => {
   }, []);
   return (
     <div>
-      <PageHead title={'Terms and conditions'}/>
+      <PageHead title={"Terms and conditions"} />
       <div className="pt:0 sm:py-7.5 md:py-15">
         <section aria-label="Terms and Conditions">
           <div className="mb-5 md:mb-10 banner-container">
@@ -166,3 +166,5 @@ export const TermsAndConditionsComponent = () => {
     </div>
   );
 };
+
+export default TermsAndConditionsComponent;

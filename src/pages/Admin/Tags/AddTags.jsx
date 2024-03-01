@@ -14,8 +14,8 @@ const AddTags = ({ onClose, data }) => {
   const dispatch = useDispatch();
 
   const validationSchema = yup.object({
-    text: yup.string().required("Text is required"),
-    color: yup.string().required("Color is required"),
+    text: yup.string().trim().required("Text is required"),
+    color: yup.string().trim().required("Color is required"),
   });
 
   const formik = useFormik({
@@ -134,6 +134,8 @@ const AddTags = ({ onClose, data }) => {
                           variant={"primary"}
                           className="flex-grow"
                           label={"Save"}
+                          disabled={formik.isSubmitting}
+
                         />
                       </div>
                     </div>

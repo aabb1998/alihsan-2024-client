@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import Button from "../../components/Button";
 import { PlusIcon, MinusIcon } from "../../../src/theme/svg-icons";
@@ -12,11 +12,12 @@ import {
 } from "../basket/basketSlice";
 import { ReccuringOptions } from "./ReccuringOptions";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { checkAdminPermission } from "../../utils/helper";
-import { currencyConfig } from "../../utils/constants";
+import { useSelector } from "react-redux";
+import { TotalSection } from "./TotalSection";
 
 const { showSuccessMessage, showErrorMessage } = SnackMessages();
 const paymentTypes = [
@@ -25,16 +26,17 @@ const paymentTypes = [
 ];
 
 export const AdeeqahDonation = ({ campaign, handleClose, isModal }) => {
-	const user = localStorage.getItem('loggedIn');
+  const user = useSelector((state) => state.profile.auth);
   const dispatch = useDispatch();
   const { ricePrice, cowPrice, goatPrice } = campaign?.prices;
 
-
   const validationSchema = yup.object({
     behalfOf: yup.string("Add Behalf Of").required("On Behalf Of is required"),
-    specialRequest: yup
-      .string("Select Special Request")
-      .required("Special Request is required"),
+    notes: yup.string().when("specialRequest", {
+      is: (value) => value === "specialDua" || value === "supplication",
+      then: () => yup.string().required("Notes is required"),
+      otherwise: () => yup.string(),
+    }),
     donationItem: yup
       .string("Select Donation Item")
       .required("Donation Item is required"),
@@ -46,7 +48,9 @@ export const AdeeqahDonation = ({ campaign, handleClose, isModal }) => {
       "goat/sheep": goatPrice,
     };
     const donationItemPrice = itemPrices[formik.values.donationItem] || 0;
-    const subTotal = donationItemPrice + formik.values.riceQuantity * ricePrice;
+    const subTotal =
+      donationItemPrice * formik.values.quantity +
+      formik.values.riceQuantity * ricePrice;
 
     const checkout = JSON.parse(localStorage.getItem("checkout") || "[]");
 
@@ -60,6 +64,7 @@ export const AdeeqahDonation = ({ campaign, handleClose, isModal }) => {
       total: subTotal,
       riceQuantity: parseInt(values.riceQuantity),
       isRecurring: JSON.parse(values.isRecurring),
+      quantity: parseInt(values.quantity),
       periodDays: values.periodDays,
       donationItem: values.donationItem === "cow" ? "COW" : "GOAT",
       checkoutType: "ADEEQAH_GENERAL_SACRIFICE",
@@ -67,7 +72,7 @@ export const AdeeqahDonation = ({ campaign, handleClose, isModal }) => {
       ricePrice: ricePrice,
       Campaign: campaign,
     };
-    checkAdminPermission(updatedValues)
+    checkAdminPermission(updatedValues);
 
     const updatedCheckout = isInCheckoutList
       ? [
@@ -94,10 +99,10 @@ export const AdeeqahDonation = ({ campaign, handleClose, isModal }) => {
   };
 
   const handleChange = (e) => {
-		if(e.target.name==='isRecurring' && !user && e.target.value==='true') {
-			showErrorMessage('Please login to access this feature')
-			return;
-		}
+    if (e.target.name === "isRecurring" && !user && e.target.value === "true") {
+      showErrorMessage("Please login to access this feature");
+      return;
+    }
     formik.setFieldValue(
       [e.target.name],
       e.target.value === "Add More" ? 1 : e.target.value
@@ -134,18 +139,31 @@ export const AdeeqahDonation = ({ campaign, handleClose, isModal }) => {
       );
     }
   };
+
+  const increaseQuantity = () => {
+    formik.setFieldValue("quantity", parseInt(formik.values.quantity) + 1);
+  };
+
+  const decreaseQuantity = () => {
+    if (formik.values.quantity > 1) {
+      formik.setFieldValue("quantity", parseInt(formik.values.quantity) - 1);
+    }
+  };
+
   const handleCustomRice = () => {
     formik.setFieldValue("riceQuantity", 1);
     formik.setFieldValue("custom", false);
   };
+
   const formik = useFormik({
     initialValues: {
       campaignId: campaign?.campaign?.id,
       amount: "",
       name: campaign?.campaign?.name,
+      notes: "",
       coverImage: campaign?.campaign?.coverImage,
       isRecurring: "false",
-      periodDays: 7,
+      periodDays: "7",
       donationItem: "",
       specialRequest: "",
       behalfOf: "",
@@ -158,6 +176,11 @@ export const AdeeqahDonation = ({ campaign, handleClose, isModal }) => {
     validationSchema: validationSchema,
     onSubmit: handleDonation,
   });
+
+  useEffect(() => {
+    console.log(formik.values);
+  }, [formik.values]);
+
   return (
     <div
       className={`${
@@ -182,6 +205,7 @@ export const AdeeqahDonation = ({ campaign, handleClose, isModal }) => {
           <div className="p-2 bg-accent-100 rounded-lg  gap-3.5 flex">
             {paymentTypes?.map((e) => (
               <Button
+                key={e.label}
                 type="button"
                 label={e.label}
                 value={e.value}
@@ -201,7 +225,6 @@ export const AdeeqahDonation = ({ campaign, handleClose, isModal }) => {
               handleChange={handleChange}
               periodDays={formik?.values.periodDays}
               isRamadanCampaign={campaign?.isRamadanCampaign}
-
             />
           )}
           {/* on behalf */}
@@ -246,19 +269,79 @@ export const AdeeqahDonation = ({ campaign, handleClose, isModal }) => {
                   />
                 )}
             </div>
-            <div className="mb-5">
+            {(formik.values?.specialRequest === "supplication" ||
+              formik.values?.specialRequest === "specialDua") && (
+              <div className="mb-5">
+                <label htmlFor="VideoRequest">Enter Request</label>
+                <input
+                  type="text"
+                  className="w-full form-control"
+                  id="notes"
+                  value={formik.values.notes}
+                  name="notes"
+                  onChange={handleChange}
+                  placeholder="Notes"
+                />
+
+                {formik.touched.notes && Boolean(formik.errors.notes) && (
+                  <FormikValidationError
+                    formikTouched={formik.touched.notes}
+                    formikError={formik.errors.notes}
+                  />
+                )}
+              </div>
+            )}
+            <div className="mb-5 flex flex-col items-left">
               <label htmlFor="VideoRequest">Donation Item</label>
-              <select
-                className="w-full text-sm !text-neutral-800 form-control"
-                id="VideoRequest"
-                onChange={handleChange}
-                name="donationItem"
-                value={formik.values.donationItem}
-              >
-                <option value="">Select Donation Item</option>
-                <option value="cow">Cow</option>
-                <option value="goat/sheep">Goat/Sheep</option>
-              </select>
+              <div className="flex flex-row w-full justify-between gap-2">
+                <div className="w-full items-center flex justify-center">
+                  <select
+                    className="w-full text-sm !text-neutral-800 form-control"
+                    id="VideoRequest"
+                    onChange={handleChange}
+                    name="donationItem"
+                    value={formik.values.donationItem}
+                  >
+                    <option value="">Select Donation Item</option>
+                    <option value="cow">Cow</option>
+                    <option value="goat/sheep">Goat/Sheep</option>
+                  </select>
+                </div>
+                {formik.values.donationItem != "" && (
+                  <>
+                    <div>
+                      <div className="relative flex flex-row w-full h-10 bg-transparent rounded-lg">
+                        <button
+                          type="button"
+                          data-action="decrement"
+                          className="flex items-center justify-center w-8 px-2 border border-r-0 rounded-l-lg border-neutral-300"
+                        >
+                          <span className="" onClick={decreaseQuantity}>
+                            <MinusIcon />
+                          </span>
+                        </button>
+                        <input
+                          type="number"
+                          className="border !rounded-none w-11 !p-0 text-center !text-heading-7 !text-neutral-1000 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          name="quantity"
+                          onChange={handleChange}
+                          value={formik.values.quantity}
+                          readOnly={true}
+                        />
+                        <button
+                          type="button"
+                          data-action="increment"
+                          className="flex items-center justify-center w-8 px-2 border border-l-0 rounded-r-lg border-neutral-300"
+                        >
+                          <span className="" onClick={increaseQuantity}>
+                            <PlusIcon />
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
               {formik.touched.donationItem &&
                 Boolean(formik.errors.donationItem) && (
                   <FormikValidationError
@@ -282,9 +365,7 @@ export const AdeeqahDonation = ({ campaign, handleClose, isModal }) => {
                     onClick={handleRiceChange}
                     variant={"secondaryOutlineFull"}
                     className={
-                      formik?.values.riceQuantity === "25"
-                        ? "button-focus"
-                        : ""
+                      formik?.values.riceQuantity === "25" ? "button-focus" : ""
                     }
                   />
                 </div>
@@ -297,9 +378,7 @@ export const AdeeqahDonation = ({ campaign, handleClose, isModal }) => {
                     value="50"
                     variant={"secondaryOutlineFull"}
                     className={
-                      formik?.values.riceQuantity === "50"
-                        ? "button-focus"
-                        : ""
+                      formik?.values.riceQuantity === "50" ? "button-focus" : ""
                     }
                     onClick={handleRiceChange}
                   />
@@ -363,6 +442,7 @@ export const AdeeqahDonation = ({ campaign, handleClose, isModal }) => {
             goatPrice={goatPrice}
             riceQnty={formik.values.riceQuantity}
             donationItem={formik.values.donationItem}
+            quantity={formik.values.quantity}
           />
         </div>
         <div className="flex flex-col gap-8">
@@ -375,63 +455,6 @@ export const AdeeqahDonation = ({ campaign, handleClose, isModal }) => {
           </div>
         </div>
       </form>
-    </div>
-  );
-};
-
-const TotalSection = ({
-  ricePrice,
-  cowPrice,
-  goatPrice,
-  riceQnty,
-  donationItem,
-}) => {
-  const itemPrices = {
-    cow: cowPrice,
-    "goat/sheep": goatPrice,
-  };
-
-  const donationItemPrice = itemPrices[donationItem] || 0;
-  const subTotal = donationItemPrice + riceQnty * ricePrice;
-
-  return (
-    <div>
-      <div className="mb-10">
-        <div className="h-px mb-5 bg-neutral-300"></div>
-        {donationItem ? (
-          <div className="grid justify-between grid-cols-5">
-            <div className="col-span-3 capitalize ">{donationItem}</div>
-            <div className="col-span-1">1 x</div>
-            <div className="col-span-1 text-right">
-              {currencyConfig.label}{donationItemPrice?.toLocaleString()}
-            </div>
-          </div>
-        ) : (
-          ""
-        )}
-        {riceQnty ? (
-          <div className="grid justify-between grid-cols-5 mt-2">
-            <div className="col-span-3">Rice</div>
-            <div className="col-span-1">{riceQnty}KG x</div>
-            <div className="col-span-1 text-right">
-              {currencyConfig.label}{ricePrice?.toLocaleString()}
-            </div>
-          </div>
-        ) : (
-          ""
-        )}
-        {subTotal ? (
-          <>
-            <div className="h-px my-5 bg-neutral-300"></div>
-            <div className="flex justify-between text-heading-7">
-              <div>Subtotal</div>
-              <div>{currencyConfig.label}{subTotal?.toLocaleString()}</div>
-            </div>
-          </>
-        ) : (
-          ""
-        )}
-      </div>
     </div>
   );
 };

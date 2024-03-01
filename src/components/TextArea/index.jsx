@@ -19,7 +19,7 @@ export const TextArea = ({ value, name, handleChange, maxLength=500 }) => {
         onChange={handleInputChange}
         value={value}
       ></textarea>
-      <div className="absolute z-10 text-sm bg-white bottom-2 right-2">
+      <div className="absolute text-sm bg-white z-1 bottom-2 right-2">
         {value?.length}/{maxLength}
       </div>
     </div>

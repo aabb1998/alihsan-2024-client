@@ -7,13 +7,12 @@ import {
 import { LoginSocialFacebook, LoginSocialGoogle } from "reactjs-social-login";
 import { SnackMessages } from "../../../../components/Toast";
 import { useNavigate } from "react-router-dom";
-import { facebookLogin, googleLogin } from "./SocialLoginAPI";
 import { SocialLoadingButton } from "../../../../components/LoadingButtons";
 import { useDispatch } from "react-redux";
-import { api } from "../../../../utils/api";
 import { bulkAddDonation } from "../../../../features/basket/basketSlice";
+import { socialMediaLogin } from "../../../../features/authentication/authenticationSlice";
 
-export const SocialLoginButtons = () => {
+const SocialLoginButtons = () => {
   const dispatch = useDispatch();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -33,52 +32,24 @@ export const SocialLoginButtons = () => {
   };
 
   const onFbResolve = async (response) => {
-    try {
-      setIsLoading(true);
-      const apiResponse = await facebookLogin(
-        response.data.first_name,
-        response.data.last_name,
-        response.data.email,
-        response.data.userID
-      );
-      if (apiResponse.status == 200) {
-        showSuccessMessage(apiResponse.data.message);
-        sessionStorage.setItem(
-          "loggedIn",
-          JSON.stringify({
-            token: apiResponse.data.payload.token,
-            role: apiResponse?.data?.payload?.role,
-            firstName: apiResponse?.data?.payload?.firstName,
-            lastName: apiResponse?.data?.payload?.lastName,
-            id: apiResponse?.data?.payload?.id,
-            isloggedIn: true,
-          })
-        );
-        localStorage.setItem(
-          "loggedIn",
-          JSON.stringify({
-            token: apiResponse.data.payload.token,
-            role: apiResponse?.data?.payload?.role,
-            firstName: apiResponse?.data?.payload?.firstName,
-            lastName: apiResponse?.data?.payload?.lastName,
-            id: apiResponse?.data?.payload?.id,
-            isloggedIn: true,
-          })
-        );
-        api.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${apiResponse.data.payload.token}`;
+		setIsLoading(true);
+		const actionResponse = await dispatch(socialMediaLogin({body: {
+			firstName: response.data.first_name,
+			lastNAme: response.data.last_name,
+			email: response.data.email,
+			facebokId: response.data.userID
+		}, keepSession: true, provider: 'facebook'}))
+		
+		if(actionResponse.error){
+			showErrorMessage(actionResponse?.error?.message);
+			setIsLoading(false);
+		} else {
+			showSuccessMessage(actionResponse.payload.message);
 
-        await updateSelectedItems();
-        navigate("/");
-      } else {
-        showErrorMessage(apiResponse.error);
-      }
-      setIsLoading(false);
-    } catch (error) {
-      showErrorMessage(error.message);
-      setIsLoading(false);
-    }
+			await updateSelectedItems();
+			navigate("/");
+		}
+		setIsLoading(false);
   };
   const onFbReject = (error) => {
     setIsLoading(false);
@@ -86,51 +57,23 @@ export const SocialLoginButtons = () => {
 
   const onGoogleResolve = async (response) => {
 
-    try {
-      setIsLoading(true);
-      const apiResponse = await googleLogin(
-        response.data.given_name,
-        response.data.family_name,
-        response.data.email
-      );
-      if (apiResponse.status == 200) {
-        showSuccessMessage(apiResponse.data.message);
-        sessionStorage.setItem(
-          "loggedIn",
-          JSON.stringify({
-            token: apiResponse.data.payload.token,
-            role: apiResponse?.data?.payload?.role,
-            firstName: apiResponse?.data?.payload?.firstName,
-            lastName: apiResponse?.data?.payload?.lastName,
-            id: apiResponse?.data?.payload?.id,
-            isloggedIn: true,
-          })
-        );
-        localStorage.setItem(
-          "loggedIn",
-          JSON.stringify({
-            token: apiResponse.data.payload.token,
-            role: apiResponse?.data?.payload?.role,
-            firstName: apiResponse?.data?.payload?.firstName,
-            lastName: apiResponse?.data?.payload?.lastName,
-            id: apiResponse?.data?.payload?.id,
-            isloggedIn: true,
-          })
-        );
-        api.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${apiResponse.data.payload.token}`;
-        await updateSelectedItems();
+		setIsLoading(true);
+		const actionResponse = await dispatch(socialMediaLogin({body: {
+			firstName: response.data.given_name,
+			lastName: response.data.family_name,
+			email: response.data.email
+		}, keepSession: true, provider: 'google'}))
+		
+		if(actionResponse.error){
+			showErrorMessage(actionResponse.error.message);
+			setIsLoading(false);
+		} else {
+			showSuccessMessage(actionResponse.payload.message);
 
-        navigate("/");
-      } else {
-        showErrorMessage(apiResponse.error);
-      }
-      setIsLoading(false);
-    } catch (error) {
-      showErrorMessage(error.message);
-      setIsLoading(false);
-    }
+			await updateSelectedItems();
+			navigate("/");
+		}
+		setIsLoading(false);
   };
   const onGoogleReject = (error) => {
     setIsLoading(false);
@@ -140,7 +83,7 @@ export const SocialLoginButtons = () => {
     <div className="grid grid-cols-1 sm:grid-cols-2 justify-between gap-5 mb-7.5">
       {!isLoading ? (
         <LoginSocialGoogle
-          client_id={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+          client_id={import.meta.env.VITE_APP_GOOGLE_CLIENT_ID}
           scope="openid profile email"
           discoveryDocs="claims_supported"
           onLoginStart={() => onSocialLoginStart(google)}
@@ -167,7 +110,7 @@ export const SocialLoginButtons = () => {
 
       {!isLoading ? (
         <LoginSocialFacebook
-          appId={process.env.REACT_APP_FACEBOOK_APP_ID}
+          appId={import.meta.env.VITE_APP_FACEBOOK_APP_ID}
           onLoginStart={() => onSocialLoginStart(facebook)}
           onResolve={onFbResolve}
           onReject={onFbReject}
@@ -192,3 +135,5 @@ export const SocialLoginButtons = () => {
     </div>
   );
 };
+
+export default SocialLoginButtons

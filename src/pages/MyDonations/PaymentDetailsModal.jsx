@@ -73,7 +73,7 @@ export default function PaymentDetailsModal({ setIsOpen, idForPayment }) {
                                     <th className="p-4 font-medium">
                                       Project Name
                                     </th>
-                                    <th className="hidden p-4 font-medium sm:table-cell">
+                                    <th className="p-4 font-medium">
                                       <div className="flex gap-1.5 items-center">
                                         Date
                                         <span className="cursor-pointer">
@@ -108,7 +108,7 @@ export default function PaymentDetailsModal({ setIsOpen, idForPayment }) {
                                             {i.Campaign.name}
                                           </div>
                                         </td>
-                                        <td className="hidden p-4 border-b border-neutral-300 sm:table-cell">
+                                        <td className="p-4 border-b border-neutral-300 ">
                                           {i.updatedAt}
                                         </td>
                                         <td className="p-4 border-b border-neutral-300">

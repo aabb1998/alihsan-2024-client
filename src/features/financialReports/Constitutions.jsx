@@ -23,14 +23,13 @@ export const Constitution = ({ isOpen }) => {
   const [isGrid, setIsGrid] = useState(true);
   const dispatch = useDispatch();
   const { constitutions, constitutionCount, loading } = useSelector(
-    (state) => state.finantialReports
+    (state) => state.finantialReports,
   );
   const [filter, setFilter] = useState(initialState);
 
   const handleDownload = async (doc) => {
     try {
       const response = await fetch(doc);
-      console.log(doc)
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -67,7 +66,6 @@ export const Constitution = ({ isOpen }) => {
             name: "year",
             value: "year",
             options: [{ label: "Year", value: "" }, ...financialYearList],
-
           },
         ]}
         sortList={[
@@ -127,7 +125,7 @@ export const Constitution = ({ isOpen }) => {
                       document={e.document}
                       handleDownload={handleDownload}
                     />
-                  )
+                  ),
                 )
               )}
             </div>

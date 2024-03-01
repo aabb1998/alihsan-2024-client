@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  HelpCircleIcon,
-  PlusIcon,
-  EditIcon,
-  CloseIcon,
-} from "../../../theme/svg-icons";
+import { HelpCircleIcon, CloseIcon } from "../../../theme/svg-icons";
 import { useSelector, useDispatch } from "react-redux";
 import { zakatMetalInput } from "../slice";
 import { Tooltip } from "react-tooltip";
@@ -23,7 +18,6 @@ export default function MetalModal({ visible, onRequestClose, metal }) {
   const { unit, gold, silver, cash } = useSelector(
     (state) => state.zakatCalculator.amounts
   );
-  const amount = useSelector((state) => state.zakatCalculator.amounts);
   const { goldPriceList } = useSelector((state) => state.zakatCalculator);
 
   const metalUsd = metal?.type === "silver" ? silverUsd : goldUsd;
@@ -44,6 +38,7 @@ export default function MetalModal({ visible, onRequestClose, metal }) {
     if (name !== "unit") {
       error = validateAmount(value);
     }
+
     setData(({ touched, errors, values, toChange }) => ({
       touched: { ...touched, [name]: true },
       errors: { ...errors, [name]: error },
@@ -59,16 +54,8 @@ export default function MetalModal({ visible, onRequestClose, metal }) {
         values: { ...prevState.values, value: "" },
       }));
     }
-
-    /*
-    if(rerun) console.log(value, val, name, 'rerunniung')
-    if(rerun || error) return;
-    const metalUnitPrice = data.values.unit === 'gram' ? metalPrice : metalPrice * 28.35;
-    if(name==='value')
-      handleChange('weight', val/metalUnitPrice, true)
-    else if(name==='weight')
-      handleChange('value', val*metalUnitPrice, true)*/
   };
+
   const handleSubmit = () => {
     const karatErr = data.values.karat === "1" ? "Invalid value " : "";
     const valueErr = validateAmount(data.values.value);
@@ -117,7 +104,7 @@ export default function MetalModal({ visible, onRequestClose, metal }) {
 
   useEffect(() => {
     if (
-      data.toChange === "value" &&
+      (data.values?.value !== 0 || data.toChange === "value") &&
       !data.errors.unit &&
       !data.errors.karat &&
       !data.errors.weight
@@ -232,23 +219,22 @@ export default function MetalModal({ visible, onRequestClose, metal }) {
                       </div>
                       <span
                         className="cursor-pointer text-neutral-700 hover:text-primary-300"
-                        data-tooltip-id="my-tooltip"
+                        data-tooltip-id="karat"
                         data-tooltip-place="bottom-end"
                       >
                         <HelpCircleIcon iconSize={16} strokeWidth={2} />
                         <Tooltip
-                          id="my-tooltip"
+                          id="karat"
                           className="opacity-100 tooltip"
                           style={{ backgroundColor: "#fff", padding: "1rem" }}
                         >
                           <div>
                             <h2 className="mb-2 text-neutral-1000 text-button-md">
-                              Text Title Goes Here
+                              What is a Karat:
                             </h2>
                             <p className="text-xs font-medium text-neutral-600">
-                              Lorem ipsum dolor sit amet, consectetur adipiscing
-                              elit, sed do eiusmod tempor incididunt ut labore
-                              et dolore magna aliqua.{" "}
+                              Specify the purity level of your gold or silver
+                              holdings, measured in karats.
                             </p>
                           </div>
                         </Tooltip>

@@ -8,6 +8,7 @@ import { forgotPassword } from './resetPasswordAPI';
 import { Button } from '../../../components';
 import { PrimaryLoadingButton } from '../../../components/LoadingButtons';
 import { useNavigate } from 'react-router';
+import PageHead from '../../../components/PageHead';
 
 const ResetPassword = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -18,6 +19,7 @@ const ResetPassword = () => {
     const validationSchema = yup.object({
         email: yup
             .string('Enter your email')
+            .trim()
             .email('Enter a valid email')
             .matches(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, 'Enter a valid email')
             .required('Email is required')
@@ -47,21 +49,9 @@ const ResetPassword = () => {
 
     const handleChangeEmail = (e) => formik.setFieldValue('email', e.target.value.trim());
 
-    useEffect(() => {
-        document.title = 'Al-Ihsan Foundation - Reset Your Password';
-        const userData = localStorage.getItem('loggedIn') ? localStorage.getItem('loggedIn') : sessionStorage.getItem('loggedIn');
-        if (userData && isLoggedInChecked == false) {
-            const parsedData = JSON.parse(userData);
-            if (parsedData.isloggedIn == true) {
-                isLoggedInChecked = true;
-                // showSuccessMessage('Already logged in');
-                navigate('/');
-            }
-        }
-    }, []);
-
     return (
         <div>
+						<PageHead title={"Login"} />
             <main className="mx-auto">
                 <div className="flex justify-center min-h-screen gap-4 px-4 py-4 md:px-6 lg:justify-normal">
                     <div className="flex items-center justify-center md:w-8/12">

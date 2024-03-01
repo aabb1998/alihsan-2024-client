@@ -19,14 +19,17 @@ import ChangePassword from "../../../features/authentication/ChangePassword";
 const validationSchema = yup.object({
   firstName: yup
     .string("Enter your first name")
+    .trim()
     .required("First name is required")
     .max(40, "First name must be at most 40 characters"),
   lastName: yup
     .string("Enter your last name")
+    .trim()
     .required("Last name is required")
     .max(40, "Last name must be at most 40 characters"),
   displayName: yup
     .string("Enter your Username")
+    .trim()
     .required("Username is required")
     .max(40, "Username must be at most 40 characters"),
   email: yup
@@ -42,7 +45,7 @@ export const Profile = () => {
   const navigate = useNavigate();
 
   const [deleteModal, setDeleteModal] = useState(false);
-  const profile = useSelector((state) => state.profile);
+  const userProfile = useSelector((state) => state.profile.user);
 
   const formik = useFormik({
     initialValues: {
@@ -79,8 +82,8 @@ export const Profile = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (profile) formik.setValues(profile);
-  }, [profile]);
+    if (userProfile) formik.setValues(userProfile);
+  }, [userProfile]);
 
   return (
     <>
@@ -167,7 +170,7 @@ export const Profile = () => {
                 )}
               </div>
               <div className="flex flex-col items-center justify-between gap-6 md:flex-row md:gap-4 sm:flex-row">
-                <div className="flex gap-3">
+                <div className="flex gap-6">
                     <Button
                     className="flex-grow btn btn-outline-secondary text-button-md md:text-button-lg"
                     variant="flex-grow btn btn-outline-secondary text-button-md md:text-button-lg"
@@ -177,7 +180,6 @@ export const Profile = () => {
                   />
                     <Button
                       className="btn btn-primary filled"
-                      variant=""
                       type="submit"
                       label={"Save Changes"}
                     />

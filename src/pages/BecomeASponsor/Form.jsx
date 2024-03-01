@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Button } from "../../components";
 
 import * as yup from "yup";
@@ -10,30 +10,37 @@ import { FormikValidationError } from "../Authentication/Common/FormikValidation
 import { PhoneField } from "../../components/PhoneField";
 import TextArea from "../../components/TextArea";
 import { getCountryLengths } from "../../utils/helper";
+import { captchaValidation } from "../../features/authentication/authenticationSlice";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const { showSuccessMessage, showErrorMessage } = SnackMessages();
 
 export const Form = () => {
   const dispatch = useDispatch();
+  const captchaRef = useRef(null);
   const [countryCode, setCountryCode] = useState("");
   const [isDisable, setDisable] = useState(false);
 
   const validationSchema = yup.object().shape({
     firstName: yup
       .string()
+      .trim()
       .required("First Name is required")
       .max(50, ({ max }) => `First Name must be at most ${max} characters`),
     lastName: yup
       .string()
+      .trim()
       .required("Last Name is required")
       .max(50, ({ max }) => `Last Name must be at most ${max} characters`),
     companyName: yup
       .string()
+      .trim()
       .required("Company Name is required")
       .max(50, ({ max }) => `Company Name must be at most ${max} characters`),
     phone: yup.string().required("Phone Number is required"),
     message: yup
       .string()
+      .trim()
       .required("Message is required")
       .max(500, ({ max }) => `Message must be at most ${max} characters`),
   });
@@ -48,12 +55,18 @@ export const Form = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values, { resetForm, setErrors }) => {
+      const token = captchaRef.current.getValue();
+      captchaRef.current.reset();
+      const response = await dispatch(captchaValidation({ token: token }));
+      if (!response?.payload?.success) {
+        showErrorMessage(response?.payload?.message);
+        return;
+      }
       const isValid = getCountryLengths(values.phone, countryCode);
-      setDisable(true)
+      setDisable(true);
       if (!isValid) {
         setErrors({ phone: "Invalid phone number" });
         setDisable(false);
-
       } else {
         try {
           const response = await dispatch(addSponsor(formik.values));
@@ -61,11 +74,9 @@ export const Form = () => {
             showSuccessMessage(response?.payload?.message);
             resetForm();
             setDisable(false);
-
           } else {
             showErrorMessage(response?.payload?.message);
             setDisable(false);
-
           }
         } catch (error) {}
       }
@@ -80,7 +91,7 @@ export const Form = () => {
   return (
     <div className="container">
       <div className="py-7.5 px-4 sm:p-10 my-10 sm:mt-10 sm:mb-20 bg-neutral-200 rounded-2.5xl">
-        <h2 className="mb-5 text-heading-4">Apply Now</h2>
+        <h2 className="mb-5 text-heading-4">Enquire Now</h2>
         <form onSubmit={formik.handleSubmit} id="sponsor" autoComplete="off">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 last:bg-primary-300">
             <div className="flex flex-col mb-5 sm:mb-6 form-group grow">
@@ -181,8 +192,19 @@ export const Form = () => {
                 )}
               </div>
             </div>
+            <div className="mb-4">
+              <ReCAPTCHA
+                sitekey={import.meta.env.VITE_APP_RECAPTCHA_SITE_KEY}
+                ref={captchaRef}
+              />
+            </div>
           </div>
-          <Button variant="primaryFull" type="submit" label="Submit" />
+          <Button
+            variant="primaryFull"
+            type="submit"
+            label="Submit"
+            disabled={formik.isSubmitting}
+          />
         </form>
       </div>
     </div>

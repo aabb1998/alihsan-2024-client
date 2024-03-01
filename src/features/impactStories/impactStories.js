@@ -92,7 +92,6 @@ export const impactStorySlice = createSlice({
       state.error = "";
     });
     builder.addCase(getImpactStory.rejected, (state, action) => {
-      console.log(action?.payload?.message);
       state.loading = false;
       state.error = action?.payload?.message;
     });

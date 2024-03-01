@@ -91,7 +91,7 @@ export const MapSection = () => {
   const clickAction = ({ event, countryName, countryCode, countryValue }) => {
     setSelectedCountry(countryCode);
     const getItem = mapCountries.find(
-      (e) => e.country?.toLowerCase() === countryCode?.toLowerCase()
+      (e) => e.country?.toLowerCase() === countryCode?.toLowerCase(),
     );
     if (getItem)
       setState({
@@ -129,8 +129,9 @@ export const MapSection = () => {
   }, [coords, tooltipPosition]);
 
   return (
-    <div ref={zoomRef} 
-    // style={{ height: "100vh" }}
+    <div
+      ref={zoomRef}
+      // style={{ height: "100vh" }}
     >
       <TransformWrapper
         initialScale={1}
@@ -195,7 +196,7 @@ export const MapSection = () => {
             </div>
             <div className="flex flex-row items-center justify-center gap-2">
               <img
-                src={`${process.env.REACT_APP_COUNTRY_URL}${state?.iso}.svg`}
+                src={`${import.meta.env.VITE_APP_COUNTRY_URL}${state?.iso}.svg`}
                 className="object-contain w-4 h-auto"
                 alt="US flag"
               />

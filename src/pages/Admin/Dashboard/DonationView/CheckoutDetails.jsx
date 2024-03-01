@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { getMediaVideo } from "../../../../features/adminMedia/adminMediaSlice";
 import { getRecurringLabel } from "../../../../utils/helper";
 
@@ -11,20 +11,34 @@ const CheckoutDetails = ({ data }) => {
   useEffect(() => {
     dispatch(getMediaVideo(id));
   }, []);
+  const { pathname } = useLocation();
+  const isDonationPage = pathname.includes("admin/donation/");
 
-  const rowsData = [
-    { label: "Campaign Name", value: data?.Campaign?.name },
+  const generateRowsData = (data, isDonationPage) => [
+    {
+      label: "Campaign Name",
+      value: data?.Campaign?.name,
+      isSubscription: true,
+    },
     { label: "Order Number", value: data?.orderId },
     { label: "Campaign Checkout Type", value: data?.Campaign?.checkoutType },
-    { label: "Campaign Description", value: data?.Campaign?.description },
+    { label: "Campaign Description", value: data?.Campaign?.descriptionText || data?.Campaign?.description },
     { label: "Donation Amount", value: data?.total },
-    { label: "Donation Frequency", value: getRecurringLabel(data?.periodDays) },
     { label: "Donation Start Date", value: data?.donatedAt },
+
     {
       label: "Latest Payment Date",
       value: data?.isRecurring ? data?.lastPaymentDate : data?.donatedAt,
     },
-    { label: "Upcoming payment Date", value: data?.nextPaymentDate }, //only for subscription
+    ...(data?.isRecurring
+      ? [
+          {
+            label: "Donation Frequency",
+            value: getRecurringLabel(data?.periodDays),
+          },
+          { label: "Upcoming payment Date", value: data?.nextPaymentDate },
+        ]
+      : []),
     { label: "Is Anonymous", value: data?.isAnonymous ? "Yes" : "No" },
     { label: "Payment Method", value: data?.paymentGateway },
     { label: "Donation Status", value: data?.status },
@@ -36,7 +50,7 @@ const CheckoutDetails = ({ data }) => {
         <div className="flex flex-col mb-6 form-group">
           <table className="w-full table-auto text-start">
             <tbody>
-              {rowsData.map((row, index) => (
+              {generateRowsData(data, isDonationPage).map((row, index) => (
                 <tr
                   key={index}
                   className="border-b bg-neutral-100 border-neutral-300 hover:bg-primary-100"

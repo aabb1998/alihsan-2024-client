@@ -3,13 +3,12 @@ import ChangePassword from "../../features/authentication/ChangePassword";
 import ProfileSection from "../../features/authentication/ProfileSection";
 import { CloseIcon } from "../../theme/svg-icons";
 import { UserSidebar } from "../User/Common/UserSidebar";
+import PageHead from "../../components/PageHead";
 
-export const Profile = () => {
-  useEffect(() => {
-    document.title = "Al-Ihsan Foundation - Profile";
-  }, []);
+const Profile = () => {
   return (
     <div>
+      <PageHead title={"Profile"} />
       {/* Updates */}
       <section className="py-7.5 md:py-15">
         <div className="container">
@@ -46,116 +45,120 @@ export const Profile = () => {
         aria-modal="true"
       >
         <div className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75">
-        <div className="fixed inset-0 z-10 w-screen overflow-y-auto bg-neutral-1000/40">
-          <div className="flex items-end justify-center min-h-full text-center sm:items-center sm:p-0">
-            <div className="relative overflow-hidden text-left transition-all transform bg-white rounded-3xl sm:my-8 sm:w-full sm:max-w-lg">
-              <div className="bg-white px-7.5 py-10">
-                <div className="sm:flex flex-col gap-7.5">
-                  <div className="flex justify-between">
-                    <div className="font-bold heading-7">Quick Donation</div>
-                    <div className="">
-                      <CloseIcon />
-                    </div>
-                  </div>
-                  <div className="">
-                    <label
-                      htmlFor="SelectProject"
-                      className="block mb-2 text-sm"
-                    >
-                      Project Name
-                    </label>
-                    <div className="mb-4 form-group">
-                      <select
-                        className="w-full text-sm !text-neutral-800 form-control"
-                        id="SelectProject"
-                      >
-                        <option value="1">Project names goes here</option>
-                      </select>
-                    </div>
-                    <div className="flex flex-col gap-8">
-                      <div className="p-2 bg-accent-100 rounded-lg  gap-3.5 flex">
-                        <button className="btn btn-primary filled">
-                          One-time
-                        </button>
-                        <button className="btn btn-text filled">Monthly</button>
+          <div className="fixed inset-0 z-10 w-screen overflow-y-auto bg-neutral-1000/40">
+            <div className="flex items-end justify-center min-h-full text-center sm:items-center sm:p-0">
+              <div className="relative overflow-hidden text-left transition-all transform bg-white rounded-3xl sm:my-8 sm:w-full sm:max-w-lg">
+                <div className="bg-white px-7.5 py-10">
+                  <div className="sm:flex flex-col gap-7.5">
+                    <div className="flex justify-between">
+                      <div className="font-bold heading-7">Quick Donation</div>
+                      <div className="">
+                        <CloseIcon />
                       </div>
-                      <fieldset className="grid justify-between gap-5 md:gap-3.5 grid-cols-2 md:grid-cols-4">
-                        <legend className="sr-only">
-                          Select an amount to donate
-                        </legend>
-                        <div className="col-span-1">
-                          <input
-                            type="radio"
-                            id="100"
-                            name="DonateAmount"
-                            value="100"
-                            className="hidden peer"
-                          />
-                          <label
-                            htmlFor="100"
-                            className="inline-flex items-center justify-center w-full h-full gap-2 px-5 py-2.5 font-bold transition-colors duration-200 ease-in-out border-2 rounded-lg cursor-pointer border-primary-300 text-primary-300 peer-checked:bg-primary-300 peer-checked:text-neutral-100 peer-checked:border-2"
-                          >
-                            $100
-                          </label>
-                        </div>
-                        <div className="col-span-1">
-                          <input
-                            type="radio"
-                            id="200"
-                            name="DonateAmount"
-                            value="200"
-                            className="hidden peer"
-                          />
-                          <label
-                            htmlFor="200"
-                            className="inline-flex items-center justify-center w-full h-full gap-2 px-5 py-2.5 font-bold transition-colors duration-200 ease-in-out border-2 rounded-lg cursor-pointer border-primary-300 text-primary-300 peer-checked:bg-primary-300 peer-checked:text-neutral-100 peer-checked:border-2"
-                          >
-                            $500
-                          </label>
-                        </div>
-                        <div className="col-span-1">
-                          <input
-                            type="radio"
-                            id="800"
-                            name="DonateAmount"
-                            value="800"
-                            className="hidden peer"
-                          />
-                          <label
-                            htmlFor="800"
-                            className="inline-flex items-center justify-center w-full h-full gap-2 px-5 py-2.5 font-bold transition-colors duration-200 ease-in-out border-2 rounded-lg cursor-pointer border-primary-300 text-primary-300 peer-checked:bg-primary-300 peer-checked:text-neutral-100 peer-checked:border-2"
-                          >
-                            $800
-                          </label>
-                        </div>
-                        <div className="col-span-1">
-                          <input
-                            type="radio"
-                            id="Other"
-                            name="DonateAmount"
-                            value="Other"
-                            className="hidden peer"
-                          />
-                          <label
-                            htmlFor="Other"
-                            className="inline-flex items-center justify-center w-full h-full gap-2 px-5 py-2.5 font-bold transition-colors duration-200 ease-in-out border-2 rounded-lg cursor-pointer border-primary-300 text-primary-300 peer-checked:bg-primary-300 peer-checked:text-neutral-100 peer-checked:border-2"
-                          >
-                            Other
-                          </label>
-                        </div>
-                      </fieldset>
                     </div>
-                  </div>
-                  <div>
-                    <button className="btn btn-primary filled">Donate</button>
+                    <div className="">
+                      <label
+                        htmlFor="SelectProject"
+                        className="block mb-2 text-sm"
+                      >
+                        Project Name
+                      </label>
+                      <div className="mb-4 form-group">
+                        <select
+                          className="w-full text-sm !text-neutral-800 form-control"
+                          id="SelectProject"
+                        >
+                          <option value="1">Project names goes here</option>
+                        </select>
+                      </div>
+                      <div className="flex flex-col gap-8">
+                        <div className="p-2 bg-accent-100 rounded-lg  gap-3.5 flex">
+                          <button className="btn btn-primary filled">
+                            One-time
+                          </button>
+                          <button className="btn btn-text filled">
+                            Monthly
+                          </button>
+                        </div>
+                        <fieldset className="grid justify-between gap-5 md:gap-3.5 grid-cols-2 md:grid-cols-4">
+                          <legend className="sr-only">
+                            Select an amount to donate
+                          </legend>
+                          <div className="col-span-1">
+                            <input
+                              type="radio"
+                              id="100"
+                              name="DonateAmount"
+                              value="100"
+                              className="hidden peer"
+                            />
+                            <label
+                              htmlFor="100"
+                              className="inline-flex items-center justify-center w-full h-full gap-2 px-5 py-2.5 font-bold transition-colors duration-200 ease-in-out border-2 rounded-lg cursor-pointer border-primary-300 text-primary-300 peer-checked:bg-primary-300 peer-checked:text-neutral-100 peer-checked:border-2"
+                            >
+                              $100
+                            </label>
+                          </div>
+                          <div className="col-span-1">
+                            <input
+                              type="radio"
+                              id="200"
+                              name="DonateAmount"
+                              value="200"
+                              className="hidden peer"
+                            />
+                            <label
+                              htmlFor="200"
+                              className="inline-flex items-center justify-center w-full h-full gap-2 px-5 py-2.5 font-bold transition-colors duration-200 ease-in-out border-2 rounded-lg cursor-pointer border-primary-300 text-primary-300 peer-checked:bg-primary-300 peer-checked:text-neutral-100 peer-checked:border-2"
+                            >
+                              $500
+                            </label>
+                          </div>
+                          <div className="col-span-1">
+                            <input
+                              type="radio"
+                              id="800"
+                              name="DonateAmount"
+                              value="800"
+                              className="hidden peer"
+                            />
+                            <label
+                              htmlFor="800"
+                              className="inline-flex items-center justify-center w-full h-full gap-2 px-5 py-2.5 font-bold transition-colors duration-200 ease-in-out border-2 rounded-lg cursor-pointer border-primary-300 text-primary-300 peer-checked:bg-primary-300 peer-checked:text-neutral-100 peer-checked:border-2"
+                            >
+                              $800
+                            </label>
+                          </div>
+                          <div className="col-span-1">
+                            <input
+                              type="radio"
+                              id="Other"
+                              name="DonateAmount"
+                              value="Other"
+                              className="hidden peer"
+                            />
+                            <label
+                              htmlFor="Other"
+                              className="inline-flex items-center justify-center w-full h-full gap-2 px-5 py-2.5 font-bold transition-colors duration-200 ease-in-out border-2 rounded-lg cursor-pointer border-primary-300 text-primary-300 peer-checked:bg-primary-300 peer-checked:text-neutral-100 peer-checked:border-2"
+                            >
+                              Other
+                            </label>
+                          </div>
+                        </fieldset>
+                      </div>
+                    </div>
+                    <div>
+                      <button className="btn btn-primary filled">Donate</button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        </div>
       </div>
     </div>
   );
 };
+
+export default Profile;

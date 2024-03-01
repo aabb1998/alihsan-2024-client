@@ -10,7 +10,7 @@ export const Pagination = ({
 }) => {
   const pageNumbers = Array.from(
     { length: totalPages },
-    (_, index) => index + 1
+    (_, index) => index + 1,
   );
 
   return (

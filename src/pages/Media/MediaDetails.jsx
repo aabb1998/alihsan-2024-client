@@ -8,11 +8,11 @@ import Loader from "../../components/Loader";
 import PageHead from "../../components/PageHead";
 import { NoDataFound } from "../../components/NoDataFound";
 
-export const MediaDetails = () => {
+const MediaDetails = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { mediaPost, relatedPost, loading ,error} = useSelector(
+  const { mediaPost, relatedPost, loading, error } = useSelector(
     (state) => state.medias
   );
 
@@ -26,9 +26,8 @@ export const MediaDetails = () => {
 
   useEffect(() => {
     getMediaPostCampaignDetails(slug);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
-  if (error) return <NoDataFound title={"No Data Found"} />;
+  if (error) return navigate("/404");
 
   return (
     <div>
@@ -69,7 +68,10 @@ export const MediaDetails = () => {
                   />
                 </div>
               </div>
-              <p dangerouslySetInnerHTML={{__html: mediaPost?.description}} className="mb-5 text-sm font-medium break-words text-neutral-800"></p>
+              <p
+                dangerouslySetInnerHTML={{ __html: mediaPost?.description }}
+                className="mb-5 text-sm font-medium break-words text-neutral-800"
+              ></p>
               <div className="mt-5 sm:mt-14">
                 <div className="flex items-center justify-between gap-2 mb-10 sm:mb-6">
                   <h4 className="text-heading-6 text-neutral-1000 line-clamp-1">
@@ -102,7 +104,7 @@ export const MediaDetails = () => {
                         {post?.createdDate}
                       </p>
                       <Link
-                        to={`/media/details/${post?.id}`}
+                        to={`/media/details/${post?.slug}`}
                         className="!px-5 !py-2 !text-button-lg btn btn-secondary w-fit"
                       >
                         Read More <ArrowRightIcon />{" "}
@@ -123,3 +125,5 @@ export const MediaDetails = () => {
     </div>
   );
 };
+
+export default MediaDetails;

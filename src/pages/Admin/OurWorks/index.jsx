@@ -2,13 +2,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Pagination } from "../../../components/Pagination";
-import { Link } from "react-router-dom";
-import {
-  Edit3Icon,
-  PlusIcon,
-  SearchIcon,
-  TrashIcon,
-} from "../../../theme/svg-icons";
+import { ChevronsUpIcon, PlusIcon } from "../../../theme/svg-icons";
 import DeleteConfirmation from "../Common/DeleteConfirmation";
 import { SnackMessages } from "../../../components/Toast";
 import Filter from "../../../components/Filter";
@@ -21,6 +15,7 @@ import {
 import { Button } from "../../../components";
 import ActionButtonBgWithIcon from "../Common/ActionButtonBgWithIcon";
 import { adminItemPerPage } from "../../../utils/constants";
+import Loader from "../../../components/Loader";
 
 const initialState = {
   page: "1",
@@ -31,7 +26,7 @@ const initialState = {
 };
 
 export const OurWorks = () => {
-  const { ourWorks, rows, count } = useSelector((state) => state.adminOurWorks);
+  const { ourWorks, isLoading } = useSelector((state) => state.adminOurWorks);
   const { showSuccessMessage, showErrorMessage } = SnackMessages();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -104,26 +99,62 @@ export const OurWorks = () => {
           isSearch
         />{" "}
         <div className="">
-          <div className="my-5 md:my-7.5 flex justify-end">
+          {/* <div className="my-5 md:my-7.5 flex justify-end">
             <div className="w-full form-group">
               <label className="relative block">
                 <span className="sr-only">Search</span>
               </label>
             </div>
-          </div>
+          </div> */}
           <div className="grid">
-          <div className="relative overflow-x-auto">
+            <div className="relative overflow-x-auto">
               <table className="w-full table-auto text-start">
                 <thead className="rounded bg-neutral-200">
                   <tr className="">
                     <th className="p-4 min-w-[10rem] text-sm font-medium text-start font-Montserrat text-neutral-600">
-                      Id
+                      <div className="flex gap-1.5 items-center">
+                        Id
+                        <ChevronsUpIcon
+                          iconSize={14}
+                          onClick={() => {
+                            setFilters({
+                              ...filters,
+                              sort: "id",
+                              order: filters.order === "asc" ? "desc" : "asc",
+                            });
+                          }}
+                        />
+                      </div>
                     </th>
                     <th className="p-4 min-w-[10rem] text-sm font-medium text-start font-Montserrat text-neutral-600">
-                      Name
+                      <div className="flex gap-1.5 items-center">
+                        Title
+                        <ChevronsUpIcon
+                          iconSize={14}
+                          onClick={() => {
+                            setFilters({
+                              ...filters,
+                              sort: "title",
+                              order: filters.order === "asc" ? "desc" : "asc",
+                            });
+                          }}
+                        />
+                      </div>
                     </th>
                     <th className="p-4 min-w-[10rem] text-sm font-medium text-start font-Montserrat text-neutral-600">
-                      Title
+                      <div className="flex gap-1.5 items-center">
+                        Name
+                        <ChevronsUpIcon
+                          iconSize={14}
+                          onClick={() => {
+                            setFilters({
+                              ...filters,
+                              sort: "name",
+                              order: filters.order === "asc" ? "desc" : "asc",
+                            });
+                          }}
+                        />
+                      </div>
                     </th>
 
                     <th className="p-4 text-sm font-medium text-start font-Montserrat text-neutral-600">
@@ -132,7 +163,7 @@ export const OurWorks = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {ourWorks?.rows?.length > 0 ? (
+                  {ourWorks?.rows?.length > 0 &&
                     ourWorks?.rows?.map((newsItem) => (
                       <tr
                         key={newsItem?.id}
@@ -158,25 +189,21 @@ export const OurWorks = () => {
                           </div>
                         </td>
                       </tr>
-                    ))
-                  ) : (
-                    <tr className="border-b bg-neutral-100 border-neutral-300 hover:bg-primary-100">
-                      <td
-                        colSpan="7"
-                        className="p-4 text-sm font-medium font-Montserrat text-neutral-700"
-                      >
-                        No Data Found
-                      </td>
-                    </tr>
-                  )}
+                    ))}
                 </tbody>
               </table>
               <div className="mt-5">
-                <Pagination
-                  totalPages={Math.ceil(ourWorks?.count / adminItemPerPage)}
-                  currentPage={filters.page}
-                  onPageChange={(page) => setFilters((f) => ({ ...f, page }))}
-                />
+                {isLoading ? (
+                  <Loader />
+                ) : ourWorks?.rows?.length === 0 ? (
+                  <div className="">No Data Found.</div>
+                ) : (
+                  <Pagination
+                    totalPages={Math.ceil(ourWorks?.count / adminItemPerPage)}
+                    currentPage={filters.page}
+                    onPageChange={(page) => setFilters((f) => ({ ...f, page }))}
+                  />
+                )}
               </div>
             </div>
           </div>

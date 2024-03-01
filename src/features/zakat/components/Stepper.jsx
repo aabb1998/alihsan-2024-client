@@ -11,7 +11,11 @@ export default function Stepper() {
         <li
           key={i}
           className={
-            i === step ? "!bg-accent-300" : i < step ? "!bg-primary-300 cursor-pointer" : ""
+            i === step
+              ? "!bg-accent-300"
+              : i < step
+                ? "!bg-primary-300 cursor-pointer"
+                : ""
           }
           onClick={() => i < step && dispatch(zakatStep(-1 * (step - i)))}
         />

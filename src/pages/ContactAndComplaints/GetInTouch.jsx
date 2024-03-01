@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Button from "../../components/Button";
 import {
   ClockIcon,
@@ -17,20 +17,24 @@ import { Link } from "react-router-dom";
 import TextArea from "../../components/TextArea";
 import PageHead from "../../components/PageHead";
 import { getCountryLengths } from "../../utils/helper";
+import ReCAPTCHA from "react-google-recaptcha";
+import { captchaValidation } from "../../features/authentication/authenticationSlice";
 
 const validationSchema = yup.object().shape({
-  firstName: yup.string().required("First Name is required").max(25),
-  lastName: yup.string().required("Last Name is required").max(25),
+  firstName: yup.string().trim().required("First Name is required").max(25),
+  lastName: yup.string().trim().required("Last Name is required").max(25),
   email: yup
     .string("Enter your email")
+    .trim()
     .email("Enter a valid email")
     .matches(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, "Enter a valid email")
     .required("Email is required"),
-  phone: yup.string().required("Phone Number is required"),
+  phone: yup.string().trim().required("Phone Number is required"),
   message: yup.string().required("Message is required").max(500),
 });
 
-export const GetInTouchComponent = () => {
+const GetInTouchComponent = () => {
+  const captchaRef = useRef(null);
   const dispatch = useDispatch();
   const { showSuccessMessage, showErrorMessage } = SnackMessages();
   const [countryCode, setCountryCode] = useState("");
@@ -52,12 +56,18 @@ export const GetInTouchComponent = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values, { resetForm, setErrors }) => {
+      const token = captchaRef.current.getValue();
+      captchaRef.current.reset();
+      const response = await dispatch(captchaValidation({ token: token }));
+      if (!response?.payload?.success) {
+        showErrorMessage(response?.payload?.message);
+        return;
+      }
       setDisable(true);
       const isValid = getCountryLengths(values.phone, countryCode);
       if (!isValid) {
         setErrors({ phone: "Invalid phone number" });
         setDisable(false);
-
       } else {
         try {
           const response = await dispatch(submitContactForm(formik.values));
@@ -65,11 +75,9 @@ export const GetInTouchComponent = () => {
             showSuccessMessage(response?.payload?.message);
             resetForm();
             setDisable(false);
-
           } else {
             showErrorMessage(response?.payload?.message);
             setDisable(false);
-
           }
         } catch (error) {}
       }
@@ -79,7 +87,7 @@ export const GetInTouchComponent = () => {
   return (
     <div>
       <PageHead title={"Get in touch"} />
-      <div className="py-7.5 md:py-15">
+      <div className="py-7.5 md:py-15 standard-details-page">
         <section aria-label="Complaints">
           <div className="container mb-10 md:mb-7.5">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-7.5">
@@ -94,9 +102,8 @@ export const GetInTouchComponent = () => {
                   <p className="uppercase text-button-lg text-neutral-800">
                     Mon-Fri 9am - 5pm
                   </p>
-                  <p className="text-xs">
-                    The office will be closed from 24th Dec 2022 and we'll
-                    return on Monday 16th Jan 2023.
+                  <p className="uppercase text-button-lg text-neutral-800">
+                    Sat 9am - 1pm
                   </p>
                 </div>
               </div>
@@ -266,12 +273,18 @@ export const GetInTouchComponent = () => {
                           />
                         )}
                     </div>
+                    <div className="mb-4">
+                      <ReCAPTCHA
+                        sitekey={import.meta.env.VITE_APP_RECAPTCHA_SITE_KEY}
+                        ref={captchaRef}
+                      />
+                    </div>
                   </div>
                   <Button
                     variant="primaryFull"
                     type="submit"
                     label="Submit"
-                    disabled={isDisable}
+                    disabled={formik.isSubmitting}
                   />
                 </form>
               </div>
@@ -294,3 +307,5 @@ export const GetInTouchComponent = () => {
     </div>
   );
 };
+
+export default GetInTouchComponent;

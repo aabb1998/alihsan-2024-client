@@ -1,22 +1,19 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { CloseIcon } from "../../theme/svg-icons";
-import { CommonDonation } from "../projectDetails/CommonDonation";
-import { AqeeqaDonation } from "../projectDetails/AqeeqaDonation";
-import { AdeeqahDonation } from "../projectDetails/AdeeqahDonation";
-import { ZaqatDonation } from "../projectDetails/ZaqatDonation";
 import { useSelector, useDispatch } from "react-redux";
 import {
   getQucikDonation,
   getQucikDonationProject,
-} from "../quickDonation/quickDonationSlice";
+} from "./quickDonationSlice";
 import { ModalLoader } from "../../theme/svg-icons";
 import { Transitions } from "../../utils/constants";
 import { Transition, Dialog } from "@headlessui/react";
 
 import Select from "react-select";
-import { FedyahDonation } from "../projectDetails/FedyahDonation";
-import { QurbanDonation } from "../projectDetails/QurbanDonation";
-import { WaterDonation } from "../projectDetails/WaterDonation";
+import { Button } from "../../components";
+import { Link } from "react-router-dom";
+import Img from "../../components/Image";
+import { GetDonation } from "./GetDonation";
 
 const QuickDonation = ({ isOpen, onClose, project }) => {
   const dispatch = useDispatch();
@@ -35,12 +32,11 @@ const QuickDonation = ({ isOpen, onClose, project }) => {
     setLoading(true);
     const quickDonationCampaigns = await dispatch(getQucikDonation());
     const firstCampaign = quickDonationCampaigns?.payload[0];
-    console.log(quickDonationCampaigns?.payload[0]);
     if (project) {
       await dispatch(getQucikDonationProject(project?.slug));
       setLoading(false);
     } else {
-      await dispatch(getQucikDonationProject(firstCampaign?.slug));
+      await dispatch(getQucikDonationProject("ramadan-combo-pack"));
       setLoading(false);
     }
   };
@@ -93,13 +89,13 @@ const QuickDonation = ({ isOpen, onClose, project }) => {
               >
                 <div className="flex items-end justify-center min-h-full text-center sm:items-center sm:p-0 max-h-[80vh]">
                   <div className="relative grid max-h-[35rem] min-h-[35rem] w-full  sm:grid-cols-2 gap-4 overflow-hidden text-left transition-all transform sm:max-w-[816px]">
-                    <div className="hidden overflow-hidden bg-white sm:block rounded-t-3xl sm:rounded-3xl">
+                    <div className="hidden overflow-hidden bg-white sm:block rounded-t-xl sm:rounded-xl">
                       {isLoading ? (
                         <ModalLoader />
                       ) : (
                         <div className="flex flex-col">
                           <div className="h-[232px] overflow-hidden">
-                            <img
+                            <Img
                               src={
                                 qucikDonationProject?.campaign?.coverImage ||
                                 "/images/banner/placeholder.jpg"
@@ -111,33 +107,42 @@ const QuickDonation = ({ isOpen, onClose, project }) => {
                           <div className="p-6">
                             <h2 className="mb-2 text-heading-6">
                               {qucikDonationProject?.campaign?.name ||
-                                `Sample Header Goes Here`}
+                                `Please select a campaign.`}
                             </h2>
-                            {qucikDonationProject?.campaign?.descriptionText ||
-                            qucikDonationProject?.campaign?.description ? (
+                            {qucikDonationProject?.campaign?.description ||
+                            qucikDonationProject?.campaign?.descriptionText ? (
                               <p
                                 className="text-lg font-medium text-neutral-600 line-clamp-6"
                                 dangerouslySetInnerHTML={{
                                   __html:
                                     qucikDonationProject?.campaign
-                                      .descriptionText ||
-                                    qucikDonationProject?.campaign.description,
+                                      .description ||
+                                    qucikDonationProject?.campaign
+                                      .descriptionText,
                                 }}
                               />
                             ) : (
-                              <p className="text-lg font-medium text-neutral-600 line-clamp-6">
-                                {` Al-Ihsan Foundation International Limited (formed in
-										2014) is a non-profit public relief organisation
-										dedicated to assisting all people and families in need.
-										The Arabic word Al-Ihsan means “perfection” or
-										“excellence.”`}{" "}
-                              </p>
+                              <p className="text-lg font-medium text-neutral-600 line-clamp-6"></p>
                             )}
+
+                            <div className="flex justify-end mt-5">
+                              <Link
+                                to={`/project/${qucikDonationProject?.campaign?.slug}`}
+                              >
+                                <Button
+                                  onClick={() => {
+                                    setIsActualOpen(false);
+                                  }}
+                                  label={"Learn more"}
+                                  variant={"secondary"}
+                                />
+                              </Link>
+                            </div>
                           </div>
                         </div>
                       )}
                     </div>
-                    <div className="flex px-4 pt-4 pb-7.5 sm:pt-6 sm:pb-6 sm:px-6 bg-white rounded-t-3xl sm:rounded-3xl">
+                    <div className="flex px-4 pt-4 pb-7.5 sm:pt-6 sm:pb-6 sm:px-6 bg-white rounded-t-xl sm:rounded-xl">
                       <div className="flex flex-col gap-5 sm:gap-8 grow">
                         <div className="flex justify-between">
                           <div className="font-bold tracking-tighter text-md sm:text-heading-7">
@@ -217,72 +222,3 @@ const QuickDonation = ({ isOpen, onClose, project }) => {
 };
 
 export default React.memo(QuickDonation);
-
-const GetDonation = ({ project, onClose, checkout }) => {
-  switch (checkout) {
-    case "COMMON":
-      return (
-        <CommonDonation
-          campaign={project?.campaign}
-          handleClose={onClose}
-          isModal={true}
-        />
-      );
-    case "FEDYAH":
-      return (
-        <FedyahDonation
-          campaign={project?.campaign}
-          handleClose={onClose}
-          isModal={true}
-        />
-      );
-    case "KURBAN":
-      return (
-        <QurbanDonation
-          campaign={project?.campaign}
-          handleClose={onClose}
-          isModal={true}
-        />
-      );
-    case "WATER_CAMPAIGN":
-      return (
-        <WaterDonation
-          campaign={project?.campaign}
-          handleClose={onClose}
-          isModal={true}
-        />
-      );
-    case "AQEEQAH_ADAHI":
-      return (
-        <AqeeqaDonation
-          campaign={project}
-          handleClose={onClose}
-          isModal={true}
-        />
-      );
-    case "ADEEQAH_GENERAL_SACRIFICE":
-      return (
-        <AdeeqahDonation
-          handleClose={onClose}
-          isModal={true}
-          campaign={project}
-        />
-      );
-    case "ZAQAT":
-      return (
-        <ZaqatDonation
-          campaign={project?.campaign}
-          handleClose={onClose}
-          isModal={true}
-        />
-      );
-    default:
-      return (
-        <CommonDonation
-          campaign={project?.campaign}
-          handleClose={onClose}
-          isModal={true}
-        />
-      );
-  }
-};

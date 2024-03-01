@@ -14,8 +14,7 @@ export const NewsListItem = ({ item }) => {
     setShowAll(!showAll);
   };
   return (
-    <Link
-      to={`/news/details/${item.slug}`}>
+    <Link to={`/news/details/${item.slug}`}>
       <div className="col-span-1 duration-700 ease-in-out rounded-xl shadow-card hover:scale-95">
         <div className="relative w-full overflow-hidden transition-all ease-in rounded-xl bg-neutral-100">
           <div className="absolute left-2.5 top-2.5 z-1 font-Tajawal text-sm font-bold leading-[0.813rem]">
@@ -23,7 +22,7 @@ export const NewsListItem = ({ item }) => {
               {visibleTags?.map((tag, i) => (
                 <li
                   key={i}
-                  className="p-2 text-white capitalize rounded"
+                  className="p-2 text-white capitalize rounded text-center w-auto items-center justify-center flex-shrink-0 flex flex-col "
                   style={{ backgroundColor: tag.color }}
                 >
                   {tag.text}
@@ -34,9 +33,7 @@ export const NewsListItem = ({ item }) => {
                   className="p-2 text-white bg-red-300 rounded"
                   onClick={handleShowMore}
                 >
-                  {showAll
-                    ? "-" + remining
-                    : "+" + remining}
+                  {showAll ? "-" + remining : "+" + remining}
                 </li>
               )}
             </ul>
@@ -63,12 +60,12 @@ export const NewsListItem = ({ item }) => {
             <p className="mb-5 text-sm line-clamp-3 text-neutral-600 break-words sm:min-h-[3.75rem]">
               {item.contentText || item.content}
             </p>
-            <Link
-              to={`/news/details/${item.slug}`}
+            <div
               className="font-bold text-button-lg text-primary-300"
+              onClick={() => history.push(`/news/details/${item.slug}`)}
             >
               Read More
-            </Link>
+            </div>
           </div>
         </div>
       </div>

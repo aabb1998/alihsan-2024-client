@@ -39,7 +39,7 @@ export const SocialLoginButtons = () => {
         response.data.first_name,
         response.data.last_name,
         response.data.email,
-        response.data.userID
+        response.data.userID,
       );
       if (apiResponse.status == 200) {
         showSuccessMessage(apiResponse.data.message);
@@ -48,14 +48,14 @@ export const SocialLoginButtons = () => {
           JSON.stringify({
             token: apiResponse.data.payload.token,
             isloggedIn: true,
-          })
+          }),
         );
         localStorage.setItem(
           "loggedIn",
           JSON.stringify({
             token: apiResponse.data.payload.token,
             isloggedIn: true,
-          })
+          }),
         );
         await updateSelectedItems();
         navigate("/");
@@ -78,7 +78,7 @@ export const SocialLoginButtons = () => {
       const apiResponse = await googleLogin(
         response.data.given_name,
         response.data.family_name,
-        response.data.email
+        response.data.email,
       );
       if (apiResponse.status == 200) {
         showSuccessMessage(apiResponse.data.message);
@@ -87,14 +87,14 @@ export const SocialLoginButtons = () => {
           JSON.stringify({
             token: apiResponse.data.payload.token,
             isloggedIn: true,
-          })
+          }),
         );
         localStorage.setItem(
           "loggedIn",
           JSON.stringify({
             token: apiResponse.data.payload.token,
             isloggedIn: true,
-          })
+          }),
         );
         await updateSelectedItems();
         navigate("/");
@@ -112,8 +112,6 @@ export const SocialLoginButtons = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 justify-between gap-5 mb-7.5">
-      
-    </div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 justify-between gap-5 mb-7.5"></div>
   );
 };

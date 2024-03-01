@@ -102,7 +102,7 @@ export default function SidebarAccordionMenu() {
                     }
                   >
                     <div className="w-5 h-5"></div>
-                    <span className="w-full grow-1">One time</span>
+                    <span className="w-full grow-1">One Time</span>
                   </Link>
                 </Disclosure.Panel>
 

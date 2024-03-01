@@ -261,6 +261,10 @@ module.exports = {
             transform: 'scale(0.8)'
           },
         }
+      },
+      listStyleType: {
+        roman: 'lower-roman',
+        alpha: 'lower-alpha',
       }
 
     }

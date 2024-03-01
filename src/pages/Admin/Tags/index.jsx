@@ -11,6 +11,7 @@ import DeleteConfirmation from "../Common/DeleteConfirmation";
 import { SnackMessages } from "../../../components/Toast";
 import { getTags, removeTag } from "../../../features/adminTag/adminTagSlice";
 import AddTags from "./AddTags";
+import Loader from "../../../components/Loader";
 
 const initialState = {
   page: "1",
@@ -30,7 +31,7 @@ const Tags = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentItem, setCurrentItem] = useState(null);
 
-  const { tags, loading } = useSelector((state) => state.adminTags);
+  const { tags, loading, isLoading } = useSelector((state) => state.adminTags);
   const { rows, count } = tags;
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= count) {
@@ -151,7 +152,21 @@ const Tags = () => {
                   </div>
                 </th>
                 <th className="p-4 text-sm font-medium text-start font-Montserrat text-neutral-600">
-                  Color
+                  <div className="flex gap-1.5 items-center">
+                    Color
+                    <span className="cursor-pointer">
+                      <ChevronsUpIcon
+                        iconSize={14}
+                        onClick={() => {
+                          setFilters({
+                            ...filters,
+                            sort: "color",
+                            order: filters.order === "asc" ? "desc" : "asc",
+                          });
+                        }}
+                      />
+                    </span>
+                  </div>{" "}
                 </th>
 
                 <th className="p-4 text-sm font-medium text-start font-Montserrat text-neutral-600">
@@ -160,7 +175,7 @@ const Tags = () => {
               </tr>
             </thead>
             <tbody>
-              {rows?.length ? (
+              {rows?.length > 0 &&
                 rows?.map((tag, i) => (
                   <tr
                     key={i}
@@ -187,22 +202,21 @@ const Tags = () => {
                       </div>
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={'4'} className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
-                    No Data Found
-                  </td>
-                </tr>
-              )}
+                ))}
             </tbody>
           </table>
           <div className="mt-5">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={Math.ceil(count / itemPerPage)}
-              onPageChange={handlePageChange}
-            />{" "}
+            {isLoading ? (
+              <Loader />
+            ) : rows?.length === 0 ? (
+              <div className="">No Data Found.</div>
+            ) : (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={Math.ceil(count / itemPerPage)}
+                onPageChange={handlePageChange}
+              />
+            )}{" "}
           </div>
         </div>
       </div>

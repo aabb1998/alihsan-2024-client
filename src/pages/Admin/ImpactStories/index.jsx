@@ -15,6 +15,7 @@ import StoriesModal from "../Common/StoriesModal";
 import { useNavigate } from "react-router-dom";
 import DeleteConfirmation from "../Common/DeleteConfirmation";
 import { SnackMessages } from "../../../components/Toast";
+import Loader from "../../../components/Loader";
 const initialState = {
   page: "1",
   search: "",
@@ -130,9 +131,7 @@ const ImpactStories = () => {
                           }}
                         />
                       </span>
-
                     </div>
-
                   </th>
                   <th className="p-4 text-sm font-medium text-start font-Montserrat text-neutral-600">
                     <div className="flex gap-1.5 items-center">
@@ -149,10 +148,7 @@ const ImpactStories = () => {
                           }}
                         />
                       </span>
-
                     </div>
-
-
                   </th>
                   <th className="p-4 text-sm font-medium text-start font-Montserrat text-neutral-600">
                     Description
@@ -164,7 +160,7 @@ const ImpactStories = () => {
                 </tr>
               </thead>
               <tbody>
-                {impactStories.length ? (
+                {impactStories.length > 0 &&
                   impactStories.map((impactStory, i) => (
                     <tr
                       key={i}
@@ -178,7 +174,8 @@ const ImpactStories = () => {
                       </td>
                       <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700 ">
                         <div className="break-words line-clamp-2">
-                          {impactStory.descriptionText || impactStory.description}
+                          {impactStory.descriptionText ||
+                            impactStory.description}
                         </div>
                       </td>
 
@@ -191,22 +188,21 @@ const ImpactStories = () => {
                         </div>
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
-                      No Data Found
-                    </td>
-                  </tr>
-                )}
+                  ))}
               </tbody>
             </table>
             <div className="mt-5">
-              <Pagination
-                currentPage={currentPage}
-                totalPages={Math.ceil(count / itemPerPage)}
-                onPageChange={handlePageChange}
-              />{" "}
+              {loading ? (
+                <Loader />
+              ) : impactStories?.length === 0 ? (
+                <div className="">No Data Found.</div>
+              ) : (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={Math.ceil(count / itemPerPage)}
+                  onPageChange={handlePageChange}
+                />
+              )}
             </div>
           </div>
         </div>

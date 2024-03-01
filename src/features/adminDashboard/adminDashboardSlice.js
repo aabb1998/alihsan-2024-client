@@ -24,11 +24,11 @@ function sanitizeExportData(data) {
     }),
     Amount: item?.total,
     "Checkout Type": item.Campaign?.checkoutType,
-    Description: item.Campaign?.description,
+    Description: item.Campaign?.descriptionText,
     Email: item?.email,
-    FirstName: item?.firstName,
-    lastName: item?.lastName,
-    address: item?.address,
+    "First Name": item?.firstName,
+    "Last Name": item?.lastName,
+    Address: item?.address,
     Country: item?.country,
     "Donated At": item?.donatedAt,
     Anonymous: item?.isAnonymous ? "Yes" : "No",
@@ -46,12 +46,11 @@ function sanitizeExportData(data) {
     "Country Donation": item?.countryDonation,
     "Donation Item": item?.donationItem,
     "Donation Item Price": item?.donationItemPrice,
-    "Is Recurring": item?.isRecurring?'Yes':'No',
+    "Is Recurring": item?.isRecurring ? "Yes" : "No",
     "Name Plaque": item?.namePlaque,
     "Next PaymentDate": item?.nextPaymentDate,
     Notes: item?.notes,
     "Period Days": getRecurringLabel(item?.periodDays),
-    
     Quantity: item?.quantity,
     "Rice Price": item?.ricePrice,
     "Rice Quantity": item?.riceQuantity,
@@ -123,14 +122,41 @@ export const downloadReport = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const response = await api.get("/dashboard/download-reports", {
-        params: params,
+        params: params?.filter,
       });
       const data = sanitizeExportData(response.data.payload);
-      const ws = XLSX.utils.json_to_sheet(data);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
-      XLSX.writeFile(wb, `export.xlsx`);
-      return data;
+
+      if (data.length > 0 && data[0] !== null) {
+        if (data[0]["Project Name"] === "Aqeeqah") {
+          const sanitizedData = data.map((item) => ({
+            "Rice Quantity": item["Rice Quantity"],
+            Amount: item.Amount,
+            "Behalf Of": item["Behalf Of"],
+            "Child Name": item["Child Name"],
+            "Donated At": item["Donated At"],
+            "Donation Item": item["Donation Item"],
+            "Donation Item Price": item["Donation Item Price"], // Assuming you meant "Donation Item Price" for "Item Price"
+            "Name Plaque": item["Name Plaque"],
+            Notes: item.Notes,
+            "Order Id": item["Order Id"],
+            Phone: item.Phone,
+            "Special Request": item["Special Request"],
+            "Rice Price": item["Rice Price"],
+            Total: item.Total,
+            Quantity: item.Quantity,
+          }));
+          const ws = XLSX.utils.json_to_sheet(sanitizedData);
+          const wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+          XLSX.writeFile(wb, `${params?.title}.xlsx`);
+        } else {
+          const ws = XLSX.utils.json_to_sheet(data);
+          const wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+          XLSX.writeFile(wb, `${params?.title}.xlsx`);
+          return data;
+        }
+      }
     } catch (e) {
       throw new Error(e?.response?.data?.message || "Something went wrong");
     }

@@ -11,7 +11,27 @@ export const updateBannerImage = createAsyncThunk(
   "update/homePageBanner",
   async (payload, { rejectWithValue }) => {
     try {
-      const response = await api.post("settings/banner-image", payload);
+      let response;
+      if (payload?.id) {
+        response = await api.put(
+          "settings/banner-image/" + payload?.id,
+          payload?.formData
+        );
+      } else {
+        response = await api.post("settings/banner-image", payload?.formData);
+      }
+      const data = response?.data;
+      return data;
+    } catch (e) {
+      return rejectWithValue(e.response.data);
+    }
+  }
+);
+export const deleteBannerImage = createAsyncThunk(
+  "delete/homePageBanner",
+  async (id, { rejectWithValue }) => {
+    try {
+      let response = await api.delete("settings/banner-image/" + id);
       const data = response?.data;
       return data;
     } catch (e) {

@@ -31,7 +31,13 @@ import { Transition } from "@headlessui/react";
 import Img from "../Image";
 import { currencyConfig } from "../../utils/constants";
 
-export const HeaderTop = ({ modalOptions, setModalOptions, onSearch, searchState, onSearchEnter }) => {
+export const HeaderTop = ({
+  modalOptions,
+  setModalOptions,
+  onSearch,
+  searchState,
+  onSearchEnter,
+}) => {
   const [toggle, setToggle] = useState(false);
   const { pathname } = useLocation();
 
@@ -40,9 +46,7 @@ export const HeaderTop = ({ modalOptions, setModalOptions, onSearch, searchState
   );
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const userData = localStorage.getItem("loggedIn")
-    ? localStorage.getItem("loggedIn")
-    : sessionStorage.getItem("loggedIn");
+  const userData = useSelector(state => state.profile.auth);
 
   const handleClick = () => {
     dispatch(toggleBasket());
@@ -104,8 +108,8 @@ export const HeaderTop = ({ modalOptions, setModalOptions, onSearch, searchState
         (action === "add"
           ? 1
           : action === "sub" && item.riceQuantity > 1
-            ? -1
-            : 0);
+          ? -1
+          : 0);
       const total =
         parseInt(item.ricePrice) * riceQuantity +
         parseInt(item.donationItemPrice);
@@ -162,43 +166,72 @@ export const HeaderTop = ({ modalOptions, setModalOptions, onSearch, searchState
           <ChevronDownIcon iconSize={16} />
         </div>
         <div className="flex gap-7.5">
-          {pathname !== '/projects' && (
-            <div className={"form-group relative" + (modalOptions?.type === 'search' ? ' z-40' : '')}>
+          {pathname !== "/projects" && (
+            <div
+              className={
+                "form-group relative" +
+                (modalOptions?.type === "search" ? " z-40" : "")
+              }
+            >
               <label className="relative block w-113 !mb-0">
-                <span className="sr-only">Search</span>
+                <span className="sr-only">Search for a campaign</span>
                 <span className="absolute inset-y-0 left-0 flex items-center pl-2 text-neutral-500">
                   <SearchIcon />
                 </span>
                 <input
-                  onFocus={() => setModalOptions({ type: 'search' })}
-                  onChange={e => onSearch(e.target.value)}
-                  onKeyUp={e => e.key === 'Enter' && onSearchEnter()}
+                  onFocus={() => setModalOptions({ type: "search" })}
+                  onChange={(e) => onSearch(e.target.value)}
+                  onKeyUp={(e) => e.key === "Enter" && onSearchEnter()}
                   value={searchState.text}
                   className="block w-full !py-2 !pr-3 bg-white border rounded-md form-control !pl-9"
-                  placeholder="Search"
+                  placeholder="Search for a campaign"
                   type="text"
                   name="search"
                 />
               </label>
-              <div className={"hidden absolute mt-2 w-full rounded-lg rounded-tl-none rounded-tr-none bg-white shadow-card max-h-96 overflow-auto" + (modalOptions?.type === 'search' ? ' md:block z-40' : '')}>
-                {searchState.loading ?
-                  <div className="p-2 text-button-md text-neutral-600">Loading...</div>
-                  : ''}
-                {searchState.results?.map(result => (
-                  <div className="flex gap-3 p-3 cursor-pointer" key={result.id} onClick={() => { navigate('/project/' + result.slug); setModalOptions(null); console.log(result) }}>
+              <div
+                className={
+                  "hidden absolute mt-2 w-full rounded-lg rounded-tl-none rounded-tr-none bg-white shadow-card max-h-96 overflow-auto" +
+                  (modalOptions?.type === "search" ? " md:block z-40" : "")
+                }
+              >
+                {searchState.loading ? (
+                  <div className="p-2 text-button-md text-neutral-600">
+                    Loading...
+                  </div>
+                ) : (
+                  ""
+                )}
+                {searchState.results?.map((result) => (
+                  <div
+                    className="flex gap-3 p-3 cursor-pointer"
+                    key={result.id}
+                    onClick={() => {
+                      navigate("/project/" + result.slug);
+                      setModalOptions(null);
+                    }}
+                  >
                     <div className="w-8 h-16 overflow-hidden rounded-lg min-w-fit">
-                      <Img src={result.coverImage} className="object-cover w-full h-full" alt="campaign" />
+                      <Img
+                        src={result.coverImage}
+                        className="object-cover w-full h-full"
+                        alt="campaign"
+                      />
                     </div>
                     <div className="">
-                      <div className="mb-1 text-button-lg text-primary-300 line-clamp-1">{result.name}</div>
-                      <div className="text-sm text-neutral-500 line-clamp-2">{result.description}</div>
+                      <div className="mb-1 text-button-lg text-primary-300 line-clamp-1">
+                        {result.name}
+                      </div>
+                      <div className="text-sm text-neutral-500 line-clamp-2">
+                        {result.descriptionText || result.description}
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
           )}
-          {userData && JSON.parse(userData).isloggedIn === true ? (
+          {userData ? (
             <AccountMenu />
           ) : (
             <Link to="/login" className="flex items-center gap-2">
@@ -231,7 +264,7 @@ export const HeaderTop = ({ modalOptions, setModalOptions, onSearch, searchState
       >
         <div className="fixed inset-0 transition-opacity bg-opacity-30 bg-neutral-1000">
           <div className="fixed top-0 right-0 z-40 w-full h-screen transition-transform ">
-          <Transition
+            <Transition
               appear={true}
               show={isBasketOpen}
               enter="transition ease-in-out duration-300 transform"
@@ -245,7 +278,7 @@ export const HeaderTop = ({ modalOptions, setModalOptions, onSearch, searchState
                 {/* title */}
                 <div className="flex items-center justify-between pb-4 mb-4 border-b sm:pb-5 border-neutral-300">
                   <span className="font-bold text-md sm:text-heading-7">
-                    My Basket 12
+                    My Basket
                   </span>
                   <span className="cursor-pointer" onClick={handleBasket}>
                     <CloseIcon iconSize={24} strokeWidth={1.5} />
@@ -269,7 +302,10 @@ export const HeaderTop = ({ modalOptions, setModalOptions, onSearch, searchState
                         />
                       ))}
                     </div>
-                    <BasketTotal items={basketItems} handleClick={handleClick} />
+                    <BasketTotal
+                      items={basketItems}
+                      handleClick={handleClick}
+                    />
                   </>
                 ) : (
                   <div className="flex items-center justify-center h-full overflow-hidden">
@@ -299,7 +335,13 @@ const BasketItem = ({
   handleEdit,
 }) => {
   const checkoutType = item?.checkoutType || item?.Campaign?.checkoutType;
-  const isCommonORZaqat = ["ZAQAT", "COMMON", "WATER_CAMPAIGN", "KURBAN", item?.quantity === null ? "FEDYAH" : ""].includes(checkoutType);
+  const isCommonORZaqat = [
+    "ZAQAT",
+    "COMMON",
+    "WATER_CAMPAIGN",
+    "KURBAN",
+    item?.quantity === null ? "FEDYAH" : "",
+  ].includes(checkoutType);
   const isAdeeqah = checkoutType === "ADEEQAH_GENERAL_SACRIFICE";
   const quantity = isAdeeqah
     ? parseInt(item?.riceQuantity)
@@ -326,8 +368,8 @@ const BasketItem = ({
                   {parseInt(item.periodDays) === 7
                     ? "Weekly"
                     : parseInt(item.periodDays) === 30
-                      ? "Monthly"
-                      : `Yearly`}
+                    ? "Monthly"
+                    : `Yearly`}
                 </div>
               ) : null}
             </div>
@@ -453,9 +495,7 @@ const BasketItem = ({
               {isCommonORZaqat ? (
                 currencyConfig.label + total?.toLocaleString()
               ) : isAdeeqah ? (
-                <>
-                  {currencyConfig.label + total?.toLocaleString()}
-                </>
+                <>{currencyConfig.label + total?.toLocaleString()}</>
               ) : (
                 <>
                   <span className="font-medium text-md font-Montserrat text-neutral-500">
@@ -497,7 +537,8 @@ const BasketTotal = ({ items, handleClick }) => {
           <div className="flex justify-between text-md sm:text-heading-7">
             <div className="font-medium sm:font-bold">Subtotal</div>
             <div className="font-medium sm:font-bold">
-              {currencyConfig.label}{totalPoints?.toLocaleString()}
+              {currencyConfig.label}
+              {totalPoints?.toLocaleString()}
             </div>
           </div>
           <div className="h-px my-3 sm:my-5 bg-neutral-300"></div>
@@ -509,7 +550,8 @@ const BasketTotal = ({ items, handleClick }) => {
           <div className="flex justify-between text-md sm:text-heading-6">
             <div className="font-bold">Total</div>
             <div className="font-bold">
-              {currencyConfig.label}{parseFloat(totalPoints) + parseFloat(processingAmount)}
+              {currencyConfig.label}
+              {parseFloat(totalPoints) + parseFloat(processingAmount)}
             </div>
           </div>
         </div>

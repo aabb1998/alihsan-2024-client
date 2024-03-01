@@ -6,6 +6,8 @@ import {
   EditIcon,
   EyeIcon,
   MoreverticalIcon,
+  ShieldIcon,
+  ShieldOffIcon,
   Trash2Icon,
 } from "../../../theme/svg-icons";
 import { Button } from "../../../components";
@@ -37,7 +39,7 @@ export default function ActionButtonBgWithIcon({
                 <Button
                   className="flex w-full gap-2 px-3 py-2 text-sm font-medium rounded text-start text-neutral-1000 font-Montserrat hover:bg-primary-200"
                   onClick={handleSwitchStatus}
-                  leftIcon={<EditIcon iconSize={16} />}
+                  leftIcon={<span className="w-4 h-4"><EditIcon iconSize={16} /></span>}
                   variant={"none"}
                   label={item?.status === "Completed" ? "Active" : "Completed"}
                 />
@@ -48,7 +50,7 @@ export default function ActionButtonBgWithIcon({
                 <Button
                   className="flex w-full gap-2 px-3 py-2 text-sm font-medium rounded text-start text-neutral-1000 font-Montserrat hover:bg-primary-200"
                   onClick={handleStatus}
-                  leftIcon={<EditIcon iconSize={16} />}
+                  leftIcon={<span className="w-4 h-4"><EditIcon iconSize={16} /></span>}
                   variant={"none"}
                   label={"Status"}
                 />
@@ -59,7 +61,7 @@ export default function ActionButtonBgWithIcon({
                 <Button
                   className="flex w-full gap-2 px-3 py-2 text-sm font-medium rounded text-start text-neutral-1000 font-Montserrat hover:bg-primary-200"
                   onClick={handleEdit}
-                  leftIcon={<EditIcon iconSize={16} />}
+                  leftIcon={<span className="w-4 h-4"><EditIcon iconSize={16} /></span>}
                   variant={"none"}
                   label={"Edit"}
                 />
@@ -70,7 +72,7 @@ export default function ActionButtonBgWithIcon({
                 <Button
                   className="flex w-full gap-2 px-3 py-2 text-sm font-medium rounded text-start text-neutral-1000 font-Montserrat hover:bg-primary-200"
                   onClick={handleView}
-                  leftIcon={<EyeIcon iconSize={16} />}
+                  leftIcon={<span className="w-4 h-4"><EyeIcon iconSize={16} /></span>}
                   variant={"none"}
                   label={"View"}
                 />
@@ -81,7 +83,7 @@ export default function ActionButtonBgWithIcon({
                 <Button
                   className="flex w-full gap-2 px-3 py-2 text-sm font-medium rounded text-start text-neutral-1000 font-Montserrat hover:bg-primary-200"
                   onClick={handleDownload}
-                  leftIcon={<DownloadIcon iconSize={16} />}
+                  leftIcon={<span className="w-4 h-4"><DownloadIcon iconSize={16} /></span>}
                   variant={"none"}
                   label={"Download"}
                 />
@@ -92,7 +94,7 @@ export default function ActionButtonBgWithIcon({
                 <Button
                   className="flex w-full gap-2 px-3 py-2 text-sm font-medium rounded text-start text-neutral-1000 font-Montserrat hover:bg-primary-200"
                   onClick={handleRemove}
-                  leftIcon={<Trash2Icon iconSize={16} />}
+                  leftIcon={<span className="w-4 h-4"><Trash2Icon iconSize={16} /></span>}
                   variant={"none"}
                   label={"Delete"}
                 />
@@ -103,7 +105,7 @@ export default function ActionButtonBgWithIcon({
                 <Button
                   className="flex w-full gap-2 px-3 py-2 text-sm font-medium rounded text-start text-neutral-1000 font-Montserrat hover:bg-primary-200"
                   onClick={handleBlock}
-                  leftIcon={<Trash2Icon iconSize={16} />}
+                  leftIcon={<span className="w-4 h-4"><ShieldIcon iconSize={16} /></span>}
                   variant={"none"}
                   label={"Block"}
                 />
@@ -114,7 +116,7 @@ export default function ActionButtonBgWithIcon({
                 <Button
                   className="flex w-full gap-2 px-3 py-2 text-sm font-medium rounded text-start text-neutral-1000 font-Montserrat hover:bg-primary-200"
                   onClick={handleUnblock}
-                  leftIcon={<Trash2Icon iconSize={16} />}
+                  leftIcon={<span className="w-4 h-4"><ShieldOffIcon iconSize={16} /></span>}
                   variant={"none"}
                   label={"Unblock"}
                 />
@@ -125,7 +127,7 @@ export default function ActionButtonBgWithIcon({
                 <Button
                   className="flex w-full gap-2 px-3 py-2 text-sm font-medium rounded text-start text-neutral-1000 font-Montserrat hover:bg-primary-200"
                   onClick={handleResetPassword}
-                  leftIcon={<EditIcon iconSize={16} />}
+                  leftIcon={<span className="w-4 h-4"><EditIcon iconSize={16}/></span> }
                   variant={"none"}
                   label={"Reset Password"}
                 />

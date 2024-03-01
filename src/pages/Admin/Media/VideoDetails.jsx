@@ -24,10 +24,11 @@ const youtubeUrlRegex =
 const validationSchema = yup.object({
   url: yup
     .string()
+    .trim()
     .matches(youtubeUrlRegex, "Invalid YouTube URL")
     .required("Url is required"),
-  title: yup.string().required("Title is required"),
-  description: yup.string().required("Description is required"),
+  title: yup.string().trim().required("Title is required"),
+  description: yup.string().trim().required("Description is required"),
 });
 
 const VideoDetails = () => {
@@ -137,6 +138,7 @@ const VideoDetails = () => {
                 variant=""
                 type="submit"
                 label={"Submit"}
+                disabled={formik.isSubmitting}
               />
             )}
           </div>

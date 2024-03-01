@@ -16,7 +16,6 @@ import {
 } from "../../../features/adminBlog/adminBlogSlice";
 import { resetNews } from "../../../features/news/news";
 import TagSelection from "../../../components/TagSelection";
-import AddTags from "./AddTags";
 import ImageUpload from "../../../components/ImageUpload";
 import { makeSlug, validateSlug } from "../../../utils/helper";
 import QuillEditor from "../../../components/QuillEditor";
@@ -25,8 +24,8 @@ import Modal from "../../../components/ImageUpload/Modal";
 const { showSuccessMessage, showErrorMessage } = SnackMessages();
 
 const validationSchema = yup.object({
-  title: yup.string().required("Title is required"),
-  content: yup.string().required("Content is required"),
+  title: yup.string().trim().required("Title is required"),
+  content: yup.string().trim().required("Content is required"),
   slug: yup
     .string()
     .required("Slug is required")
@@ -46,8 +45,8 @@ export const UpdateBlog = () => {
   const { news, loading } = useSelector((state) => state.news);
   const { tags } = useSelector((state) => state.adminBlog);
   const [selectionTags, setSelectionTags] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
   const [coverPreviews, setCoverPreviews] = useState("");
+  const [deletedImages, setDeletedImages] = useState([]);
   const [imagePreviews, setImagePreviews] = useState(Array(4).fill(null));
   const [isCropOpen, setCropOpen] = useState(false);
 
@@ -71,8 +70,9 @@ export const UpdateBlog = () => {
       formData.append("contentText", values.contentText);
       formData.append("slug", values.slug);
       formData.append("tags", values.tags);
-      formData.append("coverImage", values.coverImage);
+      formData.append("coverImage", values.coverImage,"coverImage.png");
       formData.append("status", values.submitType);
+      formData.append("deletedImages", deletedImages);
       values.images?.forEach((file, index) => {
         if (file) {
           formData.append(`images`, file, `image_${index + 1}.png`);
@@ -112,28 +112,12 @@ export const UpdateBlog = () => {
     }
   };
 
-  const handleCoverImage = (event) => {
-    const file = event.currentTarget.files[0];
-    if (file && file.type.startsWith("image/")) {
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setCoverPreviews(reader.result);
-          formik.setFieldValue(`coverImage`, file);
-        };
-        reader.readAsDataURL(file);
-      }
-    } else {
-      showErrorMessage("Invalid file format");
-    }
-  };
   const handleImageChange = (event, index) => {
     const file = event.currentTarget.files[0];
     if (file && file.type.startsWith("image/")) {
       if (file) {
         const reader = new FileReader();
         reader.onloadend = () => {
-          console.log(imagePreviews);
           const newImagePreviews = [...imagePreviews];
           newImagePreviews[index] = reader.result;
           setImagePreviews(newImagePreviews);
@@ -145,6 +129,7 @@ export const UpdateBlog = () => {
       showErrorMessage("Invalid file format");
     }
   };
+
   const getNewsDetails = async () => {
     const news = await dispatch(getNews({ id }));
     let getAllValues = news?.payload;
@@ -170,6 +155,10 @@ export const UpdateBlog = () => {
     formik.setFieldValue("tags", idsArray);
   };
   const handleImageDelete = (event, index) => {
+    const blogMedia = news?.BlogMedia[index];
+    if (blogMedia) {
+      setDeletedImages([...deletedImages, blogMedia?.id]);
+    }
     event.preventDefault();
     const newImagePreviews = [...imagePreviews];
     newImagePreviews[index] = null;
@@ -181,6 +170,7 @@ export const UpdateBlog = () => {
       fileInput.value = null;
     }
   };
+
   const getCroppedCoverImage = async (url) => {
     const response = await fetch(url);
     const file = await response.blob();
@@ -188,7 +178,7 @@ export const UpdateBlog = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setCoverPreviews(reader.result);
-        formik.setFieldValue(`coverImage`, file);
+        formik.setFieldValue(`coverImage`, file, `coverImage.png`);
       };
       reader.readAsDataURL(file);
     }
@@ -207,20 +197,20 @@ export const UpdateBlog = () => {
         const newImagePreviews = [...imagePreviews];
         newImagePreviews[index] = reader.result;
         setImagePreviews(newImagePreviews);
-        formik.setFieldValue(`images.${index}`, file);
+        // formik.setFieldValue(`images.${index}`, file);
       };
       reader.readAsDataURL(file);
     }
   };
-	const handleDescriptionChange = e => {
-		formik.setFieldValue('content', e.target.value.html)
-		formik.setFieldValue('contentText', e.target.value.text)
-	}
+
+  const handleDescriptionChange = (e) => {
+    formik.setFieldValue("content", e.target.value.html);
+    formik.setFieldValue("contentText", e.target.value.text);
+  };
 
   useEffect(() => {
     if (id) {
       getNewsDetails();
-      // formik.setValues("id"  , id);
     }
     dispatch(getTags());
     return () => {
@@ -240,19 +230,17 @@ export const UpdateBlog = () => {
       setCoverPreviews(news?.coverImage);
       setSelectionTags(news?.Tags);
       setImagePreviews(news?.BlogMedia?.map((item) => item?.url));
-      //////
     }
   }, [news]);
 
   useEffect(() => {
     dispatch(getTags());
-  }, [isOpen]);
+  }, []);
 
   const isDraft = news?.status === "DRAFT";
 
   return (
     <div className="py-10 px-2 sm:px-7.5 w-full h-[calc(100vh-4.5rem)] overflow-auto">
-      {isOpen && <AddTags onClose={() => setIsOpen(false)} title={"Blog"} />}
       {isCropOpen && (
         <Modal
           getCroppedImage={(e) => {
@@ -309,6 +297,7 @@ export const UpdateBlog = () => {
                   type="submit"
                   onClick={() => formik.setFieldValue("submitType", "DRAFT")}
                   label={"Save as Draft"}
+                  disabled={formik.isSubmitting}
                 />
               )}
 
@@ -321,6 +310,7 @@ export const UpdateBlog = () => {
                     formik.setFieldValue("submitType", "PUBLISHED")
                   }
                   label={"Publish"}
+                  disabled={formik.isSubmitting}
                 />
               )}
             </div>
@@ -348,17 +338,14 @@ export const UpdateBlog = () => {
                   className="!mb-0 cursor-pointer absolute right-5 bottom-5"
                 >
                   <div className="flex flex-col items-center justify-center px-5 py-3 rounded-lg bg-primary-100 text-primary-300 text-button-lg">
-                    Add Cover
+                    {id ? "Change " : "Add "} Cover
                   </div>
                   <input
                     id="dropzone-file"
-                    // type="file"
                     className="hidden"
                     name={`coverImage`}
                     accept="image/*"
                     onClick={() => setCropOpen(true)}
-
-                    // onChange={(event) => handleCoverImage(event)}
                   />
                 </label>
               </div>
@@ -424,14 +411,6 @@ export const UpdateBlog = () => {
                     selectionTags={selectionTags}
                   />
                 </div>
-
-                <Button
-                  label={"Add Tag"}
-                  type="button"
-                  onClick={() => setIsOpen(true)}
-                  className={"h-fit w-full md:w-fit !p-3"}
-                  variant={"primary"}
-                />
               </div>
               {formik.touched.tags && Boolean(formik.errors.tags) && (
                 <FormikValidationError
@@ -463,13 +442,6 @@ export const UpdateBlog = () => {
           <h5 className="flex items-center text-button-lg gap-x-2">
             Project Images
           </h5>
-          {/* <button
-            className="btn btn-primary text-button-md md:text-button-lg"
-            variant="primaryFull"
-            type="submit"
-          >
-            Add Image
-          </button> */}
         </div>
 
         <div className="flex flex-wrap gap-2 p-5 sm:gap-3 lg:gap-5 bg-neutral-200 rounded-2xl">

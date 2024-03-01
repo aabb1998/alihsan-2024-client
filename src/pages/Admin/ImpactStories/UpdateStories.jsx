@@ -26,19 +26,21 @@ const { showSuccessMessage, showErrorMessage } = SnackMessages();
 
 const validationSchema = yup.object({
   campaignId: yup.string().required("Campaign is required"),
-  title: yup.string().required("Title is required"),
-  slug: yup.string().required("Slug is required")
-		.test(
-			'test-slug',
-			'Only lower case alphabets, numbers, hyphens (-) and underscores (_) are allowed',
-			v => !validateSlug(v),
-		),
-  description: yup.string().required("Description is required"),
+  title: yup.string().trim().required("Title is required"),
+  slug: yup
+    .string()
+    .required("Slug is required")
+    .test(
+      "test-slug",
+      "Only lower case alphabets, numbers, hyphens (-) and underscores (_) are allowed",
+      (v) => !validateSlug(v)
+    ),
+  description: yup.string().trim().required("Description is required"),
   coverImage: yup.string().required("Cover Image is required"),
 });
 const adminListingUrl = "/admin/impact-stories";
 
-export const UpdateStory = () => {
+const UpdateStory = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -47,8 +49,10 @@ export const UpdateStory = () => {
   const { quickdonations } = useSelector((state) => state.quickDonations);
   const { impactStory } = useSelector((state) => state.impactStories);
   const [coverPreviews, setCoverPreviews] = useState("");
-
+  const [impactStoryMedia, setImpactStoryMedia] = useState([]);
+  const [deletedImages, setDeletedImages] = useState([]);
   const [imagePreviews, setImagePreviews] = useState(Array(4).fill(null));
+
   const formik = useFormik({
     initialValues: {
       id: impactStory?.id ?? "",
@@ -56,19 +60,22 @@ export const UpdateStory = () => {
       campaignId: impactStory?.campaignId ?? "",
       title: impactStory?.title ?? "",
       description: impactStory?.description ?? "",
-      descriptionText: impactStory?.descriptionText ?? impactStory?.description ?? "",
+      descriptionText:
+        impactStory?.descriptionText ?? impactStory?.description ?? "",
       images: Array.from({ length: 4 }).fill(undefined),
       coverImage: null,
     },
     validationSchema: validationSchema,
     onSubmit: async (values, { resetForm }) => {
       const formData = new FormData();
-      formData.append("coverImage", values.coverImage);
+      formData.append(`coverImage`, values.coverImage, `coverImage.png`);
       formData.append("campaignId", values.campaignId);
       formData.append("title", values.title);
       formData.append("slug", values.slug);
       formData.append("description", values.description);
       formData.append("descriptionText", values.descriptionText);
+      formData.append("deletedImages", deletedImages);
+
       values.images?.forEach((file, index) => {
         if (file) {
           formData.append(`images`, file, `image_${index + 1}.png`);
@@ -99,15 +106,15 @@ export const UpdateStory = () => {
       } catch (error) {}
     },
   });
-	const handleDescriptionChange = e => {
-		formik.setFieldValue('description', e.target.value.html)
-		formik.setFieldValue('descriptionText', e.target.value.text)
-	}
+  const handleDescriptionChange = (e) => {
+    formik.setFieldValue("description", e.target.value.html);
+    formik.setFieldValue("descriptionText", e.target.value.text);
+  };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     formik.setFieldValue(name, value);
-		if(name==='title' && !formik.values.id && !formik.touched.slug)
-			formik.setFieldValue('slug', makeSlug(value))
+    if (name === "title" && !formik.values.id && !formik.touched.slug)
+      formik.setFieldValue("slug", makeSlug(value));
   };
   const handleCampaignChange = (e) => {
     formik.setFieldValue("campaignId", e.value);
@@ -136,12 +143,16 @@ export const UpdateStory = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setCoverPreviews(reader.result);
-        formik.setFieldValue(`coverImage`, file);
+        formik.setFieldValue(`coverImage`, file, `coverImage.png`);
       };
       reader.readAsDataURL(file);
     }
   };
   const handleImageDelete = (event, index) => {
+    const findImage = impactStoryMedia[index];
+    if (findImage) {
+      setDeletedImages([...deletedImages, findImage?.id]);
+    }
     event.preventDefault();
     const newImagePreviews = [...imagePreviews];
     newImagePreviews[index] = null;
@@ -158,10 +169,6 @@ export const UpdateStory = () => {
     const response = await fetch(url);
     const blob = await response.blob();
     const file = blob;
-    // const newImagePreviews = [...imagePreviews];
-    // newImagePreviews[index] = file;
-    // setImagePreviews(imagePreviews);
-    // formik.setFieldValue(`images.0`, file);
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -181,7 +188,7 @@ export const UpdateStory = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setCoverPreviews(reader.result);
-        formik.setFieldValue(`coverImage`, file);
+        formik.setFieldValue(`coverImage`, file, `coverImage.png`);
       };
       reader.readAsDataURL(file);
     }
@@ -191,10 +198,13 @@ export const UpdateStory = () => {
     dispatch(getQucikDonation());
   }, []);
 
-  useEffect(() => {
+  const getAllImpactStories = async () => {
     if (id) {
-      dispatch(getImpactStory({id}));
+      await dispatch(getImpactStory({ id }));
     }
+  };
+  useEffect(() => {
+    getAllImpactStories();
   }, [id]);
 
   useEffect(() => {
@@ -205,6 +215,7 @@ export const UpdateStory = () => {
       impactStory.ImpactStoryMedia.map((e) => {
         imagList.push(e?.url);
       });
+      setImpactStoryMedia(impactStory.ImpactStoryMedia);
       setImagePreviews(imagList);
     }
     return () => {
@@ -214,7 +225,7 @@ export const UpdateStory = () => {
 
   return (
     <div className="py-10 px-2 sm:px-7.5 w-full h-[calc(100vh-4.5rem)] overflow-auto">
-       {isCropOpen && (
+      {isCropOpen && (
         <Modal
           getCroppedImage={(e) => {
             setCropOpen(false);
@@ -244,6 +255,7 @@ export const UpdateStory = () => {
               variant=""
               type="submit"
               label={"Submit"}
+              disabled={formik.isSubmitting}
             />
           </div>
         </div>
@@ -268,7 +280,7 @@ export const UpdateStory = () => {
                 className="!mb-0 cursor-pointer absolute right-5 bottom-5"
               >
                 <div className="flex flex-col items-center justify-center px-5 py-3 rounded-lg bg-primary-100 text-primary-300 text-button-lg">
-                  Add Cover
+                  {id ? "Change " : "Add "}Cover
                 </div>
                 <input
                   id="dropzone-file"
@@ -278,7 +290,6 @@ export const UpdateStory = () => {
                   onChange={(event) => handleCoverImage(event)}
                   accept="image/*"
                   onClick={() => setCropOpen(true)}
-
                 />
               </label>
             </div>
@@ -357,16 +368,11 @@ export const UpdateStory = () => {
           <label htmlFor="description" className="">
             Description<span className="text-red-300">*</span>
           </label>
-          {/* <TextArea
-            handleChange={handleInputChange}
-            name="description"
+          <QuillEditor
             value={formik.values.description}
-          /> */}
-					<QuillEditor
-						value={formik.values.description}
-						onChange={handleDescriptionChange}
-						name="description"
-					/>
+            onChange={handleDescriptionChange}
+            name="description"
+          />
           {formik.touched.description && Boolean(formik.errors.description) && (
             <FormikValidationError
               formikTouched={formik.touched.description}
@@ -402,3 +408,5 @@ export const UpdateStory = () => {
     </div>
   );
 };
+
+export default UpdateStory;

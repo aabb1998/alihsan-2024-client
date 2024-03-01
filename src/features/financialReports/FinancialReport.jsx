@@ -11,6 +11,7 @@ import Loader from "../../components/Loader";
 const initialState = {
   type: "",
   year: "",
+  limit: itemPerPage,
   page: "1",
   sort: "createdAt",
   order: "desc",
@@ -20,7 +21,7 @@ export const FinancialReport = ({ isOpen }) => {
   const dispatch = useDispatch();
   const [isGrid, setIsGrid] = useState(true);
   const { finantialReports, reportCount, loading } = useSelector(
-    (state) => state.finantialReports
+    (state) => state.finantialReports,
   );
   const [filter, setFilter] = useState(initialState);
 
@@ -122,7 +123,7 @@ export const FinancialReport = ({ isOpen }) => {
                       documents={e.document}
                       handleDownload={handleDownload}
                     />
-                  )
+                  ),
                 )
               ) : (
                 <div className="text-neutral-600">

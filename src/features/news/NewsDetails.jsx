@@ -9,9 +9,8 @@ import Loader from "../../components/Loader";
 import Img from "../../components/Image";
 import PageHead from "../../components/PageHead";
 import { BannerImage } from "../../pages/Include/BannerImage";
-import { NoDataFound } from "../../components/NoDataFound";
 
-export const NewsDetailsComponent = () => {
+const NewsDetailsComponent = () => {
   const { slug } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -42,17 +41,19 @@ export const NewsDetailsComponent = () => {
     getNewsDetailsById(slug);
   }, [slug]);
 
-  if (error) return <NoDataFound title={"No Data Found"} />;
+  if (error) return navigate("/404");
 
   return (
     <div>
       <PageHead title={"News details"} />
       {loading ? (
-        <Loader />
+        <div className="my-10">
+          <Loader />
+        </div>
       ) : (
-        <div className="sm:pt-7.5 md:py-15">
+        <div className="sm:pt-7.5 md:py-15 standard-details-page">
           <div className="banner-container">
-            <div className="h-[160px] mb-5 overflow-hidden sm:h-64 md:h-[368px] md:mb-10 rounded-none sm:rounded-2xl md:rounded-4xl">
+            <div className="h-[260px] mb-5 overflow-hidden sm:h-64 md:h-[468px] md:mb-10 rounded-none sm:rounded-xl md:rounded-xl">
               <Img
                 src={
                   news?.coverImage?.includes("localhost")
@@ -103,7 +104,7 @@ export const NewsDetailsComponent = () => {
                     ))}
                     {news?.Tags?.length > maxTagsToShow && (
                       <li
-                        className="p-2 text-white bg-red-300 rounded"
+                        className="p-2 text-white bg-red-300 rounded cursor-pointer"
                         onClick={handleShowMore}
                       >
                         {showAll ? "-" + remining : "+" + remining}
@@ -124,13 +125,14 @@ export const NewsDetailsComponent = () => {
                 {news?.title}
               </h1>
               <p
-								dangerouslySetInnerHTML={{__html: news?.content}}
-								className="mb-5 text-sm font-medium break-words text-neutral-800"
-							></p>
+                dangerouslySetInnerHTML={{ __html: news?.content }}
+                className="mb-5 text-sm font-medium break-words text-neutral-800"
+              ></p>
 
               <div className="flex flex-col gap-10">
                 {news?.BlogMedia?.map((e) => (
                   <BannerImage
+                    key={e.id}
                     className="rounded-2.5xl"
                     bannerImage={
                       e.url || "/images/banner/impact-stories/10.jpg"
@@ -147,3 +149,5 @@ export const NewsDetailsComponent = () => {
     </div>
   );
 };
+
+export default NewsDetailsComponent;

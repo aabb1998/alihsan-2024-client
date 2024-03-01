@@ -8,6 +8,7 @@ const TagSelection = ({ tags, onTagSelection, selectionTags }) => {
   const [items, setItems] = useState([]);
   const [selectedItems, setSelected] = useState([]);
   const wrapperRef = useRef(null);
+  const [inputValue, setInputValue] = useState(""); // State to manage input value
 
   const toogleDropdown = () => {
     setDropdown(!dropdown);
@@ -21,6 +22,7 @@ const TagSelection = ({ tags, onTagSelection, selectionTags }) => {
       : [...selectionTags, item];
     onTagSelection(updatedItems);
     setDropdown(false);
+    setInputValue("");
   };
 
   const handleClickOutside = (event) => {
@@ -44,7 +46,11 @@ const TagSelection = ({ tags, onTagSelection, selectionTags }) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [tags]);
+
+  const filteredTags = items.filter((tag) =>
+    tag.text.toLowerCase().includes(inputValue.toLowerCase())
+  );
 
   return (
     <div className="autcomplete-wrapper" ref={wrapperRef}>
@@ -78,9 +84,9 @@ const TagSelection = ({ tags, onTagSelection, selectionTags }) => {
                     })}
                     <div className="flex-1">
                       <input
-                        placeholder=""
                         className="w-full h-full text-gray-800 bg-transparent border-none outline-none appearance-none focus:shadow-none focus:ring-0 focus:outline-none"
                         onClick={() => setDropdown(true)}
+                        onChange={(e) => setInputValue(e.target.value)} // Update input value
                       />
                     </div>
                   </div>
@@ -98,7 +104,7 @@ const TagSelection = ({ tags, onTagSelection, selectionTags }) => {
                 </div>
               </div>
               {dropdown ? (
-                <Dropdown list={tags} addItem={addTag}></Dropdown>
+                <Dropdown list={filteredTags} addItem={addTag}></Dropdown>
               ) : null}
             </div>
           </div>

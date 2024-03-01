@@ -137,28 +137,31 @@ export const DonationModal = ({
                                 <div className="flex items-center gap-3">
                                   <div>
                                     <Img
-                                      className="object-cover rounded-full w-9 md:w-11 md:h-11"
-                                      src={
-                                        donation?.profileImage ||
-                                        "/images/avatar/avatar-2.jpg"
-                                      }
+                                      className="object-cover w-6 md:w-6 md:h-6"
+                                      src={"/images/avatar/charity.png"}
                                       alt=""
                                     />
                                   </div>
                                   <div>
                                     <div className="text-button-md text-primary-600 line-clamp-1 ">
-                                      {donation?.firstName} {donation?.lastName}
+                                      {donation?.firstName ? (
+                                        <>
+                                          {donation?.firstName}{" "}
+                                          {donation?.lastName}
+                                        </>
+                                      ) : (
+                                        <>Anonymous</>
+                                      )}
                                     </div>
                                     <div className="text-sm text-neutral-500">
-                                      {heading === "Top Donors"
-                                        ? "Last Donation:"
-                                        : ""}{" "}
+                                      {heading === "Top Donors" ? "" : ""}{" "}
                                       {donation?.displayTime}
                                     </div>
                                   </div>
                                 </div>
                                 <div className="text-button-lg text-primary-600">
-                                  {currencyConfig.label}{donation?.total?.toLocaleString()}
+                                  {currencyConfig.label}
+                                  {donation?.total?.toLocaleString()}
                                 </div>
                               </div>
                             ))

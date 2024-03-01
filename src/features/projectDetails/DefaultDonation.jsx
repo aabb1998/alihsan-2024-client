@@ -23,20 +23,22 @@ const paymentTypes = [
   { value: "true", label: "Recurring" },
 ];
 const donationAmounts = [
-  { value: "100", label: currencyConfig.label+"100" },
-  { value: "500", label: currencyConfig.label+"500" },
-  { value: "800", label: currencyConfig.label+"800" },
+  { value: "100", label: currencyConfig.label + "100" },
+  { value: "500", label: currencyConfig.label + "500" },
+  { value: "800", label: currencyConfig.label + "800" },
   { value: "Other", label: "Other" },
 ];
 
 export const DefaultDonation = ({ campaign, handleClose, isModal }) => {
   const dispatch = useDispatch();
-	const generalAmounts = useSelector(state => state.settings.settings.generalAmounts)
+  const generalAmounts = useSelector(
+    (state) => state.settings.settings.generalAmounts,
+  );
 
   const handleDonation = async (values, { resetForm }) => {
     const checkout = JSON.parse(localStorage.getItem("checkout") || "[]");
     const isInCheckoutList = checkout.find(
-      (obj) => obj.campaignId === values.campaignId
+      (obj) => obj.campaignId === values.campaignId,
     );
 
     const newValues = {
@@ -47,19 +49,19 @@ export const DefaultDonation = ({ campaign, handleClose, isModal }) => {
       isRecurring: Boolean(values.isRecurring),
       Campaign: campaign,
     };
-    checkAdminPermission(newValues)
+    checkAdminPermission(newValues);
 
     const action = isInCheckoutList ? updateBasketItem : addBasketItem;
     const updatedCheckout = isInCheckoutList
       ? [
           ...checkout.slice(
             0,
-            checkout.findIndex((obj) => obj.campaignId === values.campaignId)
+            checkout.findIndex((obj) => obj.campaignId === values.campaignId),
           ),
           newValues,
           ...checkout.slice(
             checkout.findIndex((obj) => obj.campaignId === values.campaignId) +
-              1
+              1,
           ),
         ]
       : [...checkout, newValues];
@@ -68,7 +70,7 @@ export const DefaultDonation = ({ campaign, handleClose, isModal }) => {
     localStorage.setItem("checkout", JSON.stringify(updatedCheckout));
     await dispatch(action(newValues));
     showSuccessMessage(
-      `Item ${isInCheckoutList ? "updated" : "added"} successfully`
+      `Item ${isInCheckoutList ? "updated" : "added"} successfully`,
     );
 
     resetForm();
@@ -85,13 +87,13 @@ export const DefaultDonation = ({ campaign, handleClose, isModal }) => {
       selectedValue === currentAmount
         ? null
         : selectedValue === "Other"
-        ? ""
-        : selectedValue
+          ? ""
+          : selectedValue,
     );
 
     formik.setFieldValue(
       "custom",
-      selectedValue === "Other" ? !formik.values.custom : false
+      selectedValue === "Other" ? !formik.values.custom : false,
     );
   };
 
@@ -137,6 +139,7 @@ export const DefaultDonation = ({ campaign, handleClose, isModal }) => {
           <div className="p-2 bg-accent-100 rounded-lg gap-3.5 flex">
             {paymentTypes?.map((e) => (
               <Button
+                key={e.label}
                 label={e.label}
                 value={e.value}
                 type="button"

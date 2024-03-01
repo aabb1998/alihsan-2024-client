@@ -6,28 +6,22 @@ import { ArrowLeftIcon, PlusIcon } from "../../../theme/svg-icons";
 import { Button } from "../../../components";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
-import {
-  addStory,
-  updateStory,
-} from "../../../features/adminStories/adminStoriesSlice";
 import { SnackMessages } from "../../../components/Toast";
 import { FormikValidationError } from "../../../features/Common/FormikValidationError";
 import TextArea from "../../../components/TextArea";
-import { resetImpactStory } from "../../../features/impactStories/impactStories";
 import {
   addOurWork,
   getOurWork,
   resetOurWork,
   updateOurWork,
 } from "../../../features/adminOurWorks/adminOurWorksSlice";
-import Img from "../../../components/Image";
 import ImageUpload from "../../../components/ImageUpload";
 const { showSuccessMessage, showErrorMessage } = SnackMessages();
 
 const validationSchema = yup.object({
-  name: yup.string().required("Name is required"),
-  title: yup.string().required("Title is required"),
-  description: yup.string().required("Description is required"),
+  name: yup.string().trim().required("Name is required"),
+  title: yup.string().trim().required("Title is required"),
+  description: yup.string().trim().required("Description is required"),
   image: yup.string().required("Image is required"),
 });
 
@@ -48,7 +42,10 @@ export const UpdateOurWork = () => {
     validationSchema: validationSchema,
     onSubmit: async (values, { resetForm }) => {
       const formData = new FormData();
-      formData.append("image", values.image);
+      formData.append(
+        "image",
+        typeof values.image === "object" ? values.image : ""
+      );
       formData.append("name", values.name);
       formData.append("title", values.title);
       formData.append("description", values.description);
@@ -164,6 +161,7 @@ export const UpdateOurWork = () => {
               variant=""
               type="submit"
               label={"Submit"}
+              disabled={formik.isSubmitting}
             />
           </div>
         </div>
@@ -236,7 +234,6 @@ export const UpdateOurWork = () => {
               handleImageDelete={(event) => handleImageDelete(event)}
               handleImageChange={(event) => handleImageChange(event)}
               getCroppedImage={(e) => getCroppedImage(e)}
-
             />
             {formik.touched.image && Boolean(formik.errors.image) && (
               <FormikValidationError

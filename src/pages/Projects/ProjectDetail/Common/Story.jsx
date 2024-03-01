@@ -7,8 +7,10 @@ export const StoryTab = ({ handleClick, activeTab, count }) => {
         <li className="cursor-pointer" onClick={() => handleClick("tab1")}>
           <div
             className={`${`inline-block px-2 py-3 font-bold border-b-2 ${
-              activeTab !== "tab1" && "border-transparent"
-            } border-primary-300 text-primary-300 text-button-lg w-[108px]`}`}
+              activeTab !== "tab1"
+								? "border-transparent hover:border-neutral-300 text-neutral-600"
+								: "border-primary-300 text-primary-300"
+            } text-button-lg w-[108px]`}`}
           >
             Story
           </div>
@@ -17,8 +19,10 @@ export const StoryTab = ({ handleClick, activeTab, count }) => {
           <li className="cursor-pointer" onClick={() => handleClick("tab2")}>
             <div
               className={`${`flex gap-1 px-2 py-3 font-bold border-b-2 ${
-                activeTab !== "tab2" && "border-transparent"
-              } hover:border-neutral-300 text-button-lg w-[108px] text-neutral-600`}`}
+								activeTab !== "tab2"
+									? "border-transparent hover:border-neutral-300 text-neutral-600"
+									: "border-primary-300 text-primary-300"
+							} text-button-lg w-[108px]`}`}
             >
               Updates
               <div className="w-5 h-5 p-1 shrink-0 rounded-full flex justify-center text-xs bg-neutral-600 items-center gap-2.5 text-white">

@@ -14,6 +14,7 @@ import { adminItemPerPage } from "../../../utils/constants";
 import AddOrCreateModal from "./AddOrCreateModal";
 import DeleteConfirmation from "../Common/DeleteConfirmation";
 import { SnackMessages } from "../../../components/Toast";
+import Loader from "../../../components/Loader";
 
 const initialState = {
   page: "1",
@@ -31,7 +32,7 @@ const Countries = () => {
   const [isDelete, setIsDelete] = useState(false);
   const dispatch = useDispatch();
   const [filters, setFilters] = useState(initialState);
-  const { countries } = useSelector((state) => state.adminCountries);
+  const { countries, isLoading } = useSelector((state) => state.adminCountries);
   const { count, rows } = countries;
 
   const handlePageChange = (newPage) => {
@@ -104,8 +105,7 @@ const Countries = () => {
           <DeleteConfirmation
             onClose={() => setIsDelete(false)}
             confirmDelete={confirmDelete}
-            // isLoading={loading}
-            title={"Countries"}
+            title={"Country"}
           />
         )}
 
@@ -131,7 +131,7 @@ const Countries = () => {
                           onClick={() => {
                             setFilters({
                               ...filters,
-                              sort: "id",
+                              sort: "countryCode",
                               order: filters.order === "asc" ? "desc" : "asc",
                             });
                           }}
@@ -148,7 +148,7 @@ const Countries = () => {
                           onClick={() => {
                             setFilters({
                               ...filters,
-                              sort: "title",
+                              sort: "countryName",
                               order: filters.order === "asc" ? "desc" : "asc",
                             });
                           }}
@@ -166,7 +166,7 @@ const Countries = () => {
                 </tr>
               </thead>
               <tbody>
-                {rows?.length ? (
+                {rows?.length > 0 &&
                   rows?.map((country, i) => (
                     <tr
                       key={i}
@@ -193,22 +193,21 @@ const Countries = () => {
                         </div>
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={'4'} className="p-4 text-sm font-medium font-Montserrat text-neutral-700">
-                      No Data Found
-                    </td>
-                  </tr>
-                )}
+                  ))}
               </tbody>
             </table>
             <div className="mt-5">
-              <Pagination
-                currentPage={currentPage}
-                totalPages={Math.ceil(count / adminItemPerPage)}
-                onPageChange={handlePageChange}
-              />{" "}
+              {isLoading ? (
+                <Loader />
+              ) : rows?.length === 0 ? (
+                <div className="">No Data Found.</div>
+              ) : (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={Math.ceil(count / adminItemPerPage)}
+                  onPageChange={handlePageChange}
+                />
+              )}{" "}
             </div>
           </div>
         </div>

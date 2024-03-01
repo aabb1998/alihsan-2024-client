@@ -38,10 +38,7 @@ const HeaderTop = () => {
   );
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const userData = localStorage.getItem("loggedIn")
-    ? localStorage.getItem("loggedIn")
-    : sessionStorage.getItem("loggedIn");
-
+  const userData = useSelector((state) => state.profile.auth);
   const handleClick = () => {
     dispatch(toggleBasket());
     navigate("/basket");
@@ -171,40 +168,48 @@ const HeaderTop = () => {
 
   const SideDrawerComponent = () => {
     return (
-      <div className="flex flex-col z-50 min-w-xs max-w-xs justify-between h-screen p-4 sm:p-5 bg-neutral-100 sm:w-[25.875rem] sm:min-w-[25.875rem] fixed right-0">
-        <div className="flex items-center justify-between pb-4 mb-4 border-b sm:pb-5 border-neutral-300">
-          <span className="font-bold text-md sm:text-heading-7">My Basket</span>
-          <span className="cursor-pointer" onClick={handleBasket}>
-            <CloseIcon iconSize={24} strokeWidth={1.5} />
-          </span>
-        </div>
-        {/* cart */}
-        {basketItems?.length ? (
-          <>
-            <div className="flex flex-col h-full gap-5 overflow-scroll sm:gap-6">
-              {basketItems?.map((item, index) => (
-                <BasketItem
-                  key={item?.campaignId}
-                  index={index}
-                  item={item}
-                  handleInputChange={handleInputChange}
-                  handleRemoveBasketItems={handleRemoveBasketItems}
-                  handleQuantityChange={handleQuantityChange}
-                  handleItemSave={handleItemSave}
-                  toggle={toggle}
-                  setToggle={(e) => setToggle(e)}
-                  handleEdit={handleEdit}
-                />
-              ))}
-            </div>
-            <BasketTotal items={basketItems} handleClick={handleClick} />
-          </>
-        ) : (
-          <div className="flex items-center justify-center h-full overflow-hidden">
-            <img src="./images/illustration/empty-cart.svg" alt="empty cart" />
+      <>
+        <div className="flex-1" onClick={handleBasket} />
+        <div className="flex flex-col z-50 min-w-xs max-w-xs justify-between h-full p-4 sm:p-5 bg-neutral-100 sm:w-[25.875rem] sm:min-w-[25.875rem] fixed right-0">
+          <div className="flex items-center justify-between pb-4 mb-4 border-b sm:pb-5 border-neutral-300">
+            <span className="font-bold text-md sm:text-heading-7">
+              My Basket
+            </span>
+            <span className="cursor-pointer" onClick={handleBasket}>
+              <CloseIcon iconSize={24} strokeWidth={1.5} />
+            </span>
           </div>
-        )}
-      </div>
+          {/* cart */}
+          {basketItems?.length ? (
+            <>
+              <div className="flex flex-col h-full gap-5 overflow-scroll sm:gap-6">
+                {basketItems?.map((item, index) => (
+                  <BasketItem
+                    key={item?.campaignId}
+                    index={index}
+                    item={item}
+                    handleInputChange={handleInputChange}
+                    handleRemoveBasketItems={handleRemoveBasketItems}
+                    handleQuantityChange={handleQuantityChange}
+                    handleItemSave={handleItemSave}
+                    toggle={toggle}
+                    setToggle={(e) => setToggle(e)}
+                    handleEdit={handleEdit}
+                  />
+                ))}
+              </div>
+              <BasketTotal items={basketItems} handleClick={handleClick} />
+            </>
+          ) : (
+            <div className="flex items-center justify-center h-full overflow-hidden">
+              <img
+                src="./images/illustration/empty-cart.svg"
+                alt="empty cart"
+              />
+            </div>
+          )}
+        </div>
+      </>
     );
   };
 
@@ -214,7 +219,7 @@ const HeaderTop = () => {
         <div className="flex items-center gap-2 text-neutral-800">
           <div className="w-4 h-4 overflow-hidden rounded-full">
             <Img
-              src={`${process.env.REACT_APP_COUNTRY_URL}AU.svg`}
+              src={`${import.meta.env.VITE_APP_COUNTRY_URL}AU.svg`}
               className="object-cover w-full h-full"
               alt="US flag"
             />{" "}
@@ -239,7 +244,7 @@ const HeaderTop = () => {
                 onKeyUp={(e) => e.key === "Enter" && onSearchEnter()}
                 value={searchState?.text}
                 className="block w-full !py-2 !pr-3 bg-white border rounded-md form-control !pl-9"
-                placeholder="Search"
+                placeholder="Search for a campaign"
                 type="text"
                 name="search"
                 autoComplete="off"
@@ -285,7 +290,7 @@ const HeaderTop = () => {
                               {result.name}
                             </div>
                             <div className="text-sm text-neutral-500 line-clamp-2">
-                              {result.description}
+                              {result.descriptionText || result.description}
                             </div>
                           </div>
                         </div>
@@ -317,9 +322,7 @@ const HeaderTop = () => {
             </div>
           </div>
 
-          {userData &&
-          JSON.parse(userData).isloggedIn === true &&
-          JSON.parse(userData).role === 'USER' ? (
+          {userData && userData.role === "USER" ? (
             <AccountMenu />
           ) : (
             <Link to="/login" className="flex items-center gap-2">

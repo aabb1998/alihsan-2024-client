@@ -8,6 +8,7 @@ import { addQurban, editQurban } from '../../../features/adminSettings'
 import ArrayInput from './ArrayInput'
 import { countriesList } from '../../../utils/countries'
 import { currencyConfig } from "../../../utils/constants";
+import CountriesSelector from "../../../components/CountriesSelector";
 
 const validateNumber = v => !/^[0-9]+(.[0-9]+)?$/.test(v)
 const ErrorLabel = ({ error }) => <div className="mt-2 text-red-300 text-md">{error}</div>
@@ -38,12 +39,14 @@ const AddQurbanModal = ({ onClose, onAdd, state }) => {
       },
     }, onSubmit: ({ values }) => {
       setLoading(true)
-      const id = qurbanValues[state].id;
       let promise;
       if (state === true)
         promise = dispatch(addQurban({ ...values, country: values.country.join(',') }));
       else
-        promise = dispatch(editQurban({ payload: { ...values, country: values.country.join(',') }, id }));
+        promise = dispatch(editQurban({
+					payload: { ...values, country: values.country.join(',') },
+					id: qurbanValues[state].id,
+				}));
       promise.then(res => {
         setLoading(false)
         if (res.error)
@@ -101,29 +104,11 @@ const AddQurbanModal = ({ onClose, onAdd, state }) => {
                     </div>
                     <div className="form-group">
                       <label htmlFor="country" className="block">Country<span className="text-red-300">*</span></label>
-                      <ArrayInput
-                        array={formState.values.country}
-                        onChange={formState.dispatch}
-                        inputItem={({ onChange, value }) => (
-                          <select className="text-sm !text-neutral-800 border-neutral-300 form-control" value={value} onChange={onChange}>
-                            <option value="" className="text-neutral-400">Select Country</option>
-                            {countriesList.filter(i => formState.values.country.indexOf(i.code) < 0).map(i => (
-                              <option value={i.code} key={i.code} className="text-neutral-400">{i.name}</option>
-                            ))}
-                          </select>
-                        )}
-                        arrayItem={({ value, onClose }) => (
-                          <div className="flex gap-2 p-1 pr-2 rounded w-fit bg-neutral-200">
-                            <img
-                              src={`${process.env.REACT_APP_COUNTRY_URL}${value}.svg`}
-                              className={'w-[1.375rem] h-auto'}
-                              alt="flag"
-                            />
-                            <p className="text-sm text-neutral-800 line-clamp-1">{countriesList.find(c => c.code === value)?.name}</p>
-                            <span className="text-red-300 cursor-pointer"><CloseIcon onClick={onClose} /></span>
-                          </div>
-                        )}
-                      />
+                      <CountriesSelector
+												name="country"
+												onChange={formState.dispatch}
+												array={formState.values.country}
+											/>
                       <ErrorLabel
                         error={formState.touched.country && formState.errors.country}
                       />

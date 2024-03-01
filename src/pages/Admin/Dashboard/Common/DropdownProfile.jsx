@@ -1,19 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef,useMemo } from "react";
 import { ChevronDownIcon } from "../../../../theme/svg-icons";
 import { logout } from "../../../../features/authentication/authenticationSlice";
 import { logOut } from "../../../Include/logoutApi";
 import { SnackMessages } from "../../../../components/Toast";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
 function DropdownProfile() {
   const [isOpen, setIsOpen] = useState(false);
-  const [fullName, setFullName] = useState(false);
+	const userData = useSelector(state => state.profile.auth)
+	const fullName = useMemo(() => {
+    const { firstName, lastName } = userData || {};
+    return `${firstName || ""} ${lastName || ""}`.trim();
+	}, [userData])
   const { showSuccessMessage, showErrorMessage } = SnackMessages();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const dropdownRef = useRef(null);
+  const userProfile = useSelector((state) => state.profile.user);
+  const profileFullName = userProfile?.firstName + " " + userProfile?.lastName;
+  
   const logoutUser = async (e) => {
+    setIsOpen(false);
     try {
       const response = await logOut();
       if (response.status === 200) {
@@ -21,27 +29,30 @@ function DropdownProfile() {
         sessionStorage.removeItem("loggedIn");
         localStorage.removeItem("checkout");
         showSuccessMessage(response.data);
-				setTimeout(() => {
-					dispatch(logout());
-        	navigate("/admin/login");
-				}, 200)
+        setTimeout(() => {
+          dispatch(logout());
+          navigate("/admin/login");
+        }, 200);
       } else {
         showErrorMessage(response.error);
       }
     } catch (error) {
       showErrorMessage(error.message);
     }
-    setIsOpen(false);
+  };
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsOpen(false);
+    }
   };
   useEffect(() => {
-    const isLoggedIn = JSON.parse(localStorage.getItem("loggedIn")) || {};
-    const { firstName, lastName } = isLoggedIn;
-    const name = `${firstName || ""} ${lastName || ""}`.trim();
-    setFullName(name);
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
   }, []);
-
   return (
-    <div className="relative">
+    <div ref={dropdownRef} className="relative">
       <div
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center w-full cursor-pointer gap-x-2"
@@ -52,7 +63,7 @@ function DropdownProfile() {
           alt="Al-Ihsan Foundation"
         />
         <h6 className="hidden text-neutral-800 text-button-md md:flex">
-          {fullName}
+          {userProfile?.firstName ? profileFullName : fullName}
         </h6>
         <ChevronDownIcon />
       </div>
@@ -65,9 +76,7 @@ function DropdownProfile() {
             </Link>
           </li>
           <li className="py-2 text-neutral-800 text-button-md hover:text-primary-300  cursor-pointer">
-            <span onClick={logoutUser} >
-              Logout
-            </span>
+            <span onClick={logoutUser}>Logout</span>
           </li>
         </ul>
       )}

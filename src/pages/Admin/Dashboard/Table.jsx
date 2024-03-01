@@ -70,6 +70,7 @@ export const Table = ({
         })) || [],
     },
   ];
+  
   const handleFilterReset = () => {
     setFilter(initialState);
   };
@@ -93,7 +94,7 @@ export const Table = ({
         filtersList={filtersList}
         isSearch
       >
-        <div className="flex items-center gap-2 mb-5">
+        <div className="flex items-center gap-2">
           <input
             type="checkbox"
             name="guest"
@@ -109,47 +110,27 @@ export const Table = ({
           </label>
         </div>
       </Filter>
-
-      {/* <Filter
-        handleFilterChange={handleFilterChange}
-        handleFilterReset={handleFilterReset}
-        filters={filter}
-        filtersList={[
-          {
-            label: "Select Campaign",
-            name: "campaignId",
-            value: "campaignId",
-            options: quickdonations?.map((e) => ({
-              label: e.name,
-              value: e.id,
-            })),
-          },
-          {
-            label: "Select Recurrence",
-            name: "isRecurring",
-            value: "isRecurring",
-            defaultSelect: "All",
-            options: [
-              { value: true, label: "Recurring" },
-              { value: false, label: "One-time" },
-            ],
-          },
-          {
-            label: "Filter By",
-            name: "status",
-            value: "status",
-            options: StatusFilters,
-          },
-        ]}
-        isSearch
-      /> */}
       <div className="grid">
         <div className="relative overflow-x-auto">
           <table className="w-full table-auto text-start">
             <thead className="rounded bg-neutral-200">
               <tr className="">
                 <th className="p-4 text-sm font-medium text-start font-Montserrat text-neutral-600">
-                  Order Id
+                  <div className="flex gap-1.5 items-center">
+                    Order Id
+                    <span className="cursor-pointer">
+                      <ChevronsUpIcon
+                        iconSize={14}
+                        onClick={() => {
+                          setFilter({
+                            ...filter,
+                            sort: "orderId",
+                            order: filter.order === "asc" ? "desc" : "asc",
+                          });
+                        }}
+                      />
+                    </span>
+                  </div>
                 </th>
                 <th className="p-4 text-sm font-medium text-start font-Montserrat text-neutral-600">
                   Name

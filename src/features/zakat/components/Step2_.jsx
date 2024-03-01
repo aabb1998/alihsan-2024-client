@@ -99,7 +99,6 @@ export default function Step3() {
             <div className="cursor-pointer">
               <TrashIcon />
             </div>
-
           </div>
         </div>
         <div className="relative flex justify-between py-3 pr-3 mb-3 overflow-hidden border rounded-lg sm:py-4 pl-13 sm:pl-20 sm:pr-4 border-accent-300 bg-accent-100">
@@ -112,7 +111,7 @@ export default function Step3() {
             Zakatable Gold: 142:56 AUD
           </div>
           <div className="flex gap-3">
-          <div className="cursor-pointer">
+            <div className="cursor-pointer">
               <EditIcon />
             </div>
             <div className="cursor-pointer">
@@ -127,4 +126,4 @@ export default function Step3() {
       </div>
     </div>
   );
-};
+}

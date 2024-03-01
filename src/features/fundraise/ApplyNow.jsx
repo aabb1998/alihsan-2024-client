@@ -1,5 +1,4 @@
 import Button from "../../components/Button";
-import { CalendarIcon, CheckIcon } from "../../theme/svg-icons";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { SnackMessages } from "../../components/Toast";
@@ -11,8 +10,10 @@ import { fundraiseGoTowards } from "../../utils/form";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { getCountryLengths } from "../../utils/helper";
-import { useState } from "react";
 import { currencyConfig } from "../../utils/constants";
+import { useRef, useState } from "react";
+import { captchaValidation } from "../authentication/authenticationSlice";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const { showSuccessMessage, showErrorMessage } = SnackMessages();
 
@@ -20,6 +21,7 @@ const validationSchema = yup.object({
   name: yup
     .string()
     .required("Name is required")
+    .trim()
     .max(50, ({ max }) => `Name must be at most ${max} characters`),
   campaignStart: yup
     .date()
@@ -46,6 +48,7 @@ const validationSchema = yup.object({
 });
 
 export const ApplyNow = () => {
+  const captchaRef = useRef(null);
   const dispatch = useDispatch();
   const [countryCode, setCountryCode] = useState("");
 
@@ -67,7 +70,13 @@ export const ApplyNow = () => {
     validationSchema: validationSchema,
 
     onSubmit: async (values, { resetForm, setErrors }) => {
-      //validate phone
+      const token = captchaRef.current.getValue();
+      captchaRef.current.reset();
+      const response = await dispatch(captchaValidation({ token: token }));
+      if (!response?.payload?.success) {
+        showErrorMessage(response?.payload?.message);
+        return;
+      }
       const isValid = getCountryLengths(values.phone, countryCode);
       if (!isValid) {
         setErrors({ phone: "Invalid phone number" });
@@ -142,7 +151,7 @@ export const ApplyNow = () => {
                 name="amount"
                 value={formik.values.amount}
                 onChange={formik.handleChange}
-                placeholder={currencyConfig.label+"100"}
+                placeholder={currencyConfig.label + "100"}
               />
               {formik.touched.amount && Boolean(formik.errors.amount) && (
                 <FormikValidationError
@@ -204,18 +213,6 @@ export const ApplyNow = () => {
                   placeholderText="MM/DD/YYYY"
                   autoComplete="off"
                 />
-                {/* <div className="relative w-full ">
-                  <input
-                    type="date"
-                    className="w-full form-control"
-                    id="campaignStart"
-                    name="campaignStart"
-                    value={formik.values.campaignStart}
-                    onChange={formik.handleChange}
-                    placeholder="MM/DD/YYYY"
-                  />
-
-                </div> */}
                 {formik.touched.campaignStart &&
                   Boolean(formik.errors.campaignStart) && (
                     <FormikValidationError
@@ -279,12 +276,19 @@ export const ApplyNow = () => {
                 />
               )}
             </div>
+            <div className="mb-2">
+              <ReCAPTCHA
+                sitekey={import.meta.env.VITE_APP_RECAPTCHA_SITE_KEY}
+                ref={captchaRef}
+              />
+            </div>
           </div>
           <Button
             className={"mt-10"}
             variant="primaryFull"
             type="submit"
             label="Submit"
+            disabled={formik.isSubmitting}
           />
         </form>
       </div>

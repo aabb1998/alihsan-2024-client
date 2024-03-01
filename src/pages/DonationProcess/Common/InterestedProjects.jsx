@@ -15,7 +15,7 @@ return (
                       <h3 className="mb-3 text-heading-7 sm:heading-6 line-clamp-1">Project name Lorem ipsum dolor sit amet</h3>
                       <p className="text-sm font-normal line-clamp-2">Lorem ipsum dolor sit amet, nsectetur adipiscing elit, sed do eiusmod tempor Lorem ipsum dolor sit amet</p>
                   </div>
-                  <button className="btn btn-primary filled">Donate now</button>
+                  <button className="btn btn-primary filled">Donate Now</button>
               </div>
             </div>
             <div className="hidden transition-all ease-in border sm:block bg-neutral-100 rounded-xl border-neutral-300 hover:border-neutral-100 focus:border-primary-300 hover:shadow-card">
@@ -25,7 +25,7 @@ return (
                       <h3 className="mb-3 text-heading-7 sm:heading-6 line-clamp-1">Project name Lorem ipsum dolor sit amet</h3>
                       <p className="text-sm font-normal line-clamp-2">Lorem ipsum dolor sit amet, nsectetur adipiscing elit, sed do eiusmod tempor Lorem ipsum dolor sit amet</p>
                   </div>
-                  <button className="btn btn-primary filled">Donate now</button>
+                  <button className="btn btn-primary filled">Donate Now</button>
               </div>
             </div>
             <div className="hidden transition-all ease-in border sm:block bg-neutral-100 rounded-xl border-neutral-300 hover:border-neutral-100 focus:border-primary-300 hover:shadow-card">
@@ -35,7 +35,7 @@ return (
                       <h3 className="mb-3 text-heading-7 sm:heading-6 line-clamp-1">Project name Lorem ipsum dolor sit amet</h3>
                       <p className="text-sm font-normal line-clamp-2">Lorem ipsum dolor sit amet, nsectetur adipiscing elit, sed do eiusmod tempor Lorem ipsum dolor sit amet</p>
                   </div>
-                  <button className="btn btn-primary filled">Donate now</button>
+                  <button className="btn btn-primary filled">Donate Now</button>
               </div>
             </div>
             <div className="hidden transition-all ease-in border sm:block bg-neutral-100 rounded-xl border-neutral-300 hover:border-neutral-100 focus:border-primary-300 hover:shadow-card">

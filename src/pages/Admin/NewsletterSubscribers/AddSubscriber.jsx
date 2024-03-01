@@ -1,14 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { CloseIcon } from "../../../theme/svg-icons";
 import { useDispatch } from "react-redux";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import Button from "../../../components/Button";
 import { SnackMessages } from "../../../components/Toast";
-import {
-  addStory,
-  updateStory,
-} from "../../../features/adminStories/adminStoriesSlice";
 import { FormikValidationError } from "../../../features/Common/FormikValidationError";
 import { addNewsletterSubscriber } from "../../../features/adminNewsletterSubscribers/adminNewsletterSubscribersSlice";
 
@@ -16,11 +12,12 @@ const { showSuccessMessage, showErrorMessage } = SnackMessages();
 const validationSchema = yup.object({
   email: yup
     .string()
+    .trim()
     .email("Invalid email format")
     .required("Email is required"),
 });
 
-export const AddSubscriber = ({ onClose, item }) => {
+export const AddSubscriber = ({ onClose }) => {
   const dispatch = useDispatch();
   const formik = useFormik({
     initialValues: {
@@ -33,7 +30,7 @@ export const AddSubscriber = ({ onClose, item }) => {
         if (response?.payload?.success) {
           resetForm();
           showSuccessMessage(response?.payload?.message);
-          onClose()
+          onClose();
         } else {
           showErrorMessage(response?.payload?.message);
         }
@@ -61,47 +58,44 @@ export const AddSubscriber = ({ onClose, item }) => {
                     onSubmit={formik.handleSubmit}
                     className="flex flex-col items-start gap-4 sm:gap-7.5"
                   >
-
-                      <div className="flex w-full flex-col gap-4 sm:gap-5 max-h-[calc(100vh-20rem)] overflow-auto">
-
-                          <div className="form-group">
-                            <label htmlFor="title" className="block">
-                              Email<span className="text-red-300">*</span>
-                            </label>
-                            <input
-                              type="text"
-                              className="w-full form-control"
-                              placeholder="Email"
-                              name="email"
-                              value={formik.values.email}
-                              onChange={formik.handleChange}
+                    <div className="flex w-full flex-col gap-4 sm:gap-5 max-h-[calc(100vh-20rem)] overflow-auto">
+                      <div className="form-group">
+                        <label htmlFor="title" className="block">
+                          Email<span className="text-red-300">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          className="w-full form-control"
+                          placeholder="Email"
+                          name="email"
+                          value={formik.values.email}
+                          onChange={formik.handleChange}
+                        />
+                        {formik.touched.email &&
+                          Boolean(formik.errors.email) && (
+                            <FormikValidationError
+                              formikTouched={formik.touched.email}
+                              formikError={formik.errors.email}
                             />
-                            {formik.touched.email &&
-                              Boolean(formik.errors.email) && (
-                                <FormikValidationError
-                                  formikTouched={formik.touched.email}
-                                  formikError={formik.errors.email}
-                                />
-                              )}
-                          </div>
-
+                          )}
                       </div>
+                    </div>
 
-                      <div className="flex justify-between w-full gap-4 sm:ga-5">
-                        <Button
-                          variant={"secondaryOutline"}
-                          className="flex-grow basis-0"
-                          label={"Cancel"}
-                          onClick={onClose}
-                        />
-                        <Button
-                          variant={"primary"}
-                          className="flex-grow basis-0"
-                          label={`Submit`}
-                          type="submit"
-                        />
-                      </div>
-
+                    <div className="flex justify-between w-full gap-4 sm:ga-5">
+                      <Button
+                        variant={"secondaryOutline"}
+                        className="flex-grow basis-0"
+                        label={"Cancel"}
+                        onClick={onClose}
+                      />
+                      <Button
+                        variant={"primary"}
+                        className="flex-grow basis-0"
+                        label={`Submit`}
+                        type="submit"
+                        disabled={formik.isSubmitting}
+                      />
+                    </div>
                   </form>
                 </div>
               </div>

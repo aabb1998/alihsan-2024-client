@@ -1,6 +1,6 @@
 import { isValidPhoneNumber } from "libphonenumber-js";
 import * as XLSX from "xlsx";
-import { currencyConfig } from './constants'
+import { currencyConfig } from "./constants";
 import { SnackMessages } from "../components/Toast";
 import { useSelector } from "react-redux";
 const { showErrorMessage } = SnackMessages();
@@ -138,9 +138,16 @@ export const checkAdminPermission = (campaign) => {
       (item) =>
         item?.Campaign?.isRamadanCampaign === true && item?.isRecurring === true
     );
-    if ((isAnyActive && !(newItem && hasNewItemRecurring)) || (newItem && hasNewItemRecurring && !isAnyActive)) {
-      showErrorMessage("Oops! Mixing the recurring Ramadan campaign with others isn't allowed.");
-      throw new Error("Oops! Mixing the recurring Ramadan campaign with others isn't allowed.");
+    if (
+      (isAnyActive && !(newItem && hasNewItemRecurring)) ||
+      (newItem && hasNewItemRecurring && !isAnyActive)
+    ) {
+      showErrorMessage(
+        "Oops! Mixing the recurring Ramadan campaign with others isn't allowed."
+      );
+      throw new Error(
+        "Oops! Mixing the recurring Ramadan campaign with others isn't allowed."
+      );
     }
   }
 
@@ -170,23 +177,35 @@ export const getRecurringLabel = (periodDays) => {
 };
 
 export const useFedyahPricers = () => {
-	const { feedPrice, clothePrice, fedyahAmounts } = useSelector(state => state.settings.settings);
-	return [(am) => {
-		if(am==='feedPrice') return feedPrice
-		else if(am==='clothePrice') return clothePrice;
-		else return 0;//throw new Error('Unknown initial amount: '+JSON.stringify(am));
-	}, str => {
-		str = str.replace(/{{(.+?)}}/g, (og,type) => {
-			let amount;
-			if(type==='feedPrice') amount = feedPrice;
-			else if(type==='clothePrice') amount = clothePrice;
-			else if(type==='fedyahAmounts')
-				amount = ` ${fedyahAmounts[0]}, ${fedyahAmounts[1]}, ${fedyahAmounts[2]} and ${fedyahAmounts[1]}`;
-			else if(type==='currency')
-				return currencyConfig.label;
-			else return og;
-			return currencyConfig.label + amount;
-		});
-		return str;
-	}]
+  const { feedPrice, clothePrice, fedyahAmounts } = useSelector(
+    (state) => state.settings.settings
+  );
+  return [
+    (am) => {
+      if (am === "feedPrice") return feedPrice;
+      else if (am === "clothePrice") return clothePrice;
+      else return 0; //throw new Error('Unknown initial amount: '+JSON.stringify(am));
+    },
+    (str) => {
+      str = str.replace(/{{(.+?)}}/g, (og, type) => {
+        let amount;
+        if (type === "feedPrice") amount = feedPrice;
+        else if (type === "clothePrice") amount = clothePrice;
+        else if (type === "fedyahAmounts")
+          amount = ` ${fedyahAmounts[0]}, ${fedyahAmounts[1]}, ${fedyahAmounts[2]} and ${fedyahAmounts[1]}`;
+        else if (type === "currency") return currencyConfig.label;
+        else return og;
+        return currencyConfig.label + amount;
+      });
+      return str;
+    },
+  ];
+};
+
+export function nl2br(str, replaceMode, isXhtml) {
+  var breakTag = isXhtml ? "<br />" : "<br>";
+  var replaceStr = replaceMode ? "$1" + breakTag : "$1" + breakTag + "$2";
+  return {
+    __html: (str + "").replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, replaceStr),
+  };
 }
